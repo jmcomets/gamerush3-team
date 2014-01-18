@@ -2,8 +2,11 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="lib/slick/lib/jinput.jar"/>
-	<classpathentry kind="lib" path="lib/slick/lib/lwjgl.jar"/>
 	<classpathentry kind="lib" path="lib/slick/lib/slick.jar"/>
+	<classpathentry kind="lib" path="lib/lwjgl/lib/lwjgl.jar">
+		<attributes>
+			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="TropicalEscape/lib/lwjgl/native/linux"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
