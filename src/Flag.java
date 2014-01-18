@@ -1,4 +1,3 @@
-import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
@@ -6,7 +5,7 @@ import org.newdawn.slick.SlickException;
 public class Flag implements GameObject {
 
 	static final int DESC_HEIGHT_SHIFT = 15;
-	static final String IMG_FILE = "res/flag.png";
+	static final String IMG_FILE = "res/ship.png";
 
 	String m_desc;
 	float m_x;
@@ -28,7 +27,7 @@ public class Flag implements GameObject {
 	}
 
 	@Override
-	public void render(GameContainer gc, Graphics g) {
+	public void render(Graphics g) {
 		m_img.draw(m_x, m_y);
 		if (m_y - DESC_HEIGHT_SHIFT < 0) {
 			g.drawString(m_desc, m_x, m_y + m_img.getHeight());
@@ -38,7 +37,7 @@ public class Flag implements GameObject {
 	}
 
 	@Override
-	public void update(GameContainer gc, int delta) {
+	public void update(int delta) {
 		//
 	}
 
