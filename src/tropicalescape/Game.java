@@ -19,6 +19,7 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.geom.Vector2f;
 
 import tropicalescape.enemies.Enemy;
+import tropicalescape.enemies.OneHitMonster;
 import tropicalescape.enemies.SleepingIsland;
 
 public class Game extends BasicGame {
@@ -98,6 +99,14 @@ public class Game extends BasicGame {
 					Flag flag = new Flag(tokens[1]);
 					flags.add(flag);
 					obj = flag;
+				} else if (tokens[0].equals("KRAKEN")) {
+					OneHitMonster ohm = new OneHitMonster(OneHitMonster.Type.KRAKEN);
+					enemies.add(ohm);
+					obj = ohm;
+				} else if (tokens[0].equals("GIANT_LOBSTER")) {
+					OneHitMonster ohm = new OneHitMonster(OneHitMonster.Type.GIANT_LOBSTER);
+					enemies.add(ohm);
+					obj = ohm;
 				}
 				if (obj != null) {
 					obj.setPosition(new Vector2f(Float

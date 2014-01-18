@@ -15,7 +15,14 @@ public class HitboxAnimation extends Animation implements Collidable {
 	private List<Hitbox> hitboxes = new ArrayList<Hitbox>();
 
 	public Hitbox getHitbox() {
-		return hitboxes.get(getFrame());
+		int frame = getFrame();
+		if (hitboxes.size() == 0) {
+			return new Hitbox();
+		} else if (hitboxes.size() < (frame + 1)) {
+			return hitboxes.get(hitboxes.size() - 1);
+		} else {
+			return hitboxes.get(frame);
+		}
 	}
 
 	public boolean intersects(HitboxAnimation ha) {
