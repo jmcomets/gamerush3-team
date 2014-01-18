@@ -15,11 +15,15 @@ public class Flag extends GameObject {
 	private static final String[] IMG_FILES = { "res/animations/flag/base.png" };
 	private static final String[] HITBOX_FILES = { "res/hitboxes/flag/base.txt" };
 
-	private String description;
+	protected String description;
+
+	Flag(HitboxAnimation hitboxAnim, String description) {
+		super(hitboxAnim);
+		this.description = description;
+	}
 
 	Flag(String description) {
-		super(HitboxAnimationFactory.create(IMG_FILES, HITBOX_FILES, DURATION));
-		this.description = description;
+		this(HitboxAnimationFactory.create(IMG_FILES, HITBOX_FILES, DURATION), description);
 	}
 
 	@Override

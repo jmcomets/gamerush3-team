@@ -4,17 +4,13 @@ import tropicalescape.HitboxAnimationFactory;
 import tropicalescape.Ship;
 
 
-public abstract class Island extends Enemy {
+public class Island extends Enemy {
 
 	static String [] ISLAND_IMAGES = {"res/animations/island/dummy.png"};
 	static String [] ISLAND_HITBOXES = {"res/hitboxes/island/dummy.txt"};
 
 	public Island() {
 		super(makeHitboxAnimation());
-	}
-	
-	public Island(HitboxAnimation hb){
-		super(hb);
 	}
 
 	private static HitboxAnimation makeHitboxAnimation() {
