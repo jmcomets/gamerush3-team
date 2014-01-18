@@ -1,4 +1,5 @@
 package tropicalescape;
+
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
@@ -11,14 +12,14 @@ import tropicalescape.physics.Collidable;
 import tropicalescape.physics.Hitbox;
 
 public class GameObject implements Collidable {
-	
+
 	private Vector2f position = new Vector2f();
 	private Vector2f speed = new Vector2f();
-	
+
 	private HitboxAnimation hitboxAnimation;
-	
+
 	private static GameObject selectedObject;
-	
+
 	public GameObject(HitboxAnimation hitboxAnimation) {
 		this.hitboxAnimation = hitboxAnimation;
 	}
@@ -33,27 +34,29 @@ public class GameObject implements Collidable {
 		speed2.x *= (float) delta;
 		speed2.y *= (float) delta;
 		position.add(speed2);
-		hitboxAnimation.getHitbox().setOrigin(position);
-		this.update(gc, delta);
+		System.out.println("position = " + position);
+		update(gc, delta);
 	}
-	
+
 	public boolean isMouseOver(GameContainer gc) {
 		Input input = gc.getInput();
 		int mouseX = input.getMouseX();
 		int mouseY = input.getMouseY();
 		Image img = hitboxAnimation.getCurrentFrame();
 		Vector2f pos = getPosition();
-		Rectangle rect = new Rectangle(pos.x, pos.y, img.getWidth(), img.getHeight());
-		
+		Rectangle rect = new Rectangle(pos.x, pos.y, img.getWidth(),
+				img.getHeight());
 		return rect.contains(mouseX, mouseY);
 	}
-	
+
 	public boolean isLeftClicked(GameContainer gc) {
-		return isMouseOver(gc) && gc.getInput().isMouseButtonDown(Input.MOUSE_LEFT_BUTTON);
+		return isMouseOver(gc)
+				&& gc.getInput().isMouseButtonDown(Input.MOUSE_LEFT_BUTTON);
 	}
-	
+
 	public boolean isRightClicked(GameContainer gc) {
-		return isMouseOver(gc) && gc.getInput().isMouseButtonDown(Input.MOUSE_RIGHT_BUTTON);
+		return isMouseOver(gc)
+				&& gc.getInput().isMouseButtonDown(Input.MOUSE_RIGHT_BUTTON);
 	}
 
 	/**
@@ -69,24 +72,27 @@ public class GameObject implements Collidable {
 		g.popTransform();
 	}
 
-	public boolean intersects(Shape shape) {
-		return hitboxAnimation.intersects(shape);
-	}
-
-	public boolean intersects(HitboxAnimation hitboxAnimation) {
-		return this.hitboxAnimation.intersects(hitboxAnimation);
+	private Hitbox getTranslatedHitbox() {
+		Hitbox hitbox = (Hitbox) getHitboxAnimation().getHitbox();
+		Hitbox translatedHitbox = new Hitbox();
+		for (Rectangle rect : hitbox.getRectangles()) {
+			Rectangle copiedRect = new Rectangle(rect.getX() + position.x,
+					rect.getY() + position.y, rect.getWidth(), rect.getHeight());
+			translatedHitbox.addRectangle(copiedRect);
+		}
+		return translatedHitbox;
 	}
 
 	public boolean intersects(GameObject o) {
-		return intersects(o.getHitboxAnimation());
+		return getTranslatedHitbox().intersects(o.getTranslatedHitbox());
 	}
-	
+
 	@Override
 	public boolean intersects(Collidable collidable) {
 		if (collidable instanceof GameObject) {
 			intersects((GameObject) collidable);
 		}
-		return hitboxAnimation.intersects(collidable);
+		return false;
 	}
 
 	public HitboxAnimation getHitboxAnimation() {
@@ -105,7 +111,7 @@ public class GameObject implements Collidable {
 		return position;
 	}
 
-	public void setPosition(Vector2f position) {	
+	public void setPosition(Vector2f position) {
 		this.position = position;
 	}
 
@@ -132,7 +138,7 @@ public class GameObject implements Collidable {
 	 */
 	public void render(Graphics g) {
 	}
-	
+
 	/**
 	 * Event called when this object is updated (after the baseUpdate)
 	 * 

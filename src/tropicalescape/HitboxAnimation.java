@@ -10,7 +10,7 @@ import org.newdawn.slick.geom.Shape;
 import tropicalescape.physics.Collidable;
 import tropicalescape.physics.Hitbox;
 
-public class HitboxAnimation extends Animation implements Collidable {
+public class HitboxAnimation extends Animation {
 
 	private List<Hitbox> hitboxes = new ArrayList<Hitbox>();
 
@@ -23,27 +23,6 @@ public class HitboxAnimation extends Animation implements Collidable {
 		} else {
 			return hitboxes.get(frame);
 		}
-	}
-
-	@Override
-	public boolean intersects(Shape shape) {
-		return getHitbox().intersects(shape);
-	}
-
-	public boolean intersects(Hitbox hb) {
-		return getHitbox().intersects(hb);
-	}
-
-	public boolean intersects(HitboxAnimation ha) {
-		return intersects(ha.getHitbox());
-	}
-
-	@Override
-	public boolean intersects(Collidable collidable) {
-		if (collidable instanceof HitboxAnimation) {
-			intersects((HitboxAnimation) collidable);
-		}
-		return getHitbox().intersects(collidable);
 	}
 
 	public void addHitbox(Hitbox hitbox) {

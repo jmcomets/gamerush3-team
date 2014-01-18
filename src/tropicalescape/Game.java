@@ -33,6 +33,7 @@ public class Game extends BasicGame {
 	private List<Ship> ships = new ArrayList<Ship>();
 
 	private boolean shouldQuit = false;
+	private List<GameObject> gameObjects  = new ArrayList<GameObject>();
 
 	static int nextFlagNum = 1;
 
@@ -65,19 +66,9 @@ public class Game extends BasicGame {
 		g.setColor(BG_COLOR);
 		g.fillRect(0, 0, container.getWidth(), container.getHeight());
 
-		// Start and end flag
-		startFlag.baseRender(g);
-		finishFlag.baseRender(g);
-
 		// Draw all game objects
-		for (Enemy enemy : enemies) {
-			enemy.baseRender(g);
-		}
-		for (Flag flag : userFlags) {
-			flag.baseRender(g);
-		}
-		for (Ship ship : ships) {
-			ship.baseRender(g);
+		for (GameObject obj : gameObjects) {
+			obj.baseRender(g);
 		}
 	}
 
@@ -131,6 +122,7 @@ public class Game extends BasicGame {
 					obj.setPosition(new Vector2f(Float
 							.parseFloat(tokens[tokens.length - 2]), Float
 							.parseFloat(tokens[tokens.length - 1])));
+					gameObjects.add(obj);
 				}
 			}
 
@@ -156,23 +148,15 @@ public class Game extends BasicGame {
 	public void update(GameContainer gc, int delta) throws SlickException {
 		handleInput(gc);
 		List<Ship> deadShips = new ArrayList<Ship>();
-		for (Flag flag : userFlags) {
-			flag.baseUpdate(gc, delta);
+		for (GameObject obj : gameObjects) {
+			obj.baseUpdate(gc, delta);
 		}
+		
 		for (Ship ship : ships) {
-			ship.baseUpdate(gc, delta);
-			for (Enemy enemy : enemies) {
-				if (enemy.intersects(ship.getHitboxAnimation())) {
-					System.out.print("Intersect");
-					enemy.onHitShip(ship);
-					if (!ship.isAlive()) {
-						deadShips.add(ship);
-						break;
-					}
-				}
-			}
-
+			
+			resolveShipCollision(ship);
 			if (!ship.isAlive()) {
+				deadShips.add(ship);
 				continue;
 			}
 
@@ -184,15 +168,16 @@ public class Game extends BasicGame {
 			}
 		}
 		ships.removeAll(deadShips);
+		gameObjects.removeAll(deadShips);
 
 		List<Enemy> deadEnemies = new ArrayList<Enemy>();
 		for (Enemy enemy : enemies) {
-			enemy.baseUpdate(gc, delta);
 			if (!enemy.isAlive()) {
 				deadEnemies.add(enemy);
 			}
 		}
 		enemies.removeAll(deadEnemies);
+		gameObjects.removeAll(deadEnemies);
 
 		// Gestion des inputs, a mettre toujours APRES les MAJ des objets
 		Input input = gc.getInput();
@@ -237,6 +222,18 @@ public class Game extends BasicGame {
 				ship.setNextFlag(finishFlag);
 			} else {
 				ship.setNextFlag(userFlags.get(i + 1));
+			}
+		}
+	}
+
+	private void resolveShipCollision(Ship ship) {
+		for (Enemy enemy : enemies) {
+			System.out.println("resolving collision with enemy " + enemy);
+			if (enemy.intersects(ship)) {
+				enemy.onHitShip(ship);
+				if (!ship.isAlive()) {
+					break;
+				}
 			}
 		}
 	}

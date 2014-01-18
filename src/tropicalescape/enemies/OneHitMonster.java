@@ -53,7 +53,7 @@ public class OneHitMonster extends Enemy {
 			endAnimation = HitboxAnimationFactory.create(END_KRAKEN_IMAGE_FILES,
 					emptyArray, KRAKEN_DURATION);
 		} else {
-			HitboxAnimationFactory.create(END_GIANT_LOBSTER_IMAGE_FILES,
+			endAnimation = HitboxAnimationFactory.create(END_GIANT_LOBSTER_IMAGE_FILES,
 					emptyArray, GIANT_LOBSTER_DURATION);
 		}
 	}
@@ -68,10 +68,10 @@ public class OneHitMonster extends Enemy {
 			ship.loseHealth(GIANT_LOBSTER_DAMAGE);
 		}
 		hitDone = true;
-		
+
 		// Start end animation
-//		setHitboxAnimation(endAnimation);
-//		getHitboxAnimation().setLooping(false);
+		setHitboxAnimation(endAnimation);
+		getHitboxAnimation().setLooping(false);
 	}
 
 	@Override
