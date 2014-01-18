@@ -26,7 +26,7 @@ import tropicalescape.enemies.SleepingIsland;
 
 public class Game extends BasicGame {
 
-	private static final Color BG_COLOR = new Color(18, 54, 103);
+	private static final Color BG_COLOR = new Color(45, 85, 117);
 	private List<Enemy> enemies = new ArrayList<Enemy>();
 	private StartFlag startFlag;
 	private FinishFlag finishFlag;
