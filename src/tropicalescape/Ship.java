@@ -144,27 +144,27 @@ public class Ship extends GameObject {
 		computePath();
 
 		double angle = getSpeed().getTheta();
-		System.out.println(angle);
-		
-		if (337.5 <= angle || angle < 22.5) {
-			dir = Direction.E;
-		} else if (22.5 <= angle && angle < 67.5) {
-			dir = Direction.SE;
-		} else if (67.5 <= angle && angle < 112.5) {
-			dir = Direction.S;
-		} else if (112.5 <= angle && angle < 157.5) {
-			dir = Direction.SW;
-		} else if (157.5 <= angle && angle < 202.5) {
-			dir = Direction.W;
-		} else if (202.5 <= angle && angle < 247.5) {
-			dir = Direction.NW;
-		} else if (247.5 <= angle && angle < 292.5) {
-			dir = Direction.N;
-		} else if (292.5 <= angle && angle < 337.5) {
-			dir = Direction.NE;
+		if (getSpeed().x == 0 && getSpeed().y==0){
+			//on ne change pas l'orientation si on n'a pas de vitesse
+		}else {
+			if (337.5 <= angle || angle < 22.5) {
+				dir = Direction.E;
+			} else if (22.5 <= angle && angle < 67.5) {
+				dir = Direction.SE;
+			} else if (67.5 <= angle && angle < 112.5) {
+				dir = Direction.S;
+			} else if (112.5 <= angle && angle < 157.5) {
+				dir = Direction.SW;
+			} else if (157.5 <= angle && angle < 202.5) {
+				dir = Direction.W;
+			} else if (202.5 <= angle && angle < 247.5) {
+				dir = Direction.NW;
+			} else if (247.5 <= angle && angle < 292.5) {
+				dir = Direction.N;
+			} else if (292.5 <= angle && angle < 337.5) {
+				dir = Direction.NE;
+			}
 		}
-		
-		System.out.println(dir);
 	}
 	
 	public void kill(){
