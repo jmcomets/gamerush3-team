@@ -31,13 +31,13 @@ public class Game extends BasicGame {
 	private StartFlag startFlag;
 	private FinishFlag finishFlag;
 	private List<Flag> userFlags = new ArrayList<Flag>();
-	
+
 	private List<Ship> ships = new ArrayList<Ship>();
 	private Stack<Ship> shipStack = new Stack<Ship>();
-	private static int SHIP_POP_DELAY = 1500;
+	private int shipPopDelay = 1000;
 	private int shipPopTimer = 0;
+	private Vector2f shipPopPosition = new Vector2f();
 
-	
 	private boolean shouldQuit = false;
 	private List<GameObject> gameObjects = new ArrayList<GameObject>();
 
@@ -91,13 +91,16 @@ public class Game extends BasicGame {
 				}
 
 				GameObject obj = null;
-				if (tokens[0].equals("SHIP")) {
-					for (int i = 0; i < Integer.parseInt(tokens[3]); i++) {
+				if (tokens[0].equals("SHIPS")) {
+					shipPopPosition.x = Integer.parseInt(tokens[1]);
+					shipPopPosition.y = Integer.parseInt(tokens[2]);
+					int n = Integer.parseInt(tokens[3]);
+					if (tokens.length >= 5) {
+						shipPopDelay = Integer.parseInt(tokens[4]);
+					}
+					for (int i = 0; i < n; i++) {
 						Ship ship = new Ship();
 						shipStack.add(ship);
-						ship.setPosition(new Vector2f(Float
-								.parseFloat(tokens[1]), Float
-								.parseFloat(tokens[2])));
 					}
 				} else if (tokens[0].equals("ISLAND")) {
 					Island island = new Island();
@@ -153,27 +156,28 @@ public class Game extends BasicGame {
 			}
 		}
 	}
-	
+
 	@Override
 	public void update(GameContainer gc, int delta) throws SlickException {
 		handleInput(gc);
-		List<Ship> deadShips = new ArrayList<Ship>();
-		for (GameObject obj : gameObjects) {
-			obj.baseUpdate(gc, delta);
-		}
-		
+
 		if (shipStack.size() > 0) {
-			System.out.println("ship pop handle");
 			shipPopTimer -= delta;
 			if (shipPopTimer <= 0) {
-				System.out.println("ship pop !");
 				Ship ship = shipStack.pop();
+				ship.getPosition().x = shipPopPosition.x;
+				ship.getPosition().y = shipPopPosition.y;
 				ships.add(ship);
 				gameObjects.add(ship);
-				shipPopTimer = SHIP_POP_DELAY;
+				shipPopTimer = shipPopDelay;
 			}
 		}
 
+		for (GameObject obj : gameObjects) {
+			obj.baseUpdate(gc, delta);
+		}
+
+		List<Ship> deadShips = new ArrayList<Ship>();
 		for (Ship ship : ships) {
 			resolveShipCollision(ship);
 			if (!ship.isAlive()) {
@@ -188,7 +192,7 @@ public class Game extends BasicGame {
 				}
 			}
 		}
-		
+
 		ships.removeAll(deadShips);
 		gameObjects.removeAll(deadShips);
 

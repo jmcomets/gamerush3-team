@@ -73,7 +73,8 @@ public class Ship extends GameObject {
 	}
 
 	Ship() {
-		super(new HitboxAnimation()); // TODO
+		super(new HitboxAnimation());
+		
 		hp = MAX_HP;
 		dir = Direction.E;
 
@@ -95,7 +96,7 @@ public class Ship extends GameObject {
 		animationMap.put(Direction.W, HitboxAnimationFactory.create(
 				W_IMG_FILES, W_HB_FILES, FRAME_DURATION));
 
-		this.setHitboxAnimation(animationMap.get(this.dir));
+		setHitboxAnimation(animationMap.get(this.dir));
 	}
 
 	private void computePath() {

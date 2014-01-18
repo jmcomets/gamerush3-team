@@ -19,7 +19,6 @@ public class Island extends Enemy {
 
 	@Override
 	public void onHitShip(Ship ship) {
-		System.out.println("ship hit, my pos was " + getPosition());
 		ship.kill();
 	}
 }
