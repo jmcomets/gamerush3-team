@@ -25,9 +25,9 @@ public class SimpleSlickGame extends BasicGame
 		Flag f1 = new Flag("Flag1", 50, 0);
 		Flag f2 = new Flag("flag2", 100, 100);
 		Flag f3 = new Flag("pepito", 150, 150);
-		f1.render(gc, g);
-		f2.render(gc, g);
-		f3.render(gc, g);
+		f1.render(g);
+		f2.render(g);
+		f3.render(g);
 		g.drawString("Howdy!", 10, 10);
 	}
 
