@@ -42,7 +42,15 @@ public abstract class GameObject implements Collidable {
 		return hitboxAnimation.intersects(collidable);
 	}
 
-	public Hitbox getRectangles() {
+	public HitboxAnimation getHitboxAnimation() {
+		return hitboxAnimation;
+	}
+
+	public void setHitboxAnimation(HitboxAnimation hitboxAnimation) {
+		this.hitboxAnimation = hitboxAnimation;
+	}
+
+	public Hitbox getHitbox() {
 		return hitboxAnimation.getHitbox();
 	}
 
