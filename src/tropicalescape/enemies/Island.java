@@ -12,6 +12,10 @@ public abstract class Island extends Enemy {
 	public Island() {
 		super(makeHitboxAnimation());
 	}
+	
+	public Island(HitboxAnimation hb){
+		super(hb);
+	}
 
 	private static HitboxAnimation makeHitboxAnimation() {
 		return HitboxAnimationFactory.create(ISLAND_IMAGES, ISLAND_HITBOXES, 1);

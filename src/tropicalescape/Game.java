@@ -14,18 +14,31 @@ import org.newdawn.slick.BasicGame;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
+import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
+import org.newdawn.slick.geom.Vector2f;
 
 import tropicalescape.enemies.Enemy;
+import tropicalescape.enemies.SleepingIsland;
 
 public class Game extends BasicGame {
 
+	private static final Color BG_COLOR = new Color(18, 54, 103);
 	private List<Enemy> enemies = new ArrayList<Enemy>();
 	private List<Flag> flags = new ArrayList<Flag>();
 	private List<Ship> ships = new ArrayList<Ship>();
 
+	private boolean shouldQuit = false;
+
 	public Game(String title) {
 		super(title);
+	}
+
+	@Override
+	public void keyPressed(int key, char c) {
+		if (key == Input.KEY_ESCAPE) {
+			this.shouldQuit = true;
+		}
 	}
 
 	@Override
@@ -42,10 +55,11 @@ public class Game extends BasicGame {
 	@Override
 	public void render(GameContainer container, Graphics g)
 			throws SlickException {
-		g.pushTransform();
-		g.setColor(new Color(18, 54, 103));
+		// background color
+		g.setColor(BG_COLOR);
 		g.fillRect(0, 0, container.getWidth(), container.getHeight());
-		g.popTransform();
+
+		// Draw all game objects
 		for (Enemy enemy : enemies) {
 			enemy.baseRender(g);
 		}
@@ -65,26 +79,32 @@ public class Game extends BasicGame {
 			String text = null;
 			while ((text = reader.readLine()) != null) {
 				String[] tokens = text.split(" ");
-				if (tokens[0].equals("ISLAND")) {
-					if (tokens.length == 3) {
-						// TODO
-					}
-				} else if (tokens[0].equals("SHIP")) {
-					if (tokens.length == 3) {
-						Ship ship = new Ship(Float.parseFloat(tokens[1]),
-								Float.parseFloat(tokens[2]));
-						ships.add(ship);
-					}
-				} else if (tokens[0].equals("FLAG")) {
-					if (tokens.length == 4) {
-						Flag flag = new Flag(tokens[1],
-								Float.parseFloat(tokens[2]),
-								Float.parseFloat(tokens[3]));
-						flags.add(flag);
-					}
+				if (tokens.length < 3) {
+					System.err.println("Need at least 3 tokens");
 				}
+
+				GameObject obj = null;
+				if (tokens[0].equals("ISLAND")) {
+					// TODO
+				} else if (tokens[0].equals("SLEEPING-ISLAND")) {
+					SleepingIsland sleepingIsland = new SleepingIsland();
+					enemies.add(sleepingIsland);
+					obj = sleepingIsland;
+				} else if (tokens[0].equals("SHIP")) {
+					Ship ship = new Ship();
+					ships.add(ship);
+					obj = ship;
+				} else if (tokens[0].equals("FLAG")) {
+					Flag flag = new Flag(tokens[1]);
+					flags.add(flag);
+					obj = flag;
+				}
+				obj.setPosition(new Vector2f(Float
+						.parseFloat(tokens[tokens.length - 2]), Float
+						.parseFloat(tokens[tokens.length - 1])));
 			}
-			if (flags.size() != 0) {
+
+			if (flags.size() > 0) {
 				for (Ship s : ships) {
 					s.setNextFlag(flags.get(0));
 				}
@@ -100,11 +120,13 @@ public class Game extends BasicGame {
 
 	@Override
 	public void update(GameContainer gc, int delta) throws SlickException {
+		handleInput(gc);
 		List<Ship> deadShips = new ArrayList<Ship>();
 		for (Ship ship : ships) {
 			ship.baseUpdate(delta);
 			for (Enemy enemy : enemies) {
-				if (enemy.intersects(ship)) {
+				if (enemy.intersects(ship.getHitboxAnimation())) {
+					System.out.print("Intersect");
 					enemy.onHitShip(ship);
 					if (!ship.isAlive()) {
 						deadShips.add(ship);
@@ -145,13 +167,20 @@ public class Game extends BasicGame {
 		enemies.removeAll(deadEnemies);
 	}
 
+	private void handleInput(GameContainer gc) {
+		if (shouldQuit) {
+			gc.exit();
+		}
+	}
+
 	public static void main(String[] args) {
 		try {
 			AppGameContainer appgc;
 			Game game = new Game("Tropical Escape !");
 			appgc = new AppGameContainer(game);
 			appgc.setDisplayMode(640, 480, false);
-
+			// appgc.setFullscreen(true);
+			appgc.setShowFPS(false);
 			appgc.start();
 		} catch (SlickException ex) {
 			Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);

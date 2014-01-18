@@ -48,4 +48,8 @@ public class OneHitMonster extends Enemy {
 		ship.loseHealth(damage);
 	}
 
+	@Override
+	public void update(int delta) {
+	}
+	
 }
