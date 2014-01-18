@@ -40,6 +40,7 @@ public class Game extends BasicGame {
 
 	private boolean shouldQuit = false;
 	private List<GameObject> gameObjects = new ArrayList<GameObject>();
+	private int minToWin;
 
 	static int nextFlagNum = 1;
 
@@ -85,22 +86,23 @@ public class Game extends BasicGame {
 			reader = new BufferedReader(new FileReader(file));
 			String text = null;
 			while ((text = reader.readLine()) != null) {
-				String[] tokens = text.split(" ");
-				if (tokens.length < 3) {
+				String[] tokens = text.split("\\s+");
+				if (tokens.length < 1) {
 					System.err.println("Need at least 3 tokens");
 				}
 
 				GameObject obj = null;
-				if (tokens[0].equals("SHIPS")) {
+				if (tokens[0].equals("MIN-WIN")) {
+					minToWin = Integer.parseInt(tokens[1]);
+				} else if (tokens[0].equals("SHIPS")) {
 					shipPopPosition.x = Integer.parseInt(tokens[1]);
 					shipPopPosition.y = Integer.parseInt(tokens[2]);
-					int n = Integer.parseInt(tokens[3]);
-					if (tokens.length >= 5) {
-						shipPopDelay = Integer.parseInt(tokens[4]);
-					}
-					for (int i = 0; i < n; i++) {
+					for (int i = 0; i < Integer.parseInt(tokens[3]); i++) {
 						Ship ship = new Ship();
 						shipStack.add(ship);
+					}
+					if (tokens.length >= 5) {
+						shipPopDelay = Integer.parseInt(tokens[4]);
 					}
 				} else if (tokens[0].equals("ISLAND")) {
 					Island island = new Island();
@@ -193,9 +195,12 @@ public class Game extends BasicGame {
 			}
 		}
 
+		// Handle ship death toll
 		ships.removeAll(deadShips);
 		gameObjects.removeAll(deadShips);
+		checkForLose();
 
+		// Handle enemy death toll
 		List<Enemy> deadEnemies = new ArrayList<Enemy>();
 		for (Enemy enemy : enemies) {
 			if (!enemy.isAlive()) {
@@ -214,6 +219,7 @@ public class Game extends BasicGame {
 				int mouseY = input.getMouseY();
 				flag.setPosition(new Vector2f(mouseX, mouseY));
 				userFlags.add(flag);
+				gameObjects.add(flag);
 				for (Ship ship : ships) {
 					Flag shipNextFlag = ship.getNextFlag();
 					if (shipNextFlag == finishFlag) {
@@ -233,6 +239,7 @@ public class Game extends BasicGame {
 					}
 				}
 				userFlags.remove(selectedObject);
+				gameObjects.remove(selectedObject);
 			}
 			GameObject.setSelectedObject(null);
 		}
@@ -240,7 +247,7 @@ public class Game extends BasicGame {
 
 	private void updateShipFlag(Ship ship, Flag flag) {
 		if (ship.getNextFlag() == finishFlag) {
-			System.out.println("C'est gagné c'est gagné !");
+			checkForWin();
 		} else {
 			int i = userFlags.indexOf(flag);
 			// Dernier user flag atteint
@@ -249,6 +256,18 @@ public class Game extends BasicGame {
 			} else {
 				ship.setNextFlag(userFlags.get(i + 1));
 			}
+		}
+	}
+
+	private void checkForWin() {
+		if (ships.size() >= minToWin) {
+			System.out.println("C'est gagné !");
+		}
+	}
+
+	private void checkForLose() {
+		if (ships.size() + shipStack.size() < minToWin) {
+			System.out.println("C'est perdu !");
 		}
 	}
 
