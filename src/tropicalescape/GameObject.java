@@ -1,5 +1,9 @@
 package tropicalescape;
+import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
+import org.newdawn.slick.Image;
+import org.newdawn.slick.Input;
+import org.newdawn.slick.geom.Rectangle;
 import org.newdawn.slick.geom.Shape;
 import org.newdawn.slick.geom.Vector2f;
 
@@ -22,13 +26,32 @@ public class GameObject implements Collidable {
 	 * 
 	 * @param delta
 	 */
-	public void baseUpdate(int delta) {
+	public void baseUpdate(GameContainer gc, int delta) {
 		Vector2f speed2 = new Vector2f(speed);
 		speed2.x *= (float) delta;
 		speed2.y *= (float) delta;
 		position.add(speed2);
 		hitboxAnimation.getHitbox().setOrigin(position);
 		this.update(delta);
+	}
+	
+	public boolean isMouseOver(GameContainer gc) {
+		Input input = gc.getInput();
+		int mouseX = input.getMouseX();
+		int mouseY = input.getMouseY();
+		Image img = hitboxAnimation.getCurrentFrame();
+		Vector2f pos = getPosition();
+		Rectangle rect = new Rectangle(pos.x, pos.y, img.getWidth(), img.getHeight());
+		
+		return rect.contains(mouseX, mouseY);
+	}
+	
+	public boolean isLeftClicked(GameContainer gc) {
+		return isMouseOver(gc) && gc.getInput().isMouseButtonDown(Input.MOUSE_LEFT_BUTTON);
+	}
+	
+	public boolean isRightClicked(GameContainer gc) {
+		return isMouseOver(gc) && gc.getInput().isMouseButtonDown(Input.MOUSE_RIGHT_BUTTON);
 	}
 
 	/**
