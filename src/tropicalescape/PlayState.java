@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
@@ -24,6 +25,8 @@ import tropicalescape.enemies.SleepingIsland;
 
 public class PlayState extends BasicGameState {
 
+	private static PlayState instance;
+
 	private static final Color BG_COLOR = new Color(45, 85, 117);
 	public static final int ID = 2;
 	private StartFlag startFlag;
@@ -37,17 +40,29 @@ public class PlayState extends BasicGameState {
 	private int shipPopTimer = 0;
 	private Vector2f shipPopPosition = new Vector2f();
 
-	private boolean shouldQuit;
-	private List<GameObject> gameObjects = new ArrayList<GameObject>();
-	
+	private boolean shouldQuit = false;
+	private List<GameObject> gameObjects = new CopyOnWriteArrayList<GameObject>(
+			new ArrayList<GameObject>());
 	private int minToWin;
 	private int nArrivedShips;
 	private boolean won;
 
 	static int nextFlagNum = 1;
 
-	public PlayState() {
+	public int width;
 
+	public int height;
+
+	private PlayState(int width, int height) {
+		this.width = width;
+		this.height = height;
+	}
+
+	public static PlayState getInstance(int width, int height) {
+		if (instance == null) {
+			instance = new PlayState(width, height);
+		}
+		return instance;
 	}
 	
 	@Override
@@ -118,6 +133,11 @@ public class PlayState extends BasicGameState {
 					Island island = new Island();
 					enemies.add(island);
 					obj = island;
+				} else if (tokens[0].equals("COCONUT-THROWER")) {
+					OneHitMonster ohm = new OneHitMonster(
+							OneHitMonster.Type.COCONUT_THROWER);
+					enemies.add(ohm);
+					obj = ohm;
 				} else if (tokens[0].equals("SLEEPING-ISLAND")) {
 					SleepingIsland sleepingIsland = new SleepingIsland();
 					enemies.add(sleepingIsland);
@@ -165,6 +185,11 @@ public class PlayState extends BasicGameState {
 		}
 	}
 
+	public void addEnnemy(Enemy enemy) {
+		gameObjects.add(enemy);
+		enemies.add(enemy);
+	}
+
 	private void addShip(Ship ship) {
 		ship.getPosition().x = shipPopPosition.x;
 		ship.getPosition().y = shipPopPosition.y;
@@ -173,8 +198,18 @@ public class PlayState extends BasicGameState {
 		gameObjects.add(ship);
 		shipPopTimer = shipPopDelay;
 	}
-	
-	
+
+	public void init(GameContainer container) throws SlickException {
+		String lvlName = "res/levels/test.lvl";
+		try {
+			loadLevel(lvlName);
+		} catch (IOException e) {
+			new SlickException("Problème au chargement du niveau " + lvlName
+					+ " : " + e.getMessage());
+		}
+	}
+
+>>>>>>> 5f371dd04ad9b3ab24de4cdc973062fa1c801902
 	private void handleInput(GameContainer gc) {
 		if (shouldQuit) {
 			gc.exit();
@@ -269,7 +304,6 @@ public class PlayState extends BasicGameState {
 				int mouseY = input.getMouseY();
 				flag.setPosition(new Vector2f(mouseX, mouseY));
 				userFlags.add(flag);
-				gameObjects.add(flag);
 				for (Ship ship : ships) {
 					Flag shipNextFlag = ship.getNextFlag();
 					if (shipNextFlag == finishFlag) {
@@ -289,7 +323,6 @@ public class PlayState extends BasicGameState {
 					}
 				}
 				userFlags.remove(selectedObject);
-				gameObjects.remove(selectedObject);
 			}
 			GameObject.setSelectedObject(null);
 		}
@@ -340,5 +373,9 @@ public class PlayState extends BasicGameState {
 	@Override
 	public int getID() {
 		return ID;
+	}
+
+	public List<Ship> getShips() {
+		return ships;
 	}
 }
