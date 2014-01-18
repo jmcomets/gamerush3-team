@@ -287,7 +287,7 @@ public class PlayState extends BasicGameState {
 		Input input = container.getInput();
 		if (input.isMousePressed(Input.MOUSE_LEFT_BUTTON)) {
 			if (GameObject.getSelectedObject() == null) {
-				Flag flag = new Flag("" + nextFlagNum++);
+				Flag flag = new Flag("" + (userFlags.size() + 1));
 				int mouseX = input.getMouseX();
 				int mouseY = input.getMouseY();
 				flag.setPosition(new Vector2f(mouseX, mouseY));
@@ -313,6 +313,11 @@ public class PlayState extends BasicGameState {
 				}
 				userFlags.remove(selectedObject);
 				gameObjects.remove(selectedObject);
+				
+				// Refaire la numérotation
+				for (int i = 0; i < userFlags.size(); i++) {
+					userFlags.get(i).setDescription("" + (i + 1));
+				}
 			}
 			GameObject.setSelectedObject(null);
 		}

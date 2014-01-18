@@ -27,6 +27,14 @@ public class Flag extends GameObject {
 				description);
 	}
 
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
 	@Override
 	public void render(Graphics g) {
 		Vector2f pos = getPosition();
