@@ -15,10 +15,6 @@ public class Game extends BasicGame {
 
 	ArrayList<Ship> ships;
 	ArrayList<Flag> flags;
-
-	public Game(String title) {
-		super(title);
-	}
 	private List<GameObject> gameObjects = new ArrayList<GameObject>();
 	
 	public Game(String title) {
