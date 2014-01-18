@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Stack;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -66,19 +67,19 @@ public class PlayState extends BasicGameState {
 		}
 		return instance;
 	}
-	
+
 	@Override
 	public void enter(GameContainer container, StateBasedGame game)
 			throws SlickException {
 		super.enter(container, game);
-		
+
 		this.won = false;
 		this.loosed = false;
-		
+
 		this.nArrivedShips = 0;
 		this.shouldQuit = false;
 		emptyEntities();
-		
+
 		String lvlName = "res/levels/test.lvl";
 		try {
 			loadLevel(lvlName);
@@ -87,7 +88,7 @@ public class PlayState extends BasicGameState {
 					+ " : " + e.getMessage());
 		}
 	}
-	
+
 	private void emptyEntities() {
 		this.shipStack = new Stack<Ship>();
 		this.userFlags = new ArrayList<Flag>();
@@ -96,7 +97,7 @@ public class PlayState extends BasicGameState {
 		this.shipStack = new Stack<Ship>();
 		this.gameObjects = new ArrayList<GameObject>();
 	}
-	
+
 	public void init(GameContainer container) throws SlickException {
 	}
 
@@ -188,7 +189,7 @@ public class PlayState extends BasicGameState {
 		}
 	}
 
-	public void addEnnemy(Enemy enemy) {
+	public void addEnemy(Enemy enemy) {
 		gameObjects.add(enemy);
 		enemies.add(enemy);
 	}
@@ -238,14 +239,14 @@ public class PlayState extends BasicGameState {
 	@Override
 	public void update(GameContainer container, StateBasedGame game, int delta)
 			throws SlickException {
-		
+
 		if (won) {
 			game.enterState(WinState.ID);
 		}
-		if (loosed){
+		if (loosed) {
 			game.enterState(LoosedState.ID);
 		}
-		
+
 		handleInput(container);
 		if (shipStack.size() > 0) {
 			shipPopTimer -= delta;
@@ -254,7 +255,9 @@ public class PlayState extends BasicGameState {
 			}
 		}
 
-		for (GameObject obj : gameObjects) {
+		Iterator<GameObject> it = gameObjects.iterator();
+		while (it.hasNext()) {
+			GameObject obj = (GameObject) it.next();
 			obj.baseUpdate(container, delta);
 		}
 
@@ -312,7 +315,7 @@ public class PlayState extends BasicGameState {
 				}
 				userFlags.remove(selectedObject);
 				gameObjects.remove(selectedObject);
-				
+
 				// Refaire la numérotation
 				for (int i = 0; i < userFlags.size(); i++) {
 					userFlags.get(i).setDescription("" + (i + 1));
@@ -339,7 +342,7 @@ public class PlayState extends BasicGameState {
 
 	private void recomputeShipPath(Ship ship, Flag previousFlag) {
 		int i = userFlags.indexOf(previousFlag);
-		
+
 		// Dernier user flag atteint
 		if (i == userFlags.size() - 1) {
 			ship.setNextFlag(finishFlag);

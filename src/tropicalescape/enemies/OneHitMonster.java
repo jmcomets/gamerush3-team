@@ -54,8 +54,8 @@ public class OneHitMonster extends Enemy {
 	private Type type;
 	private HitboxAnimation endAnimation;
 
-	private int krakenNextAttack;
-	private static final int KRAKEN_ATTACK_COOLDOWN = 1000;
+	private int coconutThrowerNextAttack;
+	private static final int COCONUT_THROWER_ATTACK_COOLDOWN = 1000;
 
 	private static HitboxAnimation makeHitboxAnimation(Type type) {
 		if (type == Type.KRAKEN) {
@@ -118,7 +118,7 @@ public class OneHitMonster extends Enemy {
 		PlayState gameInstance = PlayState.getInstance(0, 0);
 		if (type == Type.COCONUT_THROWER) {
 			// Un ship a proximité ? On envoie des noix de coco !
-			if (krakenNextAttack <= 0) {
+			if (coconutThrowerNextAttack <= 0) {
 				Circle circle = new Circle(getPosition().x, getPosition().y,
 						COCONUT_THROWER_ATTACK_RADIUS);
 				List<Ship> ships = gameInstance.getShips();
@@ -142,13 +142,13 @@ public class OneHitMonster extends Enemy {
 						Vector2f speed = new Vector2f(vectorX, vectorY);
 
 						coconut.setSpeed(speed);
-						gameInstance.addEnnemy(coconut);
-						krakenNextAttack = KRAKEN_ATTACK_COOLDOWN;
+						gameInstance.addEnemy(coconut);
+						coconutThrowerNextAttack = COCONUT_THROWER_ATTACK_COOLDOWN;
 					}
 					break;
 				}
 			} else {
-				krakenNextAttack -= delta;
+				coconutThrowerNextAttack -= delta;
 			}
 		} else if (type == Type.COCONUT) {
 			if (getPosition().x < 0 || getPosition().x > gameInstance.height
