@@ -17,6 +17,7 @@ import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;
 
 import tropicalescape.enemies.Enemy;
+import tropicalescape.enemies.SleepingIsland;
 
 public class Game extends BasicGame {
 
@@ -68,6 +69,12 @@ public class Game extends BasicGame {
 				if (tokens[0].equals("ISLAND")) {
 					if (tokens.length == 3) {
 						// TODO
+					}
+				} 
+				else if (tokens[0].equals("SLEEPING-ISLAND")) {
+					if (tokens.length == 3) {
+						SleepingIsland sleepingIsland = new SleepingIsland();
+						enemies.add(sleepingIsland);
 					}
 				} else if (tokens[0].equals("SHIP")) {
 					if (tokens.length == 3) {
