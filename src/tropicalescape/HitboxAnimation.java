@@ -11,15 +11,22 @@ import tropicalescape.physics.Collidable;
 import tropicalescape.physics.Hitbox;
 
 public class HitboxAnimation extends Animation implements Collidable {
-	
+
 	private List<Hitbox> hitboxes = new ArrayList<Hitbox>();
 
 	public Hitbox getHitbox() {
 		return hitboxes.get(getFrame());
 	}
 
+	public boolean intersects(HitboxAnimation ha) {
+		return getHitbox().intersects(ha.getHitbox());
+	}
+
 	@Override
 	public boolean intersects(Collidable collidable) {
+		if (collidable instanceof HitboxAnimation) {
+			this.intersects((HitboxAnimation) collidable);
+		}
 		return getHitbox().intersects(collidable);
 	}
 
@@ -27,7 +34,7 @@ public class HitboxAnimation extends Animation implements Collidable {
 	public boolean intersects(Shape shape) {
 		return getHitbox().intersects(shape);
 	}
-	
+
 	public void addHitbox(Hitbox hitbox) {
 		hitboxes.add(hitbox);
 	}

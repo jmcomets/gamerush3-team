@@ -71,6 +71,15 @@ public class GameObject implements Collidable {
 		return hitboxAnimation.intersects(shape);
 	}
 
+	public boolean intersects(HitboxAnimation hitboxAnimation) {
+		return hitboxAnimation.intersects(hitboxAnimation);
+	}
+
+	public boolean intersects(GameObject o) {
+		return hitboxAnimation.intersects(o.getHitboxAnimation());
+	}
+	
+	@Override
 	public boolean intersects(Collidable collidable) {
 		return hitboxAnimation.intersects(collidable);
 	}

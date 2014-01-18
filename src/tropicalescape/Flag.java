@@ -1,6 +1,7 @@
 package tropicalescape;
 
 import org.newdawn.slick.GameContainer;
+import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.Input;
@@ -17,17 +18,16 @@ public class Flag extends GameObject {
 	private String description;
 	private boolean selected;
 
-	Flag(String desc, float x, float y) {
+	Flag(String description) {
 		super(HitboxAnimationFactory.create(IMG_FILES, HITBOX_FILES, DURATION));
-		description = desc;
-		getPosition().x = x;
-		getPosition().y = y;
+		this.description = description;
 	}
 
 	@Override
 	public void render(Graphics g) {
 		Vector2f pos = getPosition();
 		int h = getHitboxAnimation().getHeight();
+		g.setColor(Color.white);
 		if (pos.y - DESC_HEIGHT_SHIFT < 0) {
 			g.drawString(description, 0, h);
 		} else {
