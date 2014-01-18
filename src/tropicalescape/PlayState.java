@@ -6,75 +6,44 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Stack;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
-import org.newdawn.slick.AppGameContainer;
-import org.newdawn.slick.BasicGame;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.geom.Vector2f;
+import org.newdawn.slick.state.BasicGameState;
+import org.newdawn.slick.state.StateBasedGame;
 
 import tropicalescape.enemies.Enemy;
 import tropicalescape.enemies.Island;
 import tropicalescape.enemies.OneHitMonster;
 import tropicalescape.enemies.SleepingIsland;
 
-public class Game extends BasicGame {
+public class PlayState extends BasicGameState {
 
 	private static final Color BG_COLOR = new Color(18, 54, 103);
+	public static final int ID = 2;
 	private List<Enemy> enemies = new ArrayList<Enemy>();
 	private StartFlag startFlag;
 	private FinishFlag finishFlag;
 	private List<Flag> userFlags = new ArrayList<Flag>();
-	
 	private List<Ship> ships = new ArrayList<Ship>();
-	private Stack<Ship> shipStack = new Stack<Ship>();
-	private static int SHIP_POP_DELAY = 1500;
-	private int shipPopTimer = 0;
 
-	
 	private boolean shouldQuit = false;
 	private List<GameObject> gameObjects = new ArrayList<GameObject>();
 
 	static int nextFlagNum = 1;
 
-	public Game(String title) {
-		super(title);
+	public PlayState() {
+
 	}
 
 	@Override
 	public void keyPressed(int key, char c) {
 		if (key == Input.KEY_ESCAPE) {
 			this.shouldQuit = true;
-		}
-	}
-
-	@Override
-	public void init(GameContainer container) throws SlickException {
-		String lvlName = "res/levels/test.lvl";
-		try {
-			loadLevel(lvlName);
-		} catch (IOException e) {
-			new SlickException("Problème au chargement du niveau " + lvlName
-					+ " : " + e.getMessage());
-		}
-	}
-
-	@Override
-	public void render(GameContainer container, Graphics g)
-			throws SlickException {
-		// background color
-		g.setColor(BG_COLOR);
-		g.fillRect(0, 0, container.getWidth(), container.getHeight());
-
-		// Draw all game objects
-		for (GameObject obj : gameObjects) {
-			obj.baseRender(g);
 		}
 	}
 
@@ -91,15 +60,7 @@ public class Game extends BasicGame {
 				}
 
 				GameObject obj = null;
-				if (tokens[0].equals("SHIP")) {
-					for (int i = 0; i < Integer.parseInt(tokens[3]); i++) {
-						Ship ship = new Ship();
-						shipStack.add(ship);
-						ship.setPosition(new Vector2f(Float
-								.parseFloat(tokens[1]), Float
-								.parseFloat(tokens[2])));
-					}
-				} else if (tokens[0].equals("ISLAND")) {
+				if (tokens[0].equals("ISLAND")) {
 					Island island = new Island();
 					enemies.add(island);
 					obj = island;
@@ -107,6 +68,10 @@ public class Game extends BasicGame {
 					SleepingIsland sleepingIsland = new SleepingIsland();
 					enemies.add(sleepingIsland);
 					obj = sleepingIsland;
+				} else if (tokens[0].equals("SHIP")) {
+					Ship ship = new Ship();
+					ships.add(ship);
+					obj = ship;
 				} else if (tokens[0].equals("FLAG")) {
 					Flag flag = new Flag(tokens[1]);
 					userFlags.add(flag);
@@ -143,7 +108,7 @@ public class Game extends BasicGame {
 				finishFlag = new FinishFlag("Finish");
 				finishFlag.setPosition(new Vector2f(600, 440));
 			}
-			for (Ship s : shipStack) {
+			for (Ship s : ships) {
 				s.setNextFlag(startFlag);
 			}
 
@@ -153,28 +118,87 @@ public class Game extends BasicGame {
 			}
 		}
 	}
-	
+
+	public void init(GameContainer container) throws SlickException {
+		String lvlName = "res/levels/test.lvl";
+		try {
+			loadLevel(lvlName);
+		} catch (IOException e) {
+			new SlickException("Problème au chargement du niveau " + lvlName
+					+ " : " + e.getMessage());
+		}
+	}
+
+	private void updateShipFlag(Ship ship, Flag flag) {
+		if (ship.getNextFlag() == finishFlag) {
+			System.out.println("C'est gagné c'est gagné !");
+		} else {
+			int i = userFlags.indexOf(flag);
+			// Dernier user flag atteint
+			if (i == userFlags.size() - 1) {
+				ship.setNextFlag(finishFlag);
+			} else {
+				ship.setNextFlag(userFlags.get(i + 1));
+			}
+		}
+	}
+
+	private void resolveShipCollision(Ship ship) {
+		for (Enemy enemy : enemies) {
+			System.out.println("resolving collision with enemy " + enemy);
+			if (enemy.intersects(ship)) {
+				enemy.onHitShip(ship);
+				if (!ship.isAlive()) {
+					break;
+				}
+			}
+		}
+	}
+
+	private void handleInput(GameContainer gc) {
+		if (shouldQuit) {
+			gc.exit();
+		}
+	}
+
 	@Override
-	public void update(GameContainer gc, int delta) throws SlickException {
-		handleInput(gc);
+	public void init(GameContainer container, StateBasedGame game)
+			throws SlickException {
+		String lvlName = "res/levels/test.lvl";
+		try {
+			loadLevel(lvlName);
+		} catch (IOException e) {
+			new SlickException("Problème au chargement du niveau " + lvlName
+					+ " : " + e.getMessage());
+		}
+
+	}
+
+	@Override
+	public void render(GameContainer container, StateBasedGame game, Graphics g)
+			throws SlickException {
+		// background color
+		g.setColor(BG_COLOR);
+		g.fillRect(0, 0, container.getWidth(), container.getHeight());
+
+		// Draw all game objects
+		for (GameObject obj : gameObjects) {
+			obj.baseRender(g);
+		}
+
+	}
+
+	@Override
+	public void update(GameContainer container, StateBasedGame game, int delta)
+			throws SlickException {
+		handleInput(container);
 		List<Ship> deadShips = new ArrayList<Ship>();
 		for (GameObject obj : gameObjects) {
-			obj.baseUpdate(gc, delta);
-		}
-		
-		if (shipStack.size() > 0) {
-			System.out.println("ship pop handle");
-			shipPopTimer -= delta;
-			if (shipPopTimer <= 0) {
-				System.out.println("ship pop !");
-				Ship ship = shipStack.pop();
-				ships.add(ship);
-				gameObjects.add(ship);
-				shipPopTimer = SHIP_POP_DELAY;
-			}
+			obj.baseUpdate(container, delta);
 		}
 
 		for (Ship ship : ships) {
+
 			resolveShipCollision(ship);
 			if (!ship.isAlive()) {
 				deadShips.add(ship);
@@ -188,7 +212,6 @@ public class Game extends BasicGame {
 				}
 			}
 		}
-		
 		ships.removeAll(deadShips);
 		gameObjects.removeAll(deadShips);
 
@@ -202,7 +225,7 @@ public class Game extends BasicGame {
 		gameObjects.removeAll(deadEnemies);
 
 		// Gestion des inputs, a mettre toujours APRES les MAJ des objets
-		Input input = gc.getInput();
+		Input input = container.getInput();
 		if (input.isMousePressed(Input.MOUSE_LEFT_BUTTON)) {
 			if (GameObject.getSelectedObject() == null) {
 				Flag flag = new Flag("" + nextFlagNum++);
@@ -232,50 +255,11 @@ public class Game extends BasicGame {
 			}
 			GameObject.setSelectedObject(null);
 		}
+
 	}
 
-	private void updateShipFlag(Ship ship, Flag flag) {
-		if (ship.getNextFlag() == finishFlag) {
-			System.out.println("C'est gagné c'est gagné !");
-		} else {
-			int i = userFlags.indexOf(flag);
-			// Dernier user flag atteint
-			if (i == userFlags.size() - 1) {
-				ship.setNextFlag(finishFlag);
-			} else {
-				ship.setNextFlag(userFlags.get(i + 1));
-			}
-		}
-	}
-
-	private void resolveShipCollision(Ship ship) {
-		for (Enemy enemy : enemies) {
-			if (enemy.intersects(ship)) {
-				enemy.onHitShip(ship);
-				if (!ship.isAlive()) {
-					break;
-				}
-			}
-		}
-	}
-
-	private void handleInput(GameContainer gc) {
-		if (shouldQuit) {
-			gc.exit();
-		}
-	}
-
-	public static void main(String[] args) {
-		try {
-			AppGameContainer appgc;
-			Game game = new Game("Tropical Escape !");
-			appgc = new AppGameContainer(game);
-			appgc.setDisplayMode(640, 480, false);
-			// appgc.setFullscreen(true);
-			appgc.setShowFPS(false);
-			appgc.start();
-		} catch (SlickException ex) {
-			Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
-		}
+	@Override
+	public int getID() {
+		return ID;
 	}
 }
