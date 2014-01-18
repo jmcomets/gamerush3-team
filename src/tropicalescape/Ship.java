@@ -18,16 +18,19 @@ public class Ship extends GameObject {
 	private Direction dir;
 
 	static Image img;
-	
+
 	public enum Direction {
-	    E, NE, N, NW,
-	    W, SW, S, SE 
+		E, NE, N, NW, W, SW, S, SE
 	}
 
 	Ship(float x, float y) {
 		super(new CompositeRectangle()); // TODO
 		hp = MAX_HP;
 		dir = Direction.E;
+		Vector2f speed = new Vector2f(0,0);
+		setSpeed(speed);
+		Vector2f position = new Vector2f(x,y);
+		setPosition(position);
 	}
 
 	static {
@@ -97,24 +100,28 @@ public class Ship extends GameObject {
 
 	@Override
 	public void update(int delta) {
-		double angle = getSpeed().getTheta();
-		if (337.5>=angle || angle<22.5){
-			dir=Direction.E;
-		} else if (22.5<=angle && angle<67.5){
-			dir=Direction.NE;
-		}else if (67.5<=angle && angle<112.5){
-			dir=Direction.N;
-		}else if (112.5<=angle && angle<157.5){
-			dir=Direction.NW;
-		}else if (157.5<=angle && angle<202.5){
-			dir=Direction.W;
-		}else if (202.5<=angle && angle<247.5){
-			dir=Direction.SW;
-		}else if (247.5<=angle && angle<292.5){
-			dir=Direction.S;
-		}else if (292.5<=angle && angle<337.5){
-			dir=Direction.SE;
+		/*double angle = getSpeed().getTheta();
+		System.out.println(angle);
+		
+		if (337.5 >= angle || angle < 22.5) {
+			dir = Direction.E;
+		} else if (22.5 <= angle && angle < 67.5) {
+			dir = Direction.NE;
+		} else if (67.5 <= angle && angle < 112.5) {
+			dir = Direction.N;
+		} else if (112.5 <= angle && angle < 157.5) {
+			dir = Direction.NW;
+		} else if (157.5 <= angle && angle < 202.5) {
+			dir = Direction.W;
+		} else if (202.5 <= angle && angle < 247.5) {
+			dir = Direction.SW;
+		} else if (247.5 <= angle && angle < 292.5) {
+			dir = Direction.S;
+		} else if (292.5 <= angle && angle < 337.5) {
+			dir = Direction.SE;
 		}
+		
+		System.out.println(dir);*/
 	}
 
 }
