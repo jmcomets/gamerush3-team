@@ -9,10 +9,12 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Stack;
 
+import org.lwjgl.input.Mouse;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
+import org.newdawn.slick.MouseListener;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.state.BasicGameState;
@@ -43,19 +45,20 @@ public class PlayState extends BasicGameState {
 	private int shipPopTimer = 0;
 	private Vector2f shipPopPosition = new Vector2f();
 
-	private boolean shouldQuit = false;
 	private List<GameObject> gameObjects = new ArrayList<GameObject>();
 	private int minToWin;
 	private int nArrivedShips;
 
 	private boolean won;
-	private boolean loosed;
+	private boolean lost;
 
 	static int nextFlagNum = 1;
 
 	public int width;
-
 	public int height;
+
+	private int placeFlagsDelay = 5000;
+	private String lvlName;
 
 	private PlayState(int width, int height) {
 		this.width = width;
@@ -74,14 +77,13 @@ public class PlayState extends BasicGameState {
 			throws SlickException {
 		super.enter(container, game);
 
-		this.won = false;
-		this.loosed = false;
+		placeFlagsDelay = 5000; // FIXME
 
-		this.nArrivedShips = 0;
-		this.shouldQuit = false;
+		won = false;
+		lost = false;
+
+		nArrivedShips = 0;
 		emptyEntities();
-
-		String lvlName = "res/levels/test.lvl";
 		try {
 			loadLevel(lvlName);
 		} catch (IOException e) {
@@ -102,14 +104,8 @@ public class PlayState extends BasicGameState {
 	public void init(GameContainer container) throws SlickException {
 	}
 
-	@Override
-	public void keyPressed(int key, char c) {
-		if (key == Input.KEY_ESCAPE) {
-			this.shouldQuit = true;
-		}
-	}
-
 	public void loadLevel(String path) throws IOException {
+		System.out.println(path);
 		File file = new File(path);
 		BufferedReader reader = null;
 		try {
@@ -201,12 +197,6 @@ public class PlayState extends BasicGameState {
 		shipPopTimer = shipPopDelay;
 	}
 
-	private void handleInput(GameContainer gc) {
-		if (shouldQuit) {
-			gc.exit();
-		}
-	}
-
 	@Override
 	public void init(GameContainer container, StateBasedGame game)
 			throws SlickException {
@@ -233,21 +223,113 @@ public class PlayState extends BasicGameState {
 			GameObject obj = it.next();
 			obj.baseRender(g);
 		}
-
 	}
-
-	@Override
-	public void update(GameContainer container, StateBasedGame game, int delta)
-			throws SlickException {
-
+	
+	private void handleWinLose(StateBasedGame game) {
 		if (won) {
 			game.enterState(WinState.ID);
 		}
-		if (loosed) {
+		if (lost) {
 			game.enterState(LoosedState.ID);
 		}
+	}
 
-		handleInput(container);
+	private GameObject draggingObject = null;
+	
+	@Override
+	public void mousePressed(int button, int x, int y) {
+		super.mousePressed(button, x, y);
+		if (button == Input.MOUSE_LEFT_BUTTON) {
+			for (GameObject obj : gameObjects) {
+				if (obj.getTranslatedHitbox().contains(x, y)) {
+					draggingObject = obj;
+				}
+			}
+		}
+	}
+
+	@Override
+	public void mouseReleased(int button, int x, int y) {
+		super.mouseReleased(button, x, y);
+		if (button == Input.MOUSE_LEFT_BUTTON) {
+			draggingObject = null;
+		}
+	}
+
+	@Override
+	public void mouseDragged(int oldx, int oldy, int newx, int newy) {
+		super.mouseDragged(oldx, oldy, newx, newy);
+		if (draggingObject != null) {
+			draggingObject.setPosition(new Vector2f(newx, newy));
+		}
+	}
+
+	@Override
+	public void mouseClicked(int button, int x, int y, int clickCount) {
+		super.mouseClicked(button, x, y, clickCount);
+		
+		// On récupère l'objet cliqué
+		GameObject clickedObject = null;
+		for (GameObject obj : gameObjects) {
+			if (obj.getTranslatedHitbox().contains(x, y)) {
+				clickedObject = obj;
+			}
+		}
+		
+		if (button == Input.MOUSE_LEFT_BUTTON) {
+			if (clickedObject == null) { // création d'un drapeau
+				Flag flag = new Flag("" + (userFlags.size() + 1));
+				flag.setPosition(new Vector2f(x, y));
+				userFlags.add(flag);
+				gameObjects.add(flag);
+				for (Ship ship : ships) {
+					Flag shipNextFlag = ship.getNextFlag();
+					if (shipNextFlag == finishFlag) {
+						ship.setNextFlag(flag);
+					}
+				}
+			}
+		} else if (button == Input.MOUSE_RIGHT_BUTTON) {
+			if (clickedObject == null) {
+				// TODO
+			} else if (clickedObject instanceof Flag // Suppression d'un drapeau
+					&& !(clickedObject instanceof StartFlag || clickedObject instanceof FinishFlag)) {
+				// Rediriger les ships vers leur prochaine destination
+				for (Ship ship : ships) {
+					Flag shipNextFlag = ship.getNextFlag();
+					if (shipNextFlag == clickedObject) {
+						recomputeShipPath(ship, shipNextFlag);
+					}
+				}
+				userFlags.remove(clickedObject);
+				gameObjects.remove(clickedObject);
+
+				// Refaire la numérotation
+				for (int i = 0; i < userFlags.size(); i++) {
+					userFlags.get(i).setDescription("" + (i + 1));
+				}
+			}
+		}
+	}
+
+	private void handleContinuousInput(Input input) {
+	}
+	
+	@Override
+	public void update(GameContainer container, StateBasedGame game, int delta)
+			throws SlickException {
+		// Continuous
+		handleContinuousInput(container.getInput());
+		
+		// Wait for the user to place his flags
+		if (placeFlagsDelay > 0) {
+			placeFlagsDelay -= delta;
+		}
+		//System.out.println(placeFlagsDelay);
+		
+		// Win or lost ?
+		handleWinLose(game);
+
 		if (shipStack.size() > 0) {
 			shipPopTimer -= delta;
 			if (shipPopTimer <= 0) {
@@ -262,7 +344,6 @@ public class PlayState extends BasicGameState {
 
 		List<Ship> shipsToRemove = new ArrayList<Ship>();
 		for (Ship ship : ships) {
-
 			resolveShipCollision(ship);
 			if (!ship.isAlive()) {
 				shipsToRemove.add(ship);
@@ -282,45 +363,6 @@ public class PlayState extends BasicGameState {
 					}
 				}
 			}
-		}
-
-		// Gestion des inputs, a mettre toujours APRES les MAJ des objets
-		Input input = container.getInput();
-		if (input.isMousePressed(Input.MOUSE_LEFT_BUTTON)) {
-			if (GameObject.getSelectedObject() == null) {
-				Flag flag = new Flag("" + (userFlags.size() + 1));
-				int mouseX = input.getMouseX();
-				int mouseY = input.getMouseY();
-				flag.setPosition(new Vector2f(mouseX, mouseY));
-				userFlags.add(flag);
-				gameObjects.add(flag);
-				for (Ship ship : ships) {
-					Flag shipNextFlag = ship.getNextFlag();
-					if (shipNextFlag == finishFlag) {
-						ship.setNextFlag(flag);
-					}
-				}
-			}
-		} else if (input.isMousePressed(Input.MOUSE_RIGHT_BUTTON)) {
-			GameObject selectedObject = GameObject.getSelectedObject();
-			if (selectedObject instanceof Flag
-					&& !(selectedObject instanceof StartFlag || selectedObject instanceof FinishFlag)) {
-				// Rediriger les ships vers leur prochaine destination
-				for (Ship ship : ships) {
-					Flag shipNextFlag = ship.getNextFlag();
-					if (shipNextFlag == selectedObject) {
-						recomputeShipPath(ship, shipNextFlag);
-					}
-				}
-				userFlags.remove(selectedObject);
-				gameObjects.remove(selectedObject);
-
-				// Refaire la numérotation
-				for (int i = 0; i < userFlags.size(); i++) {
-					userFlags.get(i).setDescription("" + (i + 1));
-				}
-			}
-			GameObject.setSelectedObject(null);
 		}
 
 		// Handle ships to remove
@@ -358,7 +400,7 @@ public class PlayState extends BasicGameState {
 
 	private void checkForLose() {
 		if (!won && ships.size() + shipStack.size() < minToWin) {
-			loosed = true;
+			lost = true;
 			System.out.println("C'est perdu !");
 		}
 	}
@@ -377,6 +419,11 @@ public class PlayState extends BasicGameState {
 	@Override
 	public int getID() {
 		return ID;
+	}
+	
+
+	public void setLvlName(String lvlName) {
+		this.lvlName = lvlName;
 	}
 
 	public List<Ship> getShips() {

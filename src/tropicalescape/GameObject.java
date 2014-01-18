@@ -17,8 +17,6 @@ public class GameObject implements Collidable {
 
 	private HitboxAnimation hitboxAnimation;
 
-	private static GameObject selectedObject;
-
 	public GameObject(HitboxAnimation hitboxAnimation) {
 		this.hitboxAnimation = hitboxAnimation;
 	}
@@ -70,7 +68,7 @@ public class GameObject implements Collidable {
 		g.popTransform();
 	}
 
-	private Hitbox getTranslatedHitbox() {
+	Hitbox getTranslatedHitbox() {
 		Hitbox hitbox = (Hitbox) getHitboxAnimation().getHitbox();
 		Hitbox translatedHitbox = new Hitbox();
 		for (Rectangle rect : hitbox.getRectangles()) {
@@ -119,14 +117,6 @@ public class GameObject implements Collidable {
 
 	public void setSpeed(Vector2f speed) {
 		this.speed = speed;
-	}
-
-	public static GameObject getSelectedObject() {
-		return selectedObject;
-	}
-
-	public static void setSelectedObject(GameObject selectedObject) {
-		GameObject.selectedObject = selectedObject;
 	}
 
 	/**

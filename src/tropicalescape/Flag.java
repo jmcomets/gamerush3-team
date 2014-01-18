@@ -46,34 +46,4 @@ public class Flag extends GameObject {
 			g.drawString(description, 0, -DESC_HEIGHT_SHIFT);
 		}
 	}
-
-	@Override
-	public void update(GameContainer gc, int delta) {
-
-		Input input = gc.getInput();
-
-		boolean leftClicked = isLeftClicked(gc);
-		if (leftClicked
-				&& (getSelectedObject() == this || getSelectedObject() == null)
-				|| !leftClicked && getSelectedObject() == this) {
-			HitboxAnimation hitAnim = getHitboxAnimation();
-			Image frame = hitAnim.getCurrentFrame();
-			int x = input.getMouseX() - frame.getWidth() / 2;
-			int y = input.getMouseY() - frame.getHeight() / 2;
-
-			setPosition(new Vector2f(x, y));
-
-			setSelectedObject(this);
-		}
-		if (getSelectedObject() == this
-				&& !gc.getInput().isMouseButtonDown(Input.MOUSE_LEFT_BUTTON)) {
-			setSelectedObject(null);
-		}
-
-		if (isRightClicked(gc)
-				&& input.isMouseButtonDown(Input.MOUSE_RIGHT_BUTTON)) {
-			setSelectedObject(this);
-		}
-
-	}
 }
