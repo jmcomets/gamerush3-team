@@ -18,7 +18,7 @@ public class Ship extends GameObject {
 	private int hp;
 	private Flag nextFlag;
 	private Direction dir;
-	private boolean arrived = true;
+	private boolean arrived = false;
 
 	static Image img;
 
