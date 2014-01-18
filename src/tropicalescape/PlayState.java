@@ -26,25 +26,60 @@ public class PlayState extends BasicGameState {
 
 	private static final Color BG_COLOR = new Color(45, 85, 117);
 	public static final int ID = 2;
-	private List<Enemy> enemies = new ArrayList<Enemy>();
 	private StartFlag startFlag;
 	private FinishFlag finishFlag;
 	private List<Flag> userFlags = new ArrayList<Flag>();
 
+	private List<Enemy> enemies = new ArrayList<Enemy>();
 	private List<Ship> ships = new ArrayList<Ship>();
 	private Stack<Ship> shipStack = new Stack<Ship>();
 	private int shipPopDelay = 1000;
 	private int shipPopTimer = 0;
 	private Vector2f shipPopPosition = new Vector2f();
 
-	private boolean shouldQuit = false;
+	private boolean shouldQuit;
 	private List<GameObject> gameObjects = new ArrayList<GameObject>();
+	
 	private int minToWin;
+	private int nArrivedShips;
+	private boolean won;
 
 	static int nextFlagNum = 1;
 
 	public PlayState() {
 
+	}
+	
+	@Override
+	public void enter(GameContainer container, StateBasedGame game)
+			throws SlickException {
+		super.enter(container, game);
+		
+		this.won = false;
+		this.nArrivedShips = 0;
+		this.shouldQuit = false;
+		emptyEntities();
+		
+		String lvlName = "res/levels/test.lvl";
+		try {
+			loadLevel(lvlName);
+		} catch (IOException e) {
+			new SlickException("Problème au chargement du niveau " + lvlName
+					+ " : " + e.getMessage());
+		}
+	}
+	
+	private void emptyEntities() {
+		this.shipStack = new Stack<Ship>();
+		this.userFlags = new ArrayList<Flag>();
+		this.ships = new ArrayList<Ship>();
+		this.enemies = new ArrayList<Enemy>();
+		this.shipStack = new Stack<Ship>();
+		this.gameObjects = new ArrayList<GameObject>();
+	}
+	
+	public void init(GameContainer container) throws SlickException {
+		
 	}
 
 	@Override
@@ -139,16 +174,7 @@ public class PlayState extends BasicGameState {
 		shipPopTimer = shipPopDelay;
 	}
 	
-	public void init(GameContainer container) throws SlickException {
-		String lvlName = "res/levels/test.lvl";
-		try {
-			loadLevel(lvlName);
-		} catch (IOException e) {
-			new SlickException("Problème au chargement du niveau " + lvlName
-					+ " : " + e.getMessage());
-		}
-	}
-
+	
 	private void handleInput(GameContainer gc) {
 		if (shouldQuit) {
 			gc.exit();
@@ -185,6 +211,11 @@ public class PlayState extends BasicGameState {
 	@Override
 	public void update(GameContainer container, StateBasedGame game, int delta)
 			throws SlickException {
+		
+		if (won) {
+			game.enterState(WinState.ID);
+		}
+		
 		handleInput(container);
 		if (shipStack.size() > 0) {
 			shipPopTimer -= delta;
@@ -266,6 +297,10 @@ public class PlayState extends BasicGameState {
 
 	private void updateShipFlag(Ship ship, Flag flag) {
 		if (ship.getNextFlag() == finishFlag) {
+			nArrivedShips++;
+			// TODO : remove flag from screen (but cannot in here)
+			//ships.remove(ship);
+			//gameObjects.remove(ship);
 			checkForWin();
 		} else {
 			int i = userFlags.indexOf(flag);
@@ -279,8 +314,9 @@ public class PlayState extends BasicGameState {
 	}
 
 	private void checkForWin() {
-		if (ships.size() >= minToWin) {
+		if (nArrivedShips >= minToWin) {
 			System.out.println("C'est gagné !");
+			this.won = true;
 		}
 	}
 

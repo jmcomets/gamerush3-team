@@ -34,7 +34,7 @@ public class GameManager extends StateBasedGame{
 	public void initStatesList(GameContainer container) throws SlickException {
 		addState(new MenuGameState());
 		addState(new PlayState());
-		
+		addState(new WinState());
 	}
 
 }
