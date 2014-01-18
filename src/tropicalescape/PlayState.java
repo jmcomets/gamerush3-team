@@ -6,6 +6,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Stack;
 
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
@@ -23,13 +24,18 @@ import tropicalescape.enemies.SleepingIsland;
 
 public class PlayState extends BasicGameState {
 
-	private static final Color BG_COLOR = new Color(18, 54, 103);
+	private static final Color BG_COLOR = new Color(45, 85, 117);
 	public static final int ID = 2;
 	private List<Enemy> enemies = new ArrayList<Enemy>();
 	private StartFlag startFlag;
 	private FinishFlag finishFlag;
 	private List<Flag> userFlags = new ArrayList<Flag>();
+
 	private List<Ship> ships = new ArrayList<Ship>();
+	private Stack<Ship> shipStack = new Stack<Ship>();
+	private int shipPopDelay = 1000;
+	private int shipPopTimer = 0;
+	private Vector2f shipPopPosition = new Vector2f();
 
 	private boolean shouldQuit = false;
 	private List<GameObject> gameObjects = new ArrayList<GameObject>();
@@ -60,7 +66,18 @@ public class PlayState extends BasicGameState {
 				}
 
 				GameObject obj = null;
-				if (tokens[0].equals("ISLAND")) {
+				if (tokens[0].equals("SHIPS")) {
+					shipPopPosition.x = Integer.parseInt(tokens[1]);
+					shipPopPosition.y = Integer.parseInt(tokens[2]);
+					int n = Integer.parseInt(tokens[3]);
+					if (tokens.length >= 5) {
+						shipPopDelay = Integer.parseInt(tokens[4]);
+					}
+					for (int i = 0; i < n; i++) {
+						Ship ship = new Ship();
+						shipStack.add(ship);
+					}
+				} else if (tokens[0].equals("ISLAND")) {
 					Island island = new Island();
 					enemies.add(island);
 					obj = island;
@@ -196,7 +213,6 @@ public class PlayState extends BasicGameState {
 		for (GameObject obj : gameObjects) {
 			obj.baseUpdate(container, delta);
 		}
-
 		for (Ship ship : ships) {
 
 			resolveShipCollision(ship);
