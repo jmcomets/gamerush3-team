@@ -22,6 +22,7 @@ import tropicalescape.enemies.SleepingIsland;
 
 public class Game extends BasicGame {
 
+	private static final Color BG_COLOR = new Color(18, 54, 103);
 	private List<Enemy> enemies = new ArrayList<Enemy>();
 	private List<Flag> flags = new ArrayList<Flag>();
 	private List<Ship> ships = new ArrayList<Ship>();
@@ -44,10 +45,13 @@ public class Game extends BasicGame {
 	@Override
 	public void render(GameContainer container, Graphics g)
 			throws SlickException {
+		// background color
 		g.pushTransform();
-		g.setColor(new Color(18, 54, 103));
+		g.setColor(BG_COLOR);
 		g.fillRect(0, 0, container.getWidth(), container.getHeight());
 		g.popTransform();
+		
+		// Draw all game objects
 		for (Enemy enemy : enemies) {
 			enemy.baseRender(g);
 		}
@@ -67,34 +71,31 @@ public class Game extends BasicGame {
 			String text = null;
 			while ((text = reader.readLine()) != null) {
 				String[] tokens = text.split(" ");
-				if (tokens[0].equals("ISLAND")) {
-					if (tokens.length == 3) {
-						// TODO
-					}
-				} else if (tokens[0].equals("SLEEPING-ISLAND")) {
-					if (tokens.length == 3) {
-						SleepingIsland sleepingIsland = new SleepingIsland();
-						sleepingIsland.setPosition(new Vector2f(Float
-								.parseFloat(tokens[1]), Float
-								.parseFloat(tokens[2])));
-						enemies.add(sleepingIsland);
-					}
-				} else if (tokens[0].equals("SHIP")) {
-					if (tokens.length == 3) {
-						Ship ship = new Ship(Float.parseFloat(tokens[1]),
-								Float.parseFloat(tokens[2]));
-						ships.add(ship);
-					}
-				} else if (tokens[0].equals("FLAG")) {
-					if (tokens.length == 4) {
-						Flag flag = new Flag(tokens[1],
-								Float.parseFloat(tokens[2]),
-								Float.parseFloat(tokens[3]));
-						flags.add(flag);
-					}
+				if (tokens.length < 3) {
+					System.err.println("Need at least 3 tokens");
 				}
+				
+				GameObject obj = null;
+				if (tokens[0].equals("ISLAND")) {
+					// TODO
+				} else if (tokens[0].equals("SLEEPING-ISLAND")) {
+					SleepingIsland sleepingIsland = new SleepingIsland();
+					enemies.add(sleepingIsland);
+					obj = sleepingIsland;
+				} else if (tokens[0].equals("SHIP")) {
+					Ship ship = new Ship();
+					ships.add(ship);
+					obj = ship;
+				} else if (tokens[0].equals("FLAG")) {
+					Flag flag = new Flag(tokens[1]);
+					flags.add(flag);
+					obj = flag;
+				}
+				obj.setPosition(new Vector2f(Float.parseFloat(tokens[tokens.length-2]),
+						Float.parseFloat(tokens[tokens.length-1])));
 			}
-			if (flags.size() != 0) {
+			
+			if (flags.size() > 0) {
 				for (Ship s : ships) {
 					s.setNextFlag(flags.get(0));
 				}

@@ -13,11 +13,9 @@ public class Flag extends GameObject {
 
 	private String description;
 
-	Flag(String desc, float x, float y) {
+	Flag(String description) {
 		super(HitboxAnimationFactory.create(IMG_FILES, HITBOX_FILES, DURATION));
-		description = desc;
-		getPosition().x = x;
-		getPosition().y = y;
+		this.description = description;
 	}
 
 	@Override

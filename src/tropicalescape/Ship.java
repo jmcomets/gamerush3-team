@@ -43,14 +43,10 @@ public class Ship extends GameObject {
 		E, NE, N, NW, W, SW, S, SE
 	}
 
-	Ship(float x, float y) {
+	Ship() {
 		super(new HitboxAnimation()); // TODO
 		hp = MAX_HP;
 		dir = Direction.E;
-		Vector2f speed = new Vector2f(0f,0f);
-		setSpeed(speed);
-		Vector2f position = new Vector2f(x,y);
-		setPosition(position);
 		
 		animationMap = new HashMap<Direction,HitboxAnimation>();
 		animationMap.put(Direction.N, HitboxAnimationFactory.create(N_IMG_FILES, N_HB_FILES, 10));
