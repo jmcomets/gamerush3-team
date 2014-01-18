@@ -115,11 +115,13 @@ public class Game extends BasicGame {
 					finishFlag = new FinishFlag(tokens[1]);
 					obj = finishFlag;
 				} else if (tokens[0].equals("KRAKEN")) {
-					OneHitMonster ohm = new OneHitMonster(OneHitMonster.Type.KRAKEN);
+					OneHitMonster ohm = new OneHitMonster(
+							OneHitMonster.Type.KRAKEN);
 					enemies.add(ohm);
 					obj = ohm;
 				} else if (tokens[0].equals("GIANT_LOBSTER")) {
-					OneHitMonster ohm = new OneHitMonster(OneHitMonster.Type.GIANT_LOBSTER);
+					OneHitMonster ohm = new OneHitMonster(
+							OneHitMonster.Type.GIANT_LOBSTER);
 					enemies.add(ohm);
 					obj = ohm;
 				}
@@ -130,13 +132,17 @@ public class Game extends BasicGame {
 				}
 			}
 
-			if (startFlag != null && finishFlag != null) {
-				for (Ship s : ships) {
-					s.setNextFlag(startFlag);
-				}
-			} else {
-				System.out.println("Attention pas de start ou de finish flag");
+			if (startFlag == null) {
+				startFlag = new StartFlag("Start");
 			}
+			if (finishFlag == null) {
+				finishFlag = new FinishFlag("Finish");
+				finishFlag.setPosition(new Vector2f(600, 440));
+			}
+			for (Ship s : ships) {
+				s.setNextFlag(startFlag);
+			}
+			
 		} finally {
 			if (reader != null) {
 				reader.close();
