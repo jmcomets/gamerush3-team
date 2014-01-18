@@ -87,10 +87,6 @@ public class PlayState extends BasicGameState {
 					SleepingIsland sleepingIsland = new SleepingIsland();
 					enemies.add(sleepingIsland);
 					obj = sleepingIsland;
-				} else if (tokens[0].equals("SHIP")) {
-					Ship ship = new Ship();
-					ships.add(ship);
-					obj = ship;
 				} else if (tokens[0].equals("FLAG")) {
 					Flag flag = new Flag(tokens[1]);
 					userFlags.add(flag);
@@ -127,10 +123,6 @@ public class PlayState extends BasicGameState {
 				finishFlag = new FinishFlag("Finish");
 				finishFlag.setPosition(new Vector2f(600, 440));
 			}
-			for (Ship s : ships) {
-				s.setNextFlag(startFlag);
-			}
-
 		} finally {
 			if (reader != null) {
 				reader.close();
@@ -138,6 +130,15 @@ public class PlayState extends BasicGameState {
 		}
 	}
 
+	private void addShip(Ship ship) {
+		ship.getPosition().x = shipPopPosition.x;
+		ship.getPosition().y = shipPopPosition.y;
+		ship.setNextFlag(startFlag);
+		ships.add(ship);
+		gameObjects.add(ship);
+		shipPopTimer = shipPopDelay;
+	}
+	
 	public void init(GameContainer container) throws SlickException {
 		String lvlName = "res/levels/test.lvl";
 		try {
@@ -145,32 +146,6 @@ public class PlayState extends BasicGameState {
 		} catch (IOException e) {
 			new SlickException("Problème au chargement du niveau " + lvlName
 					+ " : " + e.getMessage());
-		}
-	}
-
-	private void updateShipFlag(Ship ship, Flag flag) {
-		if (ship.getNextFlag() == finishFlag) {
-			System.out.println("C'est gagné c'est gagné !");
-		} else {
-			int i = userFlags.indexOf(flag);
-			// Dernier user flag atteint
-			if (i == userFlags.size() - 1) {
-				ship.setNextFlag(finishFlag);
-			} else {
-				ship.setNextFlag(userFlags.get(i + 1));
-			}
-		}
-	}
-
-	private void resolveShipCollision(Ship ship) {
-		for (Enemy enemy : enemies) {
-			System.out.println("resolving collision with enemy " + enemy);
-			if (enemy.intersects(ship)) {
-				enemy.onHitShip(ship);
-				if (!ship.isAlive()) {
-					break;
-				}
-			}
 		}
 	}
 
@@ -211,10 +186,18 @@ public class PlayState extends BasicGameState {
 	public void update(GameContainer container, StateBasedGame game, int delta)
 			throws SlickException {
 		handleInput(container);
-		List<Ship> deadShips = new ArrayList<Ship>();
+		if (shipStack.size() > 0) {
+			shipPopTimer -= delta;
+			if (shipPopTimer <= 0) {
+				addShip(shipStack.pop());
+			}
+		}
+
 		for (GameObject obj : gameObjects) {
 			obj.baseUpdate(container, delta);
 		}
+
+		List<Ship> deadShips = new ArrayList<Ship>();
 		for (Ship ship : ships) {
 
 			resolveShipCollision(ship);
@@ -279,6 +262,7 @@ public class PlayState extends BasicGameState {
 			}
 			GameObject.setSelectedObject(null);
 		}
+	}
 
 	private void updateShipFlag(Ship ship, Flag flag) {
 		if (ship.getNextFlag() == finishFlag) {
