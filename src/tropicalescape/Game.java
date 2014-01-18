@@ -37,6 +37,10 @@ public class Game extends BasicGame {
 		for (Enemy enemy : enemies) {
 			enemy.baseRender(g);
 		}
+		
+		for (Flag flag : flags) {
+			flag.render(g);
+		}
 	}
 
 	@Override
