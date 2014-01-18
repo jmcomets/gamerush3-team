@@ -16,7 +16,6 @@ public class Flag extends GameObject {
 	private static final String[] HITBOX_FILES = { "res/hitboxes/flag/base.txt" };
 
 	private String description;
-	private boolean selected;
 
 	Flag(String description) {
 		super(HitboxAnimationFactory.create(IMG_FILES, HITBOX_FILES, DURATION));
@@ -37,9 +36,11 @@ public class Flag extends GameObject {
 
 	@Override
 	public void update(GameContainer gc, int delta) {
-		
+
 		boolean leftClicked = isLeftClicked(gc);
-		if (leftClicked || selected) {
+		if (leftClicked
+				&& (getSelectedObject() == this || getSelectedObject() == null)
+				|| !leftClicked && getSelectedObject() == this) {
 			HitboxAnimation hitAnim = getHitboxAnimation();
 			Image frame = hitAnim.getCurrentFrame();
 			Input input = gc.getInput();
@@ -48,13 +49,12 @@ public class Flag extends GameObject {
 
 			setPosition(new Vector2f(x, y));
 
-			if (!leftClicked
-					&& !input.isMouseButtonDown(Input.MOUSE_LEFT_BUTTON)) {
-				selected = false;
-			} else {
-				selected = true;
-			}
+			setSelectedObject(this);
 		}
-		
+		if (getSelectedObject() == this
+				&& !gc.getInput().isMouseButtonDown(Input.MOUSE_LEFT_BUTTON)) {
+			setSelectedObject(null);
+		}
+
 	}
 }
