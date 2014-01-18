@@ -1,4 +1,4 @@
-package physics;
+package tropicalescape.physics;
 import org.newdawn.slick.geom.Shape;
 
 public interface Collidable {
