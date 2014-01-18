@@ -104,6 +104,7 @@ public class Ship extends GameObject {
 
 	public void setNextFlag(Flag nextFlag) {
 		this.nextFlag = nextFlag;
+		arrived = false;
 	}
 
 	@Override
