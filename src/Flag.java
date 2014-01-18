@@ -5,7 +5,7 @@ import org.newdawn.slick.SlickException;
 public class Flag implements GameObject {
 
 	static final int DESC_HEIGHT_SHIFT = 15;
-	static final String IMG_FILE = "res/ship.png";
+	static final String IMG_FILE = "res/flag.png";
 
 	String m_desc;
 	float m_x;
