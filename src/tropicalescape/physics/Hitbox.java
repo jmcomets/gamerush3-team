@@ -37,6 +37,15 @@ public class Hitbox implements Collidable {
 		}
 		return false;
 	}
+	
+	public boolean contains(float x, float y) {
+		for (Rectangle rect : rectangles) {
+			if (rect.contains(x, y)) {
+				return true;
+			}
+		}
+		return false;
+	}
 
 	public void addRectangle(Rectangle rectangle) {
 		this.rectangles.add(rectangle);
