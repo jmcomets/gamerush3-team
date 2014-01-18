@@ -1,7 +1,8 @@
 package tropicalescape;
 
-import org.newdawn.slick.Graphics;
+import java.util.Map;
 
+import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.geom.Vector2f;
@@ -20,12 +21,26 @@ public class Ship extends GameObject {
 	private Direction dir;
 	private boolean arrived = false;
 
-	static Image img_N;
-	static Image img_E;
-	static Image img_W;
-	static Image img_S;
+	static String[] N_IMG_FILES = {"1", "2"};
+	static String[] NE_IMG_FILES = {"1", "2"};
+	static String[] NW_IMG_FILES = {"1", "2"};
+	static String[] S_IMG_FILES = {"1", "2"};
+	static String[] SW_IMG_FILES = {"1", "2"};
+	static String[] SE_IMG_FILES = {"1", "2"};
+	static String[] E_IMG_FILES = {"1", "2"};
+	static String[] W_IMG_FILES = {"1", "2"};
 	
-	private Image img_act = img_N;
+	static String[] N_HB_FILES = {"1", "2"};
+	static String[] NE_HB_FILES = {"1", "2"};
+	static String[] NW_HB_FILES = {"1", "2"};
+	static String[] S_HB_FILES = {"1", "2"};
+	static String[] SW_HB_FILES = {"1", "2"};
+	static String[] SE_HB_FILES = {"1", "2"};
+	static String[] E_HB_FILES = {"1", "2"};
+	static String[] W_HB_FILES = {"1", "2"};
+	
+	Map<Direction,HitboxAnimation> animationMap;
+	
 
 	public enum Direction {
 		E, NE, N, NW, W, SW, S, SE
@@ -39,17 +54,17 @@ public class Ship extends GameObject {
 		setSpeed(speed);
 		Vector2f position = new Vector2f(x,y);
 		setPosition(position);
-	}
-
-	static {
-		try {
-			img_N = new Image("res/ship/ship-north.png");
-			img_S = new Image("res/ship/ship-south.png");
-			img_E = new Image("res/ship/ship-east.png");
-			img_W = new Image("res/ship/ship-west.png");
-		} catch (SlickException e) {
-			e.printStackTrace();
-		}
+		
+		animationMap.put(Direction.N, HitboxAnimationFactory.create(N_IMG_FILES, N_HB_FILES, 10));
+		animationMap.put(Direction.NE, HitboxAnimationFactory.create(NE_IMG_FILES, NE_HB_FILES, 10));
+		animationMap.put(Direction.NW, HitboxAnimationFactory.create(NW_IMG_FILES, NW_HB_FILES, 10));
+		animationMap.put(Direction.S, HitboxAnimationFactory.create(S_IMG_FILES, S_HB_FILES, 10));
+		animationMap.put(Direction.SE, HitboxAnimationFactory.create(SE_IMG_FILES, SE_HB_FILES, 10));
+		animationMap.put(Direction.SW, HitboxAnimationFactory.create(SW_IMG_FILES, SW_HB_FILES, 10));
+		animationMap.put(Direction.E, HitboxAnimationFactory.create(E_IMG_FILES, E_HB_FILES, 10));
+		animationMap.put(Direction.W, HitboxAnimationFactory.create(W_IMG_FILES, W_HB_FILES, 10));
+		
+		this.setHitboxAnimation(animationMap.get(this.dir));
 	}
 
 	private void computePath() {
@@ -124,28 +139,7 @@ public class Ship extends GameObject {
 
 	@Override
 	public void render(Graphics g) {
-		switch (dir) {
-        case N:  img_act = img_N;
-            break;
-        case S:  img_act = img_S;
-        	break;
-        case E:  img_act = img_E;
-        	break;
-        case W:  img_act = img_W;
-        	break;
-        case NW:  img_act = img_N;
-        	break;
-        case NE:  img_act = img_E;
-        	break;
-        case SE:  img_act = img_S;
-        	break;
-        case SW:  img_act = img_W;
-        	break;
-    }
-
-		float centerX = getPosition().x - img_act.getWidth() / 2f;
-		float centerY = getPosition().y - img_act.getHeight() / 2f;
-		img_act.draw(centerX, centerY);
+		super.render(g);
 	}
 
 	@Override
@@ -173,6 +167,9 @@ public class Ship extends GameObject {
 			} else if (292.5 <= angle && angle < 337.5) {
 				dir = Direction.NE;
 			}
+
+			this.setHitboxAnimation(animationMap.get(this.dir));
+			getHitboxAnimation().restart();
 		}
 	}
 	
