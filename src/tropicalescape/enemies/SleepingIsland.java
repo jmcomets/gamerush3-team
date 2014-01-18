@@ -1,17 +1,16 @@
 package tropicalescape.enemies;
 
-import org.newdawn.slick.Animation;
-import org.newdawn.slick.geom.Rectangle;
-import tropicalescape.physics.Hitbox;
+import org.newdawn.slick.Graphics;
+
+import tropicalescape.HitboxAnimation;
+import tropicalescape.HitboxAnimationFactory;
 
 public class SleepingIsland extends Island {
 	
-	private Animation sleep;
-	private Animation fallAsleep;
-	private Animation up;
-	private Animation wakeUp;
 	
-	private Animation animation;
+	
+	private HitboxAnimation up = HitboxAnimationFactory.create(new String[] {"res/animations/sleeping-island/1.png","res/animations/sleeping-island/2.png"}, new String[] {"res/hitboxes/sleeping-island/1.txt","res/hitboxes/sleeping-island/2.txt"}, 500);
+	private HitboxAnimation sleep = HitboxAnimationFactory.create(new String[] {"res/animations/sleeping-island/2.png","res/animations/sleeping-island/1.png"}, new String[] {"res/hitboxes/sleeping-island/2.txt","res/hitboxes/sleeping-island/1.txt"}, 500);
 	
 	public static final int SLEEPING = 0 ;
 	public static final int AWAKE = 1 ;
@@ -24,32 +23,21 @@ public class SleepingIsland extends Island {
 		switch (this.state){
 			case SleepingIsland.AWAKE : 
 				this.state = SleepingIsland.SLEEPING;
-				this.animation = this.fallAsleep; 
+				this.setHitboxAnimation(this.sleep);
 				break;
 			
 			case SleepingIsland.SLEEPING : 
 				this.state = SleepingIsland.AWAKE;
-				this.animation = this.wakeUp; 
-				break;
-			
-		}
-		
-	}
-	
-	private void switchAnimation(){
-		switch (this.state){
-			case  SleepingIsland.AWAKE : 
-				this.animation = this.up;
-				break;
-			case SleepingIsland.SLEEPING:
-				this.animation = this.sleep;
+				this.setHitboxAnimation(this.up);
 				break;
 		}
-		
 	}
-	
-	public SleepingIsland(Animation anim,Hitbox rectangles) {
-		super(anim, rectangles);
+
+	public SleepingIsland() {
+		super();
+		this.up.setLooping(false);
+		this.sleep.setLooping(false);
+		this.setHitboxAnimation(this.up);
 	}
 	
 	
@@ -59,14 +47,16 @@ public class SleepingIsland extends Island {
 		this.timer -= delta;
 		if(timer <= 0){
 			this.switchState();
-			this.timer = this.TIMER_DURATION;		
-		}
-		
-		if (this.animation.isStopped()){
-			this.switchAnimation();
+			this.timer = TIMER_DURATION;		
 		}
 		super.update(delta);
 	}
 	
+	@Override
+	public void render(Graphics g) {
+		// TODO Auto-generated method stub
+		this.getHitboxAnimation().draw(this.getPosition().x,this.getPosition().y);
+		super.render(g);
+	}
 	
 }
