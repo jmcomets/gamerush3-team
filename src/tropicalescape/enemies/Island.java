@@ -1,37 +1,25 @@
 package tropicalescape.enemies;
-import org.newdawn.slick.Graphics;
-
 import tropicalescape.HitboxAnimation;
+import tropicalescape.HitboxAnimationFactory;
 import tropicalescape.Ship;
 
 
 public abstract class Island extends Enemy {
+
+	static String [] ISLAND_IMAGES = {"animations/island/dummy.png"};
+	static String [] ISLAND_HITBOXES = {"hitboxes/island/dummy.txt"};
 
 	public Island() {
 		super(makeHitboxAnimation());
 	}
 
 	private static HitboxAnimation makeHitboxAnimation() {
-		// TODO Auto-generated method stub
-		return null;
+		return HitboxAnimationFactory.create(ISLAND_IMAGES, ISLAND_HITBOXES, 1);
 	}
 
 	@Override
 	public void onHitShip(Ship ship) {
 		ship.kill();
 	}
-
-	@Override
-	public void render(Graphics g) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void update(int delta) {
-		// TODO Auto-generated method stub
-		
-	}
-	
 	
 }
