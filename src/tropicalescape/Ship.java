@@ -116,9 +116,6 @@ public class Ship extends GameObject {
 
 	@Override
 	public void update(int delta) {
-		System.out.println(getSpeed());
-		System.out.println(getPosition());
-		System.out.println(nextFlag);
 		computePath();
 
 		/*double angle = getSpeed().getTheta();
