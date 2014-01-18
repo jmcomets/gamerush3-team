@@ -34,7 +34,7 @@ public class Game extends BasicGame {
 	}
 
 	@Override
-	public void update(GameContainer gc, int frame) throws SlickException {
+	public void update(GameContainer gc, int delta) throws SlickException {
 
 		for (Ship ship : ships) {
 
