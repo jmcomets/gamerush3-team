@@ -39,13 +39,4 @@ public class CompositeRectangleFactory {
 		}
 		return cr;
 	}
-	
-	public static void main(String [] args) {
-		try {
-			CompositeRectangle cr = CompositeRectangleFactory.loadFromTXT("res/rects/test.txt");
-			System.out.println(cr.getRectangles());
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
 }
