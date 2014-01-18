@@ -9,27 +9,38 @@ import org.newdawn.slick.geom.Rectangle;
 import org.newdawn.slick.geom.Shape;
 import org.newdawn.slick.geom.Vector2f;
 
-
 public class Hitbox implements Collidable {
 
 	private Vector2f origin = new Vector2f();
 	private List<Rectangle> rectangles = new ArrayList<Rectangle>();
-	
-	public boolean intersects(Hitbox cr) {
-		for (Rectangle r : cr.getRectangles())  {
+
+	public boolean intersects(Hitbox hitbox) {
+
+		for (Rectangle rect : hitbox.rectangles) {
+			Rectangle r = new Rectangle(rect.getX(), rect.getY(),
+					rect.getWidth(), rect.getHeight());
+			r.setX(hitbox.origin.getX() + r.getX());
+			r.setY(hitbox.origin.getY() + r.getY());
 			if (intersects(r)) {
 				return true;
 			}
 		}
 		return false;
 	}
-	
+
 	@Override
 	public boolean intersects(Shape shape) {
-		for (Rectangle rect : rectangles)  {
-			if ((new Rectangle(rect.getX() + origin.x,
-					rect.getY() + origin.y,
-					rect.getWidth(), rect.getHeight())).intersects(shape))  {
+
+		for (Rectangle rect : rectangles) {
+			Rectangle r = new Rectangle(rect.getX(), rect.getY(),
+					rect.getWidth(), rect.getHeight());
+			r.setX(origin.getX()+ r.getX());
+			r.setY(origin.getY()+ r.getY());
+			System.out.println("X : " + r.getX() + " Y : " + r.getY() + " W : "
+					+ r.getWidth() + " H : " + r.getHeight());
+			System.out.println("X : " + shape.getX() + " Y : " + shape.getY()
+					+ " W : " + shape.getWidth() + " H : " + shape.getHeight());
+			if (r.intersects(shape)) {
 				return true;
 			}
 		}
@@ -43,7 +54,7 @@ public class Hitbox implements Collidable {
 		}
 		return false;
 	}
-	
+
 	public void addRectangle(Rectangle rectangle) {
 		this.rectangles.add(rectangle);
 	}
@@ -55,11 +66,11 @@ public class Hitbox implements Collidable {
 	public void setOrigin(Vector2f origin) {
 		this.origin = origin;
 	}
-	
+
 	public void render(Graphics g) {
 		g.pushTransform();
 		g.setColor(Color.red);
-		for (Rectangle r : rectangles)  {
+		for (Rectangle r : rectangles) {
 			g.draw(r);
 		}
 		g.popTransform();

@@ -131,6 +131,9 @@ public class Game extends BasicGame {
 							.parseFloat(tokens[tokens.length - 1])));
 				}
 			}
+			
+			System.out.println(ships);
+			System.out.println(enemies);
 
 			if (startFlag == null) {
 				startFlag = new StartFlag("Start");
@@ -158,10 +161,12 @@ public class Game extends BasicGame {
 			flag.baseUpdate(gc, delta);
 		}
 		for (Ship ship : ships) {
+			System.out.println("ship " + ship);
 			ship.baseUpdate(gc, delta);
 			for (Enemy enemy : enemies) {
+				System.out.println("enemy " + enemy);
 				if (enemy.intersects(ship.getHitboxAnimation())) {
-					System.out.print("Intersect");
+					System.out.println("Intersect");
 					enemy.onHitShip(ship);
 					if (!ship.isAlive()) {
 						deadShips.add(ship);

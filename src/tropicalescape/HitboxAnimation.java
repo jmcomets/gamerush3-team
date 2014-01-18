@@ -25,21 +25,25 @@ public class HitboxAnimation extends Animation implements Collidable {
 		}
 	}
 
+	@Override
+	public boolean intersects(Shape shape) {
+		return getHitbox().intersects(shape);
+	}
+
+	public boolean intersects(Hitbox hb) {
+		return getHitbox().intersects(hb);
+	}
+
 	public boolean intersects(HitboxAnimation ha) {
-		return getHitbox().intersects(ha.getHitbox());
+		return intersects(ha.getHitbox());
 	}
 
 	@Override
 	public boolean intersects(Collidable collidable) {
 		if (collidable instanceof HitboxAnimation) {
-			this.intersects((HitboxAnimation) collidable);
+			intersects((HitboxAnimation) collidable);
 		}
 		return getHitbox().intersects(collidable);
-	}
-
-	@Override
-	public boolean intersects(Shape shape) {
-		return getHitbox().intersects(shape);
 	}
 
 	public void addHitbox(Hitbox hitbox) {
