@@ -29,12 +29,8 @@ public class Game extends BasicGame {
 
 	@Override
 	public void init(GameContainer container) throws SlickException {
-		/*
-		 * String lvlName = "res/levels/test.lvl"; try { loadLevel(lvlName); }
-		 * catch (IOException e) { new
-		 * SlickException("Problème au chargement du niveau " + lvlName + " : "
-		 * + e.getMessage()); }
-		 */
+		flags.add(new Flag("1",100,100));
+		ships.add(new Ship(150,150));
 	}
 
 	@Override
@@ -48,6 +44,7 @@ public class Game extends BasicGame {
 		}
 		for (Ship ship : ships) {
 			ship.baseRender(g);
+			ship.render(g);
 		}
 	}
 

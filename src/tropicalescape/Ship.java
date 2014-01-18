@@ -10,7 +10,7 @@ import tropicalescape.physics.CompositeRectangle;
 
 public class Ship extends GameObject {
 
-	static final String IMG_FILE = "res/ship.png";
+	static final String IMG_FILE = "res/ship/ship-east.png";
 	static final int MAX_HP = 50;
 
 	private int hp;
@@ -27,7 +27,7 @@ public class Ship extends GameObject {
 		super(new CompositeRectangle()); // TODO
 		hp = MAX_HP;
 		dir = Direction.E;
-		Vector2f speed = new Vector2f(0,0);
+		Vector2f speed = new Vector2f(0f,0f);
 		setSpeed(speed);
 		Vector2f position = new Vector2f(x,y);
 		setPosition(position);
@@ -100,6 +100,9 @@ public class Ship extends GameObject {
 
 	@Override
 	public void update(int delta) {
+		System.out.println(getSpeed());
+		System.out.println(getPosition());
+
 		/*double angle = getSpeed().getTheta();
 		System.out.println(angle);
 		
