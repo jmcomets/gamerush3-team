@@ -36,7 +36,6 @@ public class Game extends BasicGame {
 			new SlickException("Problème au chargement du niveau " + lvlName
 					+ " : " + e.getMessage());
 		}
-
 	}
 
 	@Override
@@ -50,6 +49,7 @@ public class Game extends BasicGame {
 		}
 		for (Ship ship : ships) {
 			ship.baseRender(g);
+			ship.render(g);
 		}
 	}
 
@@ -117,18 +117,14 @@ public class Game extends BasicGame {
 			// ship trop rapide
 			Flag flag = ship.getNextFlag();
 			if (flag != null) {
-				if (flag.getPosition().x == ship.getX()
-						&& flag.getPosition().y == ship.getY()) {
-					if (flag.getPosition().x == ship.getX()
-							&& flag.getPosition().y == ship.getY()) {
-						int i = flags.indexOf(flag);
+				if (ship.hasArrived()) {
+					int i = flags.indexOf(flag);
 
-						// Dernier flag atteint
-						if (i == flags.size()) {
-							ship.setNextFlag(null);
-						} else {
-							ship.setNextFlag(flags.get(i + 1));
-						}
+					// Dernier flag atteint
+					if (i == flags.size() - 1) {
+						ship.setNextFlag(null);
+					} else {
+						ship.setNextFlag(flags.get(i + 1));
 					}
 				}
 			}

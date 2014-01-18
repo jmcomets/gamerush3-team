@@ -8,8 +8,8 @@ import tropicalescape.physics.Hitbox;
 
 public abstract class GameObject implements Collidable {
 	
-	private Vector2f position;
-	private Vector2f speed;
+	private Vector2f position = new Vector2f();
+	private Vector2f speed = new Vector2f();
 	
 	private HitboxAnimation hitboxAnimation;
 	
