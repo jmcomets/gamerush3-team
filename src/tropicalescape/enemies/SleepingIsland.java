@@ -1,7 +1,5 @@
 package tropicalescape.enemies;
 
-import org.newdawn.slick.Graphics;
-
 import tropicalescape.HitboxAnimation;
 import tropicalescape.HitboxAnimationFactory;
 
@@ -50,13 +48,6 @@ public class SleepingIsland extends Island {
 			this.timer = TIMER_DURATION;		
 		}
 		super.update(delta);
-	}
-	
-	@Override
-	public void render(Graphics g) {
-		// TODO Auto-generated method stub
-		this.getHitboxAnimation().draw(this.getPosition().x,this.getPosition().y);
-		super.render(g);
 	}
 	
 }

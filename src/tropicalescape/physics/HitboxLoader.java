@@ -18,7 +18,6 @@ public class HitboxLoader {
 			String text = null;
 			while ((text = reader.readLine()) != null) {
 				String[] array = text.split("\\s+");
-				System.out.println(array);
 				if (array.length < 4) {
 					throw new IOException("Need 4 numbers");
 				}
