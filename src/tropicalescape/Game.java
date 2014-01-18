@@ -11,6 +11,7 @@ import java.util.logging.Logger;
 
 import org.newdawn.slick.AppGameContainer;
 import org.newdawn.slick.BasicGame;
+import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;
@@ -41,15 +42,18 @@ public class Game extends BasicGame {
 	@Override
 	public void render(GameContainer container, Graphics g)
 			throws SlickException {
+		g.pushTransform();
+		g.setColor(new Color(18, 54, 103));
+		g.fillRect(0, 0, container.getWidth(), container.getHeight());
+		g.popTransform();
 		for (Enemy enemy : enemies) {
 			enemy.baseRender(g);
 		}
 		for (Flag flag : flags) {
-			flag.render(g);
+			flag.baseRender(g);
 		}
 		for (Ship ship : ships) {
 			ship.baseRender(g);
-			ship.render(g);
 		}
 	}
 
