@@ -29,12 +29,14 @@ public class Game extends BasicGame {
 
 	@Override
 	public void init(GameContainer container) throws SlickException {
-		/*
-		 * String lvlName = "res/levels/test.lvl"; try { loadLevel(lvlName); }
-		 * catch (IOException e) { new
-		 * SlickException("Problème au chargement du niveau " + lvlName + " : "
-		 * + e.getMessage()); }
-		 */
+		String lvlName = "res/levels/test.lvl";
+		try {
+			loadLevel(lvlName);
+		} catch (IOException e) {
+			new SlickException("Problème au chargement du niveau " + lvlName
+					+ " : " + e.getMessage());
+		}
+
 	}
 
 	@Override
