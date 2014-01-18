@@ -1,15 +1,15 @@
-import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.geom.Shape;
 import org.newdawn.slick.geom.Vector2f;
 
-import physics.Collidable;
-import physics.CompositeRectangle;
+import tropicalescape.Flag;
+import tropicalescape.physics.Collidable;
+import tropicalescape.physics.CompositeRectangle;
 
 
 
-public class Ship implements GameObject, Collidable{
+public class Ship implements Collidable{
 	
 	static final String IMG_FILE = "res/ship.png";
 	static final int MAX_HP = 50;
@@ -86,17 +86,6 @@ public class Ship implements GameObject, Collidable{
 	public void setNextFlag(Flag nextFlag) {
 		this.nextFlag = nextFlag;
 		computePath();
-	}
-
-	@Override
-	public void render(Graphics g) {
-		img.draw(x, y);
-	}
-
-	@Override
-	public void update(int delta) {
-		x = x+vector.x*delta;
-		y = y+vector.y*delta;
 	}
 
 	@Override

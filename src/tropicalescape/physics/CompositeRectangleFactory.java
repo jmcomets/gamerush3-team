@@ -1,4 +1,4 @@
-package physics;
+package tropicalescape.physics;
 
 import java.io.BufferedReader;
 import java.io.File;
