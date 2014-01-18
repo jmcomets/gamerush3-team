@@ -17,16 +17,16 @@ public class HitboxLoader {
 			reader = new BufferedReader(new FileReader(file));
 			String text = null;
 			while ((text = reader.readLine()) != null) {
-				String[] array = text.split(" ", -1);
+				String[] array = text.split("\\s+");
 				System.out.println(array);
 				if (array.length < 4) {
-					throw new IOException("Need 4 rectangles");
+					throw new IOException("Need 4 numbers");
 				}
 				try {
-					float x = Float.parseFloat(array[0]);
-					float y = Float.parseFloat(array[1]);
-					float w = Float.parseFloat(array[2]);
-					float h = Float.parseFloat(array[3]);
+					float x = Integer.parseInt(array[0]);
+					float y = Integer.parseInt(array[1]);
+					float w = Integer.parseInt(array[2]);
+					float h = Integer.parseInt(array[3]);
 					cr.addRectangle(new Rectangle(x, y, w, h));
 				} catch (NumberFormatException e) {
 					throw new IOException(e);

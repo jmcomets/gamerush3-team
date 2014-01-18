@@ -11,7 +11,7 @@ public class HitboxAnimationFactory {
 	
 	public static HitboxAnimation create(String [] imageFiles, String [] hitboxFiles, int duration) {
 		HitboxAnimation ha = new HitboxAnimation();
-		for (String file : imageFiles) {
+		for (String file : hitboxFiles) {
 			try {
 				ha.addHitbox(HitboxLoader.loadFromTXT(file));
 			} catch (IOException e) {
