@@ -4,7 +4,9 @@ import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
 
-public class Flag implements GameObject {
+import tropicalescape.physics.CompositeRectangle;
+
+public class Flag extends GameObject {
 
 	static final int DESC_HEIGHT_SHIFT = 15;
 	static final String IMG_FILE = "res/flag.png";
@@ -23,6 +25,7 @@ public class Flag implements GameObject {
 	}
 
 	Flag(String desc, float x, float y) {
+		super(new CompositeRectangle());
 		m_desc = desc;
 		m_x = x;
 		m_y = y;
