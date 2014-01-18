@@ -149,7 +149,7 @@ public class Ship extends GameObject {
 		return false;
 	}
 
-	public boolean hasArrived() {
+	public boolean hasArrivedToNextFlag() {
 		return arrived;
 	}
 

@@ -43,6 +43,7 @@ public class GameManager extends StateBasedGame{
 		addState(PlayState.getInstance(WIDTH, HEIGHT));
 		addState(new WinState());
 		addState(new LevelSelectionState());
+		addState(new LoosedState());
 	}
 
 }

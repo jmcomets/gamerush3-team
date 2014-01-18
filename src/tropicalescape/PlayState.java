@@ -5,9 +5,9 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Stack;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
@@ -18,8 +18,11 @@ import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 
+import tropicalescape.enemies.CoconutThrower;
 import tropicalescape.enemies.Enemy;
+import tropicalescape.enemies.GiantLobster;
 import tropicalescape.enemies.Island;
+import tropicalescape.enemies.Kraken;
 import tropicalescape.enemies.OneHitMonster;
 import tropicalescape.enemies.SleepingIsland;
 
@@ -41,11 +44,12 @@ public class PlayState extends BasicGameState {
 	private Vector2f shipPopPosition = new Vector2f();
 
 	private boolean shouldQuit = false;
-	private List<GameObject> gameObjects = new CopyOnWriteArrayList<GameObject>(
-			new ArrayList<GameObject>());
+	private List<GameObject> gameObjects = new ArrayList<GameObject>();
 	private int minToWin;
 	private int nArrivedShips;
+
 	private boolean won;
+	private boolean loosed;
 
 	static int nextFlagNum = 1;
 
@@ -66,13 +70,15 @@ public class PlayState extends BasicGameState {
 		}
 		return instance;
 	}
-	
+
 	@Override
 	public void enter(GameContainer container, StateBasedGame game)
 			throws SlickException {
 		super.enter(container, game);
-		
+
 		this.won = false;
+		this.loosed = false;
+
 		this.nArrivedShips = 0;
 		this.shouldQuit = false;
 		emptyEntities();
@@ -83,7 +89,7 @@ public class PlayState extends BasicGameState {
 					+ " : " + e.getMessage());
 		}
 	}
-	
+
 	private void emptyEntities() {
 		this.shipStack = new Stack<Ship>();
 		this.userFlags = new ArrayList<Flag>();
@@ -92,7 +98,7 @@ public class PlayState extends BasicGameState {
 		this.shipStack = new Stack<Ship>();
 		this.gameObjects = new ArrayList<GameObject>();
 	}
-	
+
 	public void init(GameContainer container) throws SlickException {
 	}
 
@@ -134,8 +140,7 @@ public class PlayState extends BasicGameState {
 					enemies.add(island);
 					obj = island;
 				} else if (tokens[0].equals("COCONUT-THROWER")) {
-					OneHitMonster ohm = new OneHitMonster(
-							OneHitMonster.Type.COCONUT_THROWER);
+					OneHitMonster ohm = new CoconutThrower();
 					enemies.add(ohm);
 					obj = ohm;
 				} else if (tokens[0].equals("SLEEPING-ISLAND")) {
@@ -153,13 +158,11 @@ public class PlayState extends BasicGameState {
 					finishFlag = new FinishFlag(tokens[1]);
 					obj = finishFlag;
 				} else if (tokens[0].equals("KRAKEN")) {
-					OneHitMonster ohm = new OneHitMonster(
-							OneHitMonster.Type.KRAKEN);
+					OneHitMonster ohm = new Kraken();
 					enemies.add(ohm);
 					obj = ohm;
 				} else if (tokens[0].equals("GIANT_LOBSTER")) {
-					OneHitMonster ohm = new OneHitMonster(
-							OneHitMonster.Type.GIANT_LOBSTER);
+					OneHitMonster ohm = new GiantLobster();
 					enemies.add(ohm);
 					obj = ohm;
 				}
@@ -185,7 +188,7 @@ public class PlayState extends BasicGameState {
 		}
 	}
 
-	public void addEnnemy(Enemy enemy) {
+	public void addEnemy(Enemy enemy) {
 		gameObjects.add(enemy);
 		enemies.add(enemy);
 	}
@@ -226,7 +229,9 @@ public class PlayState extends BasicGameState {
 		g.fillRect(0, 0, container.getWidth(), container.getHeight());
 
 		// Draw all game objects
-		for (GameObject obj : gameObjects) {
+		Iterator<GameObject> it = gameObjects.iterator();
+		while (it.hasNext()) {
+			GameObject obj = it.next();
 			obj.baseRender(g);
 		}
 
@@ -235,11 +240,14 @@ public class PlayState extends BasicGameState {
 	@Override
 	public void update(GameContainer container, StateBasedGame game, int delta)
 			throws SlickException {
-		
+
 		if (won) {
 			game.enterState(WinState.ID);
 		}
-		
+		if (loosed) {
+			game.enterState(LoosedState.ID);
+		}
+
 		handleInput(container);
 		if (shipStack.size() > 0) {
 			shipPopTimer -= delta;
@@ -248,47 +256,40 @@ public class PlayState extends BasicGameState {
 			}
 		}
 
-		for (GameObject obj : gameObjects) {
+		for (int i = 0; i < gameObjects.size(); i++) {
+			GameObject obj = gameObjects.get(i);
 			obj.baseUpdate(container, delta);
 		}
 
-		List<Ship> deadShips = new ArrayList<Ship>();
+		List<Ship> shipsToRemove = new ArrayList<Ship>();
 		for (Ship ship : ships) {
 
 			resolveShipCollision(ship);
 			if (!ship.isAlive()) {
-				deadShips.add(ship);
+				shipsToRemove.add(ship);
+				// ship died
 				continue;
 			}
 
 			Flag flag = ship.getNextFlag();
 			if (flag != null) {
-				if (ship.hasArrived()) {
-					updateShipFlag(ship, flag);
+				if (ship.hasArrivedToNextFlag()) {
+					if (flag == finishFlag) {
+						nArrivedShips++;
+						shipsToRemove.add(ship);
+						checkForWin();
+					} else {
+						recomputeShipPath(ship, flag);
+					}
 				}
 			}
 		}
-
-		// Handle ship death toll
-		ships.removeAll(deadShips);
-		gameObjects.removeAll(deadShips);
-		checkForLose();
-
-		// Handle enemy death toll
-		List<Enemy> deadEnemies = new ArrayList<Enemy>();
-		for (Enemy enemy : enemies) {
-			if (!enemy.isAlive()) {
-				deadEnemies.add(enemy);
-			}
-		}
-		enemies.removeAll(deadEnemies);
-		gameObjects.removeAll(deadEnemies);
 
 		// Gestion des inputs, a mettre toujours APRES les MAJ des objets
 		Input input = container.getInput();
 		if (input.isMousePressed(Input.MOUSE_LEFT_BUTTON)) {
 			if (GameObject.getSelectedObject() == null) {
-				Flag flag = new Flag("" + nextFlagNum++);
+				Flag flag = new Flag("" + (userFlags.size() + 1));
 				int mouseX = input.getMouseX();
 				int mouseY = input.getMouseY();
 				flag.setPosition(new Vector2f(mouseX, mouseY));
@@ -309,43 +310,56 @@ public class PlayState extends BasicGameState {
 				for (Ship ship : ships) {
 					Flag shipNextFlag = ship.getNextFlag();
 					if (shipNextFlag == selectedObject) {
-						updateShipFlag(ship, shipNextFlag);
+						recomputeShipPath(ship, shipNextFlag);
 					}
 				}
 				userFlags.remove(selectedObject);
 				gameObjects.remove(selectedObject);
+
+				// Refaire la numérotation
+				for (int i = 0; i < userFlags.size(); i++) {
+					userFlags.get(i).setDescription("" + (i + 1));
+				}
 			}
 			GameObject.setSelectedObject(null);
 		}
+
+		// Handle ships to remove
+		ships.removeAll(shipsToRemove);
+		gameObjects.removeAll(shipsToRemove);
+		checkForLose();
+
+		// Handle enemies to remove
+		List<Enemy> enemiesToRemove = new ArrayList<Enemy>();
+		for (Enemy enemy : enemies) {
+			if (!enemy.isAlive()) {
+				enemiesToRemove.add(enemy);
+			}
+		}
+		enemies.removeAll(enemiesToRemove);
+		gameObjects.removeAll(enemiesToRemove);
 	}
 
-	private void updateShipFlag(Ship ship, Flag flag) {
-		if (ship.getNextFlag() == finishFlag) {
-			nArrivedShips++;
-			// TODO : remove flag from screen (but cannot in here)
-			//ships.remove(ship);
-			//gameObjects.remove(ship);
-			checkForWin();
+	private void recomputeShipPath(Ship ship, Flag previousFlag) {
+		int i = userFlags.indexOf(previousFlag);
+
+		// Dernier user flag atteint
+		if (i == userFlags.size() - 1) {
+			ship.setNextFlag(finishFlag);
 		} else {
-			int i = userFlags.indexOf(flag);
-			// Dernier user flag atteint
-			if (i == userFlags.size() - 1) {
-				ship.setNextFlag(finishFlag);
-			} else {
-				ship.setNextFlag(userFlags.get(i + 1));
-			}
+			ship.setNextFlag(userFlags.get(i + 1));
 		}
 	}
 
 	private void checkForWin() {
 		if (nArrivedShips >= minToWin) {
-			System.out.println("C'est gagné !");
 			this.won = true;
 		}
 	}
 
 	private void checkForLose() {
-		if (ships.size() + shipStack.size() < minToWin) {
+		if (!won && ships.size() + shipStack.size() < minToWin) {
+			loosed = true;
 			System.out.println("C'est perdu !");
 		}
 	}
