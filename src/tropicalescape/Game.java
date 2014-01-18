@@ -35,8 +35,21 @@ public class Game extends BasicGame {
 
 	@Override
 	public void update(GameContainer gc, int delta) throws SlickException {
+		List<Ship> deadShips = new ArrayList<Ship>();
 
 		for (Ship ship : ships) {
+			for (Enemy enemy : enemies) {
+				if (enemy.intersects(ship)) {
+					enemy.onHitShip(ship);
+					if (!ship.isAlive()) {
+						deadShips.add(ship);
+						break;
+					}
+				}
+			}
+			if (!ship.isAlive()) {
+				continue;
+			}
 
 			Flag flag = ship.getNextFlag();
 
@@ -53,6 +66,7 @@ public class Game extends BasicGame {
 			}
 		}
 
+		ships.removeAll(deadShips);
 	}
 
 	public static void main(String[] args) {
