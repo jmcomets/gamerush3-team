@@ -1,31 +1,21 @@
 package tropicalescape;
 
 import org.newdawn.slick.Graphics;
-import org.newdawn.slick.Image;
-import org.newdawn.slick.SlickException;
 import org.newdawn.slick.geom.Vector2f;
-
-import tropicalescape.physics.Hitbox;
 
 public class Flag extends GameObject {
 
-	static final int DESC_HEIGHT_SHIFT = 15;
-	static final String IMG_FILE = "res/flag.png";
+	private static final int DESC_HEIGHT_SHIFT = 15;
+	
+	private static int DURATION = 1;
+	private static final String [] IMG_FILES = {"res/animations/flag/base.png"};
+	private static final String [] HITBOX_FILES = {"res/hitboxes/flag/base.txt"};
 
-	String m_desc;
-	static Image m_img;
-
-	static {
-		try {
-			m_img = new Image(IMG_FILE);
-		} catch (SlickException e) {
-			e.printStackTrace();
-		}
-	}
+	private String description;
 
 	Flag(String desc, float x, float y) {
-		super(new HitboxAnimation());
-		m_desc = desc;
+		super(HitboxAnimationFactory.create(IMG_FILES, HITBOX_FILES, DURATION));
+		description = desc;
 		getPosition().x = x;
 		getPosition().y = y;
 	}
@@ -33,11 +23,11 @@ public class Flag extends GameObject {
 	@Override
 	public void render(Graphics g) {
 		Vector2f pos = getPosition();
-		m_img.draw(pos.x, pos.y);
-		if (getPosition().y - DESC_HEIGHT_SHIFT < 0) {
-			g.drawString(m_desc, pos.x, m_img.getHeight());
+		if (pos.y - DESC_HEIGHT_SHIFT < 0) {
+			int h = getHitboxAnimation().getHeight();
+			g.drawString(description, pos.x, h);
 		} else {
-			g.drawString(m_desc, pos.x, pos.y - DESC_HEIGHT_SHIFT);
+			g.drawString(description, pos.x, pos.y - DESC_HEIGHT_SHIFT);
 		}
 	}
 
