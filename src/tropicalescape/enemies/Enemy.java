@@ -1,12 +1,15 @@
 package tropicalescape.enemies;
 
+import org.newdawn.slick.Graphics;
+
 import tropicalescape.GameObject;
+import tropicalescape.HitboxAnimation;
 import tropicalescape.Ship;
-import tropicalescape.physics.Hitbox;
 
 public abstract class Enemy extends GameObject {
-	public Enemy(Hitbox rectangles) {
-		super(rectangles);
+	
+	public Enemy(HitboxAnimation ha) {
+		super(ha);
 	}
 
 	public abstract void onHitShip(Ship ship);

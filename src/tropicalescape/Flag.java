@@ -23,7 +23,7 @@ public class Flag extends GameObject {
 	}
 
 	Flag(String desc, float x, float y) {
-		super(new Hitbox());
+		super(new HitboxAnimation());
 		m_desc = desc;
 		getPosition().x = x;
 		getPosition().y = y;
