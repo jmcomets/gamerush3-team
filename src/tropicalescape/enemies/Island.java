@@ -6,21 +6,19 @@ import tropicalescape.Ship;
 
 public class Island extends Enemy {
 
-	static String [] ISLAND_IMAGES = {"res/animations/island/dummy.png"};
-	static String [] ISLAND_HITBOXES = {"res/hitboxes/island/dummy.txt"};
+	static String [] ISLAND_IMAGES = { "res/animations/island/1.png","res/animations/island/2.png","res/animations/island/3.png" };
+	static String [] ISLAND_HITBOXES = { "res/hitboxes/island/1.txt" };
 
 	public Island() {
 		super(makeHitboxAnimation());
 	}
 
 	private static HitboxAnimation makeHitboxAnimation() {
-		return HitboxAnimationFactory.create(ISLAND_IMAGES, ISLAND_HITBOXES, 1);
+		return HitboxAnimationFactory.create(ISLAND_IMAGES, ISLAND_HITBOXES, 500);
 	}
 
 	@Override
 	public void onHitShip(Ship ship) {
-		System.out.println("ship hit, my pos was " + getPosition());
 		ship.kill();
 	}
-	
 }

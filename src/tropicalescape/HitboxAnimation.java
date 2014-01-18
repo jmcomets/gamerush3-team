@@ -5,9 +5,7 @@ import java.util.List;
 
 import org.newdawn.slick.Animation;
 import org.newdawn.slick.Graphics;
-import org.newdawn.slick.geom.Shape;
 
-import tropicalescape.physics.Collidable;
 import tropicalescape.physics.Hitbox;
 
 public class HitboxAnimation extends Animation {
