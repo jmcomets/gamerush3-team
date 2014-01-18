@@ -94,7 +94,6 @@ public class PlayState extends BasicGameState {
 	}
 	
 	public void init(GameContainer container) throws SlickException {
-		
 	}
 
 	@Override
@@ -199,17 +198,6 @@ public class PlayState extends BasicGameState {
 		shipPopTimer = shipPopDelay;
 	}
 
-	public void init(GameContainer container) throws SlickException {
-		String lvlName = "res/levels/test.lvl";
-		try {
-			loadLevel(lvlName);
-		} catch (IOException e) {
-			new SlickException("Problème au chargement du niveau " + lvlName
-					+ " : " + e.getMessage());
-		}
-	}
-
->>>>>>> 5f371dd04ad9b3ab24de4cdc973062fa1c801902
 	private void handleInput(GameContainer gc) {
 		if (shouldQuit) {
 			gc.exit();
@@ -304,6 +292,7 @@ public class PlayState extends BasicGameState {
 				int mouseY = input.getMouseY();
 				flag.setPosition(new Vector2f(mouseX, mouseY));
 				userFlags.add(flag);
+				gameObjects.add(flag);
 				for (Ship ship : ships) {
 					Flag shipNextFlag = ship.getNextFlag();
 					if (shipNextFlag == finishFlag) {
@@ -323,6 +312,7 @@ public class PlayState extends BasicGameState {
 					}
 				}
 				userFlags.remove(selectedObject);
+				gameObjects.remove(selectedObject);
 			}
 			GameObject.setSelectedObject(null);
 		}
