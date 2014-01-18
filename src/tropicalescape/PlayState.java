@@ -53,6 +53,8 @@ public class PlayState extends BasicGameState {
 
 	public int height;
 
+	private String lvlName;
+
 	private PlayState(int width, int height) {
 		this.width = width;
 		this.height = height;
@@ -74,8 +76,6 @@ public class PlayState extends BasicGameState {
 		this.nArrivedShips = 0;
 		this.shouldQuit = false;
 		emptyEntities();
-		
-		String lvlName = "res/levels/test.lvl";
 		try {
 			loadLevel(lvlName);
 		} catch (IOException e) {
@@ -104,6 +104,7 @@ public class PlayState extends BasicGameState {
 	}
 
 	public void loadLevel(String path) throws IOException {
+		System.out.println(path);
 		File file = new File(path);
 		BufferedReader reader = null;
 		try {
@@ -363,6 +364,11 @@ public class PlayState extends BasicGameState {
 	@Override
 	public int getID() {
 		return ID;
+	}
+	
+
+	public void setLvlName(String lvlName) {
+		this.lvlName = lvlName;
 	}
 
 	public List<Ship> getShips() {
