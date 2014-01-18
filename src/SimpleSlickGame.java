@@ -22,6 +22,12 @@ public class SimpleSlickGame extends BasicGame
 	@Override
 	public void render(GameContainer gc, Graphics g) throws SlickException
 	{
+		Flag f1 = new Flag("Flag1", 50, 0);
+		Flag f2 = new Flag("flag2", 100, 100);
+		Flag f3 = new Flag("pepito", 150, 150);
+		f1.render(gc, g);
+		f2.render(gc, g);
+		f3.render(gc, g);
 		g.drawString("Howdy!", 10, 10);
 	}
 
