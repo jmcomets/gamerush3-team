@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Stack;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.lwjgl.input.Mouse;
 import org.newdawn.slick.Color;
@@ -21,8 +20,11 @@ import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 
+import tropicalescape.enemies.CoconutThrower;
 import tropicalescape.enemies.Enemy;
+import tropicalescape.enemies.GiantLobster;
 import tropicalescape.enemies.Island;
+import tropicalescape.enemies.Kraken;
 import tropicalescape.enemies.OneHitMonster;
 import tropicalescape.enemies.SleepingIsland;
 
@@ -43,8 +45,7 @@ public class PlayState extends BasicGameState {
 	private int shipPopTimer = 0;
 	private Vector2f shipPopPosition = new Vector2f();
 
-	private List<GameObject> gameObjects = new CopyOnWriteArrayList<GameObject>(
-			new ArrayList<GameObject>());
+	private List<GameObject> gameObjects = new ArrayList<GameObject>();
 	private int minToWin;
 	private int nArrivedShips;
 
@@ -134,8 +135,7 @@ public class PlayState extends BasicGameState {
 					enemies.add(island);
 					obj = island;
 				} else if (tokens[0].equals("COCONUT-THROWER")) {
-					OneHitMonster ohm = new OneHitMonster(
-							OneHitMonster.Type.COCONUT_THROWER);
+					OneHitMonster ohm = new CoconutThrower();
 					enemies.add(ohm);
 					obj = ohm;
 				} else if (tokens[0].equals("SLEEPING-ISLAND")) {
@@ -153,13 +153,11 @@ public class PlayState extends BasicGameState {
 					finishFlag = new FinishFlag(tokens[1]);
 					obj = finishFlag;
 				} else if (tokens[0].equals("KRAKEN")) {
-					OneHitMonster ohm = new OneHitMonster(
-							OneHitMonster.Type.KRAKEN);
+					OneHitMonster ohm = new Kraken();
 					enemies.add(ohm);
 					obj = ohm;
 				} else if (tokens[0].equals("GIANT_LOBSTER")) {
-					OneHitMonster ohm = new OneHitMonster(
-							OneHitMonster.Type.GIANT_LOBSTER);
+					OneHitMonster ohm = new GiantLobster();
 					enemies.add(ohm);
 					obj = ohm;
 				}
@@ -220,7 +218,9 @@ public class PlayState extends BasicGameState {
 		g.fillRect(0, 0, container.getWidth(), container.getHeight());
 
 		// Draw all game objects
-		for (GameObject obj : gameObjects) {
+		Iterator<GameObject> it = gameObjects.iterator();
+		while (it.hasNext()) {
+			GameObject obj = it.next();
 			obj.baseRender(g);
 		}
 	}
@@ -337,9 +337,8 @@ public class PlayState extends BasicGameState {
 			}
 		}
 
-		Iterator<GameObject> it = gameObjects.iterator();
-		while (it.hasNext()) {
-			GameObject obj = (GameObject) it.next();
+		for (int i = 0; i < gameObjects.size(); i++) {
+			GameObject obj = gameObjects.get(i);
 			obj.baseUpdate(container, delta);
 		}
 
