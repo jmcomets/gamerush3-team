@@ -23,24 +23,6 @@ public class Game extends BasicGame {
 	private void addGameObject(GameObject obj) {
 	}
 
-	public void computePath(Ship ship, Flag nextFlag) {
-		
-		float vectorX = ship.getX() - nextFlag.getX();
-		float vectorY = ship.getY() - nextFlag.getY();
-		
-		//normalise le vecteur
-		float norme = (float) Math.sqrt(vectorX*vectorX + vectorY * vectorY);
-		
-		vectorX = vectorX/norme;
-		vectorY = vectorY/norme;
-		
-		Vector2f vector = new Vector2f();
-		vector.x = vectorX;
-		vector.y = vectorY;
-		
-		ship.vector.set(vector);
-	}
-	
 	@Override
 	public void init(GameContainer container) throws SlickException {
 	}
