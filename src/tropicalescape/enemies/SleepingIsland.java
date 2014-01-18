@@ -8,19 +8,27 @@ import tropicalescape.HitboxAnimationFactory;
 public class SleepingIsland extends Island {
 
 	private HitboxAnimation up = HitboxAnimationFactory.create(new String[] {
-			"res/animations/sleeping-island/1.png",
-			"res/animations/sleeping-island/2.png",
-			"res/animations/sleeping-island/3.png" }, new String[] {
-			"res/hitboxes/sleeping-island/1.txt",
-			"res/hitboxes/sleeping-island/2.txt",
-			"res/hitboxes/sleeping-island/3.txt" }, 500);
+			"res/animations/sleeping-island/island1.png",
+			"res/animations/sleeping-island/island2.png",
+			"res/animations/sleeping-island/island3.png",
+			"res/animations/sleeping-island/island4.png",
+			"res/animations/sleeping-island/island5.png",}, new String[] {
+			"res/hitboxes/sleeping-island/island1.txt",
+			"res/hitboxes/sleeping-island/island2.txt",
+			"res/hitboxes/sleeping-island/island3.txt",
+			"res/hitboxes/sleeping-island/island4.txt",
+			"res/hitboxes/sleeping-island/island5.txt"}, 500);
 	private HitboxAnimation sleep = HitboxAnimationFactory.create(new String[] {
-			"res/animations/sleeping-island/3.png",
-			"res/animations/sleeping-island/2.png",
-			"res/animations/sleeping-island/1.png" }, new String[] {
-			"res/hitboxes/sleeping-island/3.txt",
-			"res/hitboxes/sleeping-island/2.txt",
-			"res/hitboxes/sleeping-island/1.txt" }, 500);
+			"res/animations/sleeping-island/island5.png",
+			"res/animations/sleeping-island/island4.png",
+			"res/animations/sleeping-island/island3.png",
+			"res/animations/sleeping-island/island2.png",
+			"res/animations/sleeping-island/island1.png" }, new String[] {
+			"res/hitboxes/sleeping-island/island5.txt",
+			"res/hitboxes/sleeping-island/island4.txt",
+			"res/hitboxes/sleeping-island/island3.txt",
+			"res/hitboxes/sleeping-island/island2.txt",
+			"res/hitboxes/sleeping-island/island1.txt"}, 500);
 
 	public static final int SLEEPING = 0;
 	public static final int AWAKE = 1;
