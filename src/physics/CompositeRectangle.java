@@ -11,12 +11,29 @@ public class CompositeRectangle implements Collidable {
 
 	private List<Rectangle> rectangles = new ArrayList<Rectangle>();
 	
+	public boolean intersects(CompositeRectangle cr) {
+		for (Rectangle r : cr.getRectangles())  {
+			if (intersects(r)) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
 	@Override
 	public boolean intersects(Shape shape) {
 		for (Rectangle r : rectangles)  {
 			if (r.intersects(shape))  {
 				return true;
 			}
+		}
+		return false;
+	}
+
+	@Override
+	public boolean intersects(Collidable collidable) {
+		if (collidable instanceof CompositeRectangle) {
+			return intersects((CompositeRectangle) collidable);
 		}
 		return false;
 	}
