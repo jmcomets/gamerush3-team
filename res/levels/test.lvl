@@ -1,6 +1,5 @@
-FLAG Pepito 50 50
-FLAG Granola 100 100
-FLAG Rakamlerouge 150 150
+FLAG Pepito 200 200
+FLAG Ta_mère 400 400
 SHIP 10 200
 SHIP 150 10
 SHIP 50 50

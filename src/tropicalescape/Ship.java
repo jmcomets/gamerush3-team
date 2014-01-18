@@ -12,10 +12,13 @@ public class Ship extends GameObject {
 
 	static final String IMG_FILE = "res/ship/ship-east.png";
 	static final int MAX_HP = 50;
+	static final int EPSILON = 5;
+	static final int SLOW_FACTOR = 10;
 
 	private int hp;
 	private Flag nextFlag;
 	private Direction dir;
+	private boolean arrived = true;
 
 	static Image img;
 
@@ -43,24 +46,31 @@ public class Ship extends GameObject {
 
 	private void computePath() {
 		Vector2f speed = new Vector2f();
-
-		if (nextFlag != null) {
+		if (nextFlag == null) {
 			speed.x = 0;
 			speed.y = 0;
 		} else {
-			float vectorX = getPosition().x - nextFlag.getPosition().x;
-			float vectorY = getPosition().y - nextFlag.getPosition().y;
+			float vectorX = nextFlag.getPosition().x - getPosition().x;
+			float vectorY = nextFlag.getPosition().y - getPosition().y;
 
 			// normalise le vecteur
 			float norme = (float) Math.sqrt(vectorX * vectorX + vectorY
 					* vectorY);
+			if (norme > EPSILON){
+				vectorX = vectorX / (norme*SLOW_FACTOR);
+				vectorY = vectorY / (norme*SLOW_FACTOR);
 
-			vectorX = vectorX / norme;
-			vectorY = vectorY / norme;
+				speed.x = vectorX;
+				speed.y = vectorY;
+			} else {
+				speed.x = 0;
+				speed.y = 0;
+				arrived = true;
+			}
 
-			speed.x = vectorX;
-			speed.y = vectorY;
+
 		}
+		System.out.println(speed);
 
 		setSpeed(speed);
 	}
@@ -74,6 +84,10 @@ public class Ship extends GameObject {
 			return true;
 		}
 		return false;
+	}
+	
+	public boolean hasArrived() {
+		return arrived;
 	}
 
 	public float getX() {
@@ -90,7 +104,6 @@ public class Ship extends GameObject {
 
 	public void setNextFlag(Flag nextFlag) {
 		this.nextFlag = nextFlag;
-		computePath();
 	}
 
 	@Override
@@ -103,6 +116,7 @@ public class Ship extends GameObject {
 		System.out.println(getSpeed());
 		System.out.println(getPosition());
 		System.out.println(nextFlag);
+		computePath();
 
 		/*double angle = getSpeed().getTheta();
 		System.out.println(angle);
