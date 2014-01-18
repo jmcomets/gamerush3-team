@@ -17,6 +17,11 @@ public class GameObject implements Collidable {
 		this.hitboxAnimation = hitboxAnimation;
 	}
 
+	/**
+	 * Base updating method called by the Game
+	 * 
+	 * @param delta
+	 */
 	public void baseUpdate(int delta) {
 		Vector2f speed2 = new Vector2f(speed);
 		speed2.x *= (float) delta;
@@ -26,6 +31,11 @@ public class GameObject implements Collidable {
 		this.update(delta);
 	}
 
+	/**
+	 * Base drawing method called by the Game
+	 * 
+	 * @param g
+	 */
 	public void baseRender(Graphics g) {
 		g.pushTransform();
 		g.translate(position.x, position.y);
@@ -69,10 +79,20 @@ public class GameObject implements Collidable {
 	public void setSpeed(Vector2f speed) {
 		this.speed = speed;
 	}
-	
+
+	/**
+	 * Event called when this object is rendered (after the baseRender)
+	 * 
+	 * @param g
+	 */
 	public void render(Graphics g) {
 	}
 	
+	/**
+	 * Event called when this object is updated (after the baseUpdate)
+	 * 
+	 * @param delta
+	 */
 	public void update(int delta) {
 	}
 }

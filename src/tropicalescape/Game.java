@@ -11,6 +11,7 @@ import java.util.logging.Logger;
 
 import org.newdawn.slick.AppGameContainer;
 import org.newdawn.slick.BasicGame;
+import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;
@@ -41,15 +42,18 @@ public class Game extends BasicGame {
 	@Override
 	public void render(GameContainer container, Graphics g)
 			throws SlickException {
+		g.pushTransform();
+		g.setColor(new Color(18, 54, 103));
+		g.fillRect(0, 0, container.getWidth(), container.getHeight());
+		g.popTransform();
 		for (Enemy enemy : enemies) {
 			enemy.baseRender(g);
 		}
 		for (Flag flag : flags) {
-			flag.render(g);
+			flag.baseRender(g);
 		}
 		for (Ship ship : ships) {
 			ship.baseRender(g);
-			ship.render(g);
 		}
 	}
 
@@ -63,7 +67,7 @@ public class Game extends BasicGame {
 				String[] tokens = text.split(" ");
 				if (tokens[0].equals("ISLAND")) {
 					if (tokens.length == 3) {
-						// TODO à faire
+						// TODO
 					}
 				} else if (tokens[0].equals("SHIP")) {
 					if (tokens.length == 3) {
@@ -131,9 +135,14 @@ public class Game extends BasicGame {
 		}
 		ships.removeAll(deadShips);
 
+		List<Enemy> deadEnemies = new ArrayList<Enemy>();
 		for (Enemy enemy : enemies) {
 			enemy.baseUpdate(delta);
+			if (!enemy.isAlive()) {
+				deadEnemies.add(enemy);
+			}
 		}
+		enemies.removeAll(deadEnemies);
 	}
 
 	public static void main(String[] args) {

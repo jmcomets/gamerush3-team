@@ -13,10 +13,10 @@ public class OneHitMonster extends Enemy {
 	private static int KRAKEN_DURATION = 1;
 	private static int GIANT_LOBSTER_DURATION = 1;
 
-	private static final String[] KRAKEN_IMAGE_FILES = { "animations/kraken/dummy.png" };
-	private static final String[] KRAKEN_HITBOX_FILES = { "hitboxes/kraken/dummy.txt" };
-	private static final String[] GIANT_LOBSTER_IMAGE_FILES = { "animations/giant-lobster/dummy.png" };
-	private static final String[] GIANT_LOBSTER_HITBOX_FILES = { "hitboxes/giant-lobster/dummy.txt" };
+	private static final String[] KRAKEN_IMAGE_FILES = { "res/animations/kraken/dummy.png" };
+	private static final String[] KRAKEN_HITBOX_FILES = { "res/hitboxes/kraken/dummy.txt" };
+	private static final String[] GIANT_LOBSTER_IMAGE_FILES = { "res/animations/giant-lobster/dummy.png" };
+	private static final String[] GIANT_LOBSTER_HITBOX_FILES = { "res/hitboxes/giant-lobster/dummy.txt" };
 
 	private enum MonsterType {
 		KRAKEN, GIANT_LOBSTER

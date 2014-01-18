@@ -6,8 +6,8 @@ import tropicalescape.Ship;
 
 public abstract class Island extends Enemy {
 
-	static String [] ISLAND_IMAGES = {"animations/island/dummy.png"};
-	static String [] ISLAND_HITBOXES = {"hitboxes/island/dummy.txt"};
+	static String [] ISLAND_IMAGES = {"res/animations/island/dummy.png"};
+	static String [] ISLAND_HITBOXES = {"res/hitboxes/island/dummy.txt"};
 
 	public Island() {
 		super(makeHitboxAnimation());

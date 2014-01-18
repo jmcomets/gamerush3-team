@@ -1,13 +1,10 @@
 package tropicalescape;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import org.newdawn.slick.Graphics;
-import org.newdawn.slick.Image;
-import org.newdawn.slick.SlickException;
 import org.newdawn.slick.geom.Vector2f;
-
-import tropicalescape.physics.Hitbox;
 
 public class Ship extends GameObject {
 
@@ -21,23 +18,23 @@ public class Ship extends GameObject {
 	private Direction dir;
 	private boolean arrived = false;
 
-	static String[] N_IMG_FILES = {"1", "2"};
-	static String[] NE_IMG_FILES = {"1", "2"};
-	static String[] NW_IMG_FILES = {"1", "2"};
-	static String[] S_IMG_FILES = {"1", "2"};
-	static String[] SW_IMG_FILES = {"1", "2"};
-	static String[] SE_IMG_FILES = {"1", "2"};
-	static String[] E_IMG_FILES = {"1", "2"};
-	static String[] W_IMG_FILES = {"1", "2"};
+	static String[] N_IMG_FILES = {"res/ship/Boat2-down.png", "res/ship/Boat2-down.png","res/ship/Boat2-down.png"};
+	static String[] NE_IMG_FILES = {"res/ship/Boat2-down.png", "res/ship/Boat2-down.png","res/ship/Boat2-down.png"};
+	static String[] NW_IMG_FILES = {"res/ship/Boat2-down.png", "res/ship/Boat2-down.png","res/ship/Boat2-down.png"};
+	static String[] S_IMG_FILES = {"res/ship/Boat2-down.png", "res/ship/Boat2-down.png","res/ship/Boat2-down.png"};
+	static String[] SW_IMG_FILES = {"res/ship/Boat2-down.png", "res/ship/Boat2-down.png","res/ship/Boat2-down.png"};
+	static String[] SE_IMG_FILES = {"res/ship/Boat2-down.png", "res/ship/Boat2-down.png","res/ship/Boat2-down.png"};
+	static String[] E_IMG_FILES = {"res/ship/Boat2-down.png", "res/ship/Boat2-down.png","res/ship/Boat2-down.png"};
+	static String[] W_IMG_FILES = {"res/ship/Boat2-down.png", "res/ship/Boat2-down.png","res/ship/Boat2-down.png"};
 	
-	static String[] N_HB_FILES = {"1", "2"};
-	static String[] NE_HB_FILES = {"1", "2"};
-	static String[] NW_HB_FILES = {"1", "2"};
-	static String[] S_HB_FILES = {"1", "2"};
-	static String[] SW_HB_FILES = {"1", "2"};
-	static String[] SE_HB_FILES = {"1", "2"};
-	static String[] E_HB_FILES = {"1", "2"};
-	static String[] W_HB_FILES = {"1", "2"};
+	static String[] N_HB_FILES = {"res/hitboxes/ship/dummy.txt", "res/hitboxes/ship/dummy.txt","res/hitboxes/ship/dummy.txt"};
+	static String[] NE_HB_FILES = {"res/hitboxes/ship/dummy.txt", "res/hitboxes/ship/dummy.txt","res/hitboxes/ship/dummy.txt"};
+	static String[] NW_HB_FILES = {"res/hitboxes/ship/dummy.txt", "res/hitboxes/ship/dummy.txt","res/hitboxes/ship/dummy.txt"};
+	static String[] S_HB_FILES = {"res/hitboxes/ship/dummy.txt", "res/hitboxes/ship/dummy.txt","res/hitboxes/ship/dummy.txt"};
+	static String[] SW_HB_FILES = {"res/hitboxes/ship/dummy.txt", "res/hitboxes/ship/dummy.txt","res/hitboxes/ship/dummy.txt"};
+	static String[] SE_HB_FILES = {"res/hitboxes/ship/dummy.txt", "res/hitboxes/ship/dummy.txt","res/hitboxes/ship/dummy.txt"};
+	static String[] E_HB_FILES = {"res/hitboxes/ship/dummy.txt", "res/hitboxes/ship/dummy.txt","res/hitboxes/ship/dummy.txt"};
+	static String[] W_HB_FILES = {"res/hitboxes/ship/dummy.txt", "res/hitboxes/ship/dummy.txt","res/hitboxes/ship/dummy.txt"};
 	
 	Map<Direction,HitboxAnimation> animationMap;
 	
@@ -55,6 +52,7 @@ public class Ship extends GameObject {
 		Vector2f position = new Vector2f(x,y);
 		setPosition(position);
 		
+		animationMap = new HashMap<Direction,HitboxAnimation>();
 		animationMap.put(Direction.N, HitboxAnimationFactory.create(N_IMG_FILES, N_HB_FILES, 10));
 		animationMap.put(Direction.NE, HitboxAnimationFactory.create(NE_IMG_FILES, NE_HB_FILES, 10));
 		animationMap.put(Direction.NW, HitboxAnimationFactory.create(NW_IMG_FILES, NW_HB_FILES, 10));
@@ -118,14 +116,6 @@ public class Ship extends GameObject {
 	
 	public boolean hasArrived() {
 		return arrived;
-	}
-
-	public float getX() {
-		return getPosition().x;
-	}
-
-	public float getY() {
-		return getPosition().y;
 	}
 
 	public Flag getNextFlag() {
