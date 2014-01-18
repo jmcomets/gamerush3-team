@@ -42,13 +42,13 @@ public class Game extends BasicGame {
 	public void render(GameContainer container, Graphics g)
 			throws SlickException {
 		for (Enemy enemy : enemies) {
-			enemy.render(g);
+			enemy.baseRender(g);
 		}
 		for (Flag flag : flags) {
 			flag.render(g);
 		}
 		for (Ship ship : ships) {
-			ship.render(g);
+			ship.baseRender(g);
 		}
 	}
 
@@ -96,8 +96,8 @@ public class Game extends BasicGame {
 	@Override
 	public void update(GameContainer gc, int delta) throws SlickException {
 		List<Ship> deadShips = new ArrayList<Ship>();
-
 		for (Ship ship : ships) {
+			ship.baseUpdate(delta);
 			for (Enemy enemy : enemies) {
 				if (enemy.intersects(ship)) {
 					enemy.onHitShip(ship);
@@ -107,28 +107,30 @@ public class Game extends BasicGame {
 					}
 				}
 			}
+
 			if (!ship.isAlive()) {
 				continue;
 			}
 
-			Flag flag = ship.getNextFlag();
-
 			// TODO : peut être le remplacer par un rectangle de colision si
 			// ship trop rapide
-			if (flag != null) {
-				if (flag.getX() == ship.getX() && flag.getY() == ship.getY()) {
-					int i = flags.indexOf(flag);
-					if (i == flags.size()) // Dernier flag atteint
-					{
-						ship.setNextFlag(null);
-					} else {
-						ship.setNextFlag(flags.get(i + 1));
-					}
+			Flag flag = ship.getNextFlag();
+			if (flag.getX() == ship.getX() && flag.getY() == ship.getY()) {
+				int i = flags.indexOf(flag);
+
+				// Dernier flag atteint
+				if (i == flags.size()) {
+					ship.setNextFlag(null);
+				} else {
+					ship.setNextFlag(flags.get(i + 1));
 				}
 			}
 		}
-
 		ships.removeAll(deadShips);
+
+		for (Enemy enemy : enemies) {
+			enemy.baseUpdate(delta);
+		}
 	}
 
 	public static void main(String[] args) {
