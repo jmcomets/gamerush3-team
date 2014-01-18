@@ -2,10 +2,8 @@ package tropicalescape;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
-import org.newdawn.slick.geom.Shape;
 import org.newdawn.slick.geom.Vector2f;
 
-import tropicalescape.physics.Collidable;
 import tropicalescape.physics.CompositeRectangle;
 
 

@@ -10,18 +10,18 @@ import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;
 
+import tropicalescape.enemies.Enemy;
+
 
 public class Game extends BasicGame {
 
-	ArrayList<Ship> ships;
-	ArrayList<Flag> flags;
-	private List<GameObject> gameObjects = new ArrayList<GameObject>();
-	
+
+	private List<Enemy> enemies = new ArrayList<Enemy>();
+	private List<Flag> flags = new ArrayList<Flag>();
+	private List<Ship> ships = new ArrayList<Ship>();
+
 	public Game(String title) {
 		super(title);
-	}
-	
-	private void addGameObject(GameObject obj) {
 	}
 
 	@Override

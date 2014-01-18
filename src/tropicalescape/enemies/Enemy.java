@@ -1,6 +1,7 @@
 package tropicalescape.enemies;
 
 import tropicalescape.GameObject;
+import tropicalescape.Ship;
 import tropicalescape.physics.CompositeRectangle;
 
 public abstract class Enemy extends GameObject {
@@ -8,5 +9,5 @@ public abstract class Enemy extends GameObject {
 		super(rectangles);
 	}
 
-	public abstract void onHitShip();
+	public abstract void onHitShip(Ship ship);
 }
