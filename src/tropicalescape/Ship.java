@@ -11,7 +11,7 @@ public class Ship extends GameObject {
 	static final int MAX_HP = 50;
 	static final int EPSILON = 5;
 	static final int SLOW_FACTOR = 10;
-	static final int FRAME_DURATION = 300;
+	static final int FRAME_DURATION = 125;
 
 	private int hp;
 	private Flag nextFlag;
