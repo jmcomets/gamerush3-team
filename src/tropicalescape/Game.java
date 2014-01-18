@@ -19,11 +19,8 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.geom.Vector2f;
 
 import tropicalescape.enemies.Enemy;
-<<<<<<< HEAD
 import tropicalescape.enemies.Island;
-=======
 import tropicalescape.enemies.OneHitMonster;
->>>>>>> 92afa2d43b2b21cce366c1c39620162c5b4ba1cc
 import tropicalescape.enemies.SleepingIsland;
 
 public class Game extends BasicGame {
