@@ -10,10 +10,11 @@ public abstract class GameObject implements Collidable {
 	
 	private Vector2f position = new Vector2f();
 	private Vector2f speed = new Vector2f();
-	private Hitbox rectangles;
 	
-	public GameObject(Hitbox rectangles) {
-		this.rectangles = rectangles;
+	private HitboxAnimation hitboxAnimation;
+	
+	public GameObject(HitboxAnimation hitboxAnimation) {
+		this.hitboxAnimation = hitboxAnimation;
 	}
 
 	public void baseUpdate(int delta) {
@@ -21,23 +22,28 @@ public abstract class GameObject implements Collidable {
 		speed2.x *= (float) delta;
 		speed2.y *= (float) delta;
 		position.add(speed2);
-		rectangles.setOrigin(position);
+		hitboxAnimation.getHitbox().setOrigin(position);
 		this.update(delta);
 	}
 
 	public void baseRender(Graphics g) {
 		g.pushTransform();
 		g.translate(position.x, position.y);
-		rectangles.render(g);
+		hitboxAnimation.render(g);
+		render(g);
 		g.popTransform();
 	}
 
 	public boolean intersects(Shape shape) {
-		return rectangles.intersects(shape);
+		return hitboxAnimation.intersects(shape);
 	}
 
 	public boolean intersects(Collidable collidable) {
-		return rectangles.intersects(collidable);
+		return hitboxAnimation.intersects(collidable);
+	}
+
+	public Hitbox getRectangles() {
+		return hitboxAnimation.getHitbox();
 	}
 
 	public Vector2f getPosition() {

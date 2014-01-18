@@ -1,17 +1,19 @@
 package tropicalescape.enemies;
-import org.newdawn.slick.Animation;
 import org.newdawn.slick.Graphics;
 
+import tropicalescape.HitboxAnimation;
 import tropicalescape.Ship;
-import tropicalescape.physics.Hitbox;
 
 
 public abstract class Island extends Enemy {
-	
-	private Animation animation;
-	
-	public Island(Animation anim, Hitbox rectangles) {
-		super(rectangles);
+
+	public Island() {
+		super(makeHitboxAnimation());
+	}
+
+	private static HitboxAnimation makeHitboxAnimation() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	@Override

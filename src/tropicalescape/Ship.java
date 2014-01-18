@@ -10,6 +10,7 @@ import tropicalescape.physics.Hitbox;
 
 public class Ship extends GameObject {
 
+	static final String IMG_FILE = "res/ship.png";
 	static final int MAX_HP = 50;
 	static final int EPSILON = 5;
 	static final int SLOW_FACTOR = 10;
@@ -31,7 +32,7 @@ public class Ship extends GameObject {
 	}
 
 	Ship(float x, float y) {
-		super(new Hitbox()); // TODO
+		super(new HitboxAnimation()); // TODO
 		hp = MAX_HP;
 		dir = Direction.E;
 		Vector2f speed = new Vector2f(0f,0f);
@@ -81,7 +82,15 @@ public class Ship extends GameObject {
 		setSpeed(speed);
 	}
 
-	public void loseHealh(int dmgValue) {
+	public int getHp() {
+		return hp;
+	}
+
+	public void setHp(int hp) {
+		this.hp = hp;
+	}
+
+	public void loseHealth(int dmgValue) {
 		hp -= dmgValue;
 	}
 
