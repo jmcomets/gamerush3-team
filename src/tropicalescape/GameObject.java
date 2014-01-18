@@ -5,7 +5,6 @@ import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.geom.Rectangle;
-import org.newdawn.slick.geom.Shape;
 import org.newdawn.slick.geom.Vector2f;
 
 import tropicalescape.physics.Collidable;
@@ -34,7 +33,7 @@ public class GameObject implements Collidable {
 		speed2.x *= (float) delta;
 		speed2.y *= (float) delta;
 		position.add(speed2);
-		System.out.println("position = " + position);
+//		System.out.println("position = " + position);
 		update(gc, delta);
 	}
 

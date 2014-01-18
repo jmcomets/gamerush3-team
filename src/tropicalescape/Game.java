@@ -6,6 +6,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Stack;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -30,10 +31,15 @@ public class Game extends BasicGame {
 	private StartFlag startFlag;
 	private FinishFlag finishFlag;
 	private List<Flag> userFlags = new ArrayList<Flag>();
+	
 	private List<Ship> ships = new ArrayList<Ship>();
+	private Stack<Ship> shipStack = new Stack<Ship>();
+	private static int SHIP_POP_DELAY = 1500;
+	private int shipPopTimer = 0;
 
+	
 	private boolean shouldQuit = false;
-	private List<GameObject> gameObjects  = new ArrayList<GameObject>();
+	private List<GameObject> gameObjects = new ArrayList<GameObject>();
 
 	static int nextFlagNum = 1;
 
@@ -85,7 +91,15 @@ public class Game extends BasicGame {
 				}
 
 				GameObject obj = null;
-				if (tokens[0].equals("ISLAND")) {
+				if (tokens[0].equals("SHIP")) {
+					for (int i = 0; i < Integer.parseInt(tokens[3]); i++) {
+						Ship ship = new Ship();
+						shipStack.add(ship);
+						ship.setPosition(new Vector2f(Float
+								.parseFloat(tokens[1]), Float
+								.parseFloat(tokens[2])));
+					}
+				} else if (tokens[0].equals("ISLAND")) {
 					Island island = new Island();
 					enemies.add(island);
 					obj = island;
@@ -93,10 +107,6 @@ public class Game extends BasicGame {
 					SleepingIsland sleepingIsland = new SleepingIsland();
 					enemies.add(sleepingIsland);
 					obj = sleepingIsland;
-				} else if (tokens[0].equals("SHIP")) {
-					Ship ship = new Ship();
-					ships.add(ship);
-					obj = ship;
 				} else if (tokens[0].equals("FLAG")) {
 					Flag flag = new Flag(tokens[1]);
 					userFlags.add(flag);
@@ -133,7 +143,7 @@ public class Game extends BasicGame {
 				finishFlag = new FinishFlag("Finish");
 				finishFlag.setPosition(new Vector2f(600, 440));
 			}
-			for (Ship s : ships) {
+			for (Ship s : shipStack) {
 				s.setNextFlag(startFlag);
 			}
 
@@ -143,7 +153,7 @@ public class Game extends BasicGame {
 			}
 		}
 	}
-
+	
 	@Override
 	public void update(GameContainer gc, int delta) throws SlickException {
 		handleInput(gc);
@@ -152,8 +162,19 @@ public class Game extends BasicGame {
 			obj.baseUpdate(gc, delta);
 		}
 		
+		if (shipStack.size() > 0) {
+			System.out.println("ship pop handle");
+			shipPopTimer -= delta;
+			if (shipPopTimer <= 0) {
+				System.out.println("ship pop !");
+				Ship ship = shipStack.pop();
+				ships.add(ship);
+				gameObjects.add(ship);
+				shipPopTimer = SHIP_POP_DELAY;
+			}
+		}
+
 		for (Ship ship : ships) {
-			
 			resolveShipCollision(ship);
 			if (!ship.isAlive()) {
 				deadShips.add(ship);
@@ -167,6 +188,7 @@ public class Game extends BasicGame {
 				}
 			}
 		}
+		
 		ships.removeAll(deadShips);
 		gameObjects.removeAll(deadShips);
 
@@ -228,7 +250,6 @@ public class Game extends BasicGame {
 
 	private void resolveShipCollision(Ship ship) {
 		for (Enemy enemy : enemies) {
-			System.out.println("resolving collision with enemy " + enemy);
 			if (enemy.intersects(ship)) {
 				enemy.onHitShip(ship);
 				if (!ship.isAlive()) {
