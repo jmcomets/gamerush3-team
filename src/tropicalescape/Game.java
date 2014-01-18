@@ -99,9 +99,11 @@ public class Game extends BasicGame {
 					flags.add(flag);
 					obj = flag;
 				}
-				obj.setPosition(new Vector2f(Float
-						.parseFloat(tokens[tokens.length - 2]), Float
-						.parseFloat(tokens[tokens.length - 1])));
+				if (obj != null) {
+					obj.setPosition(new Vector2f(Float
+							.parseFloat(tokens[tokens.length - 2]), Float
+							.parseFloat(tokens[tokens.length - 1])));
+				}
 			}
 
 			if (flags.size() > 0) {
