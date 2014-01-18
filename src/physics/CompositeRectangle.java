@@ -1,3 +1,5 @@
+package physics;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,5 +23,9 @@ public class CompositeRectangle implements Collidable {
 	
 	public void addRectangle(Rectangle rectangle) {
 		this.rectangles.add(rectangle);
+	}
+
+	public List<Rectangle> getRectangles() {
+		return rectangles;
 	}
 }
