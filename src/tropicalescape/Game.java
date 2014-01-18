@@ -1,4 +1,5 @@
 package tropicalescape;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -12,9 +13,7 @@ import org.newdawn.slick.SlickException;
 
 import tropicalescape.enemies.Enemy;
 
-
 public class Game extends BasicGame {
-
 
 	private List<Enemy> enemies = new ArrayList<Enemy>();
 	private List<Flag> flags = new ArrayList<Flag>();
@@ -31,13 +30,20 @@ public class Game extends BasicGame {
 	@Override
 	public void render(GameContainer container, Graphics g)
 			throws SlickException {
+		for (Ship ship : ships) {
+			ship.baseRender(g);
+		}
+
+		for (Enemy enemy : enemies) {
+			enemy.baseRender(g);
+		}
 	}
 
 	@Override
-	public void update(GameContainer gc, int frame) throws SlickException {
+	public void update(GameContainer gc, int delta) throws SlickException {
 		List<Ship> deadShips = new ArrayList<Ship>();
-
 		for (Ship ship : ships) {
+			ship.baseUpdate(delta);
 			for (Enemy enemy : enemies) {
 				if (enemy.intersects(ship)) {
 					enemy.onHitShip(ship);
@@ -47,26 +53,30 @@ public class Game extends BasicGame {
 					}
 				}
 			}
+
 			if (!ship.isAlive()) {
 				continue;
 			}
 
-			Flag flag = ship.getNextFlag();
-
 			// TODO : peut être le remplacer par un rectangle de colision si
 			// ship trop rapide
+			Flag flag = ship.getNextFlag();
 			if (flag.getX() == ship.getX() && flag.getY() == ship.getY()) {
 				int i = flags.indexOf(flag);
-				if (i == flags.size()) // Dernier flag atteint
-				{
+
+				// Dernier flag atteint
+				if (i == flags.size()) {
 					ship.setNextFlag(null);
 				} else {
 					ship.setNextFlag(flags.get(i + 1));
 				}
 			}
 		}
-
 		ships.removeAll(deadShips);
+
+		for (Enemy enemy : enemies) {
+			enemy.baseUpdate(delta);
+		}
 	}
 
 	public static void main(String[] args) {

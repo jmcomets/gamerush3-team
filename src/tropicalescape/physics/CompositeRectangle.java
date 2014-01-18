@@ -3,6 +3,8 @@ package tropicalescape.physics;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.newdawn.slick.Color;
+import org.newdawn.slick.Graphics;
 import org.newdawn.slick.geom.Rectangle;
 import org.newdawn.slick.geom.Shape;
 import org.newdawn.slick.geom.Vector2f;
@@ -10,6 +12,7 @@ import org.newdawn.slick.geom.Vector2f;
 
 public class CompositeRectangle implements Collidable {
 
+	private Vector2f origin = new Vector2f();
 	private List<Rectangle> rectangles = new ArrayList<Rectangle>();
 	
 	public boolean intersects(CompositeRectangle cr) {
@@ -23,8 +26,10 @@ public class CompositeRectangle implements Collidable {
 	
 	@Override
 	public boolean intersects(Shape shape) {
-		for (Rectangle r : rectangles)  {
-			if (r.intersects(shape))  {
+		for (Rectangle rect : rectangles)  {
+			if ((new Rectangle(rect.getX() + origin.x,
+					rect.getY() + origin.y,
+					rect.getWidth(), rect.getHeight())).intersects(shape))  {
 				return true;
 			}
 		}
@@ -47,7 +52,16 @@ public class CompositeRectangle implements Collidable {
 		return rectangles;
 	}
 
-	public void setOrigin(Vector2f position) {
-		// TODO
+	public void setOrigin(Vector2f origin) {
+		this.origin = origin;
+	}
+	
+	public void render(Graphics g) {
+		g.pushTransform();
+		g.setColor(Color.red);
+		for (Rectangle r : rectangles)  {
+			g.draw(r);
+		}
+		g.popTransform();
 	}
 }

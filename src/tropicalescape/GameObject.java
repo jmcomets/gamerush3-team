@@ -24,9 +24,10 @@ public abstract class GameObject implements Collidable {
 		rectangles.setOrigin(position);
 		this.update(delta);
 	}
-	
-	public abstract void render(Graphics g);
-	public abstract void update(int delta);
+
+	public void baseRender(Graphics g) {
+		rectangles.render(g);
+	}
 
 	public boolean intersects(Shape shape) {
 		return rectangles.intersects(shape);
@@ -52,5 +53,6 @@ public abstract class GameObject implements Collidable {
 		this.speed = speed;
 	}
 	
-	
+	public abstract void render(Graphics g);
+	public abstract void update(int delta);
 }
