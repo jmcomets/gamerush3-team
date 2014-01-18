@@ -34,7 +34,6 @@ public class GameObject implements Collidable {
 		speed2.x *= (float) delta;
 		speed2.y *= (float) delta;
 		position.add(speed2);
-		System.out.println("position = " + position);
 		update(gc, delta);
 	}
 
