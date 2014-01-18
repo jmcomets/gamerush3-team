@@ -95,7 +95,9 @@ public class Ship extends GameObject {
 
 	@Override
 	public void render(Graphics g) {
-		img.draw(getPosition().x, getPosition().y);
+		float centerX = getPosition().x - img.getHeight() / 2f;
+		float centerY = getPosition().y - img.getWidth() / 2f;
+		img.draw(centerX, centerY);
 	}
 
 	@Override
