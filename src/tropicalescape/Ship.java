@@ -123,5 +123,8 @@ public class Ship extends GameObject {
 		
 		System.out.println(dir);*/
 	}
-
+	
+	public void kill(){
+		this.hp = 0;
+	}
 }
