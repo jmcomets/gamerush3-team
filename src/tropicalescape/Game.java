@@ -9,11 +9,16 @@ import org.newdawn.slick.BasicGame;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;
-import org.newdawn.slick.geom.Vector2f;
 
 
 public class Game extends BasicGame {
 
+	ArrayList<Ship> ships;
+	ArrayList<Flag> flags;
+
+	public Game(String title) {
+		super(title);
+	}
 	private List<GameObject> gameObjects = new ArrayList<GameObject>();
 	
 	public Game(String title) {
@@ -33,8 +38,25 @@ public class Game extends BasicGame {
 	}
 
 	@Override
-	public void update(GameContainer container, int delta)
-			throws SlickException {
+	public void update(GameContainer gc, int frame) throws SlickException {
+
+		for (Ship ship : ships) {
+
+			Flag flag = ship.getNextFlag();
+
+			// TODO : peut être le remplacer par un rectangle de colision si
+			// ship trop rapide
+			if (flag.getX() == ship.getX() && flag.getY() == ship.getY()) {
+				int i = flags.indexOf(flag);
+				if (i == flags.size()) // Dernier flag atteint
+				{
+					ship.setNextFlag(null);
+				} else {
+					ship.setNextFlag(flags.get(i + 1));
+				}
+			}
+		}
+
 	}
 
 	public static void main(String[] args) {
