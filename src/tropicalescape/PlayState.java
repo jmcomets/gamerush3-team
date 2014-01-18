@@ -45,7 +45,9 @@ public class PlayState extends BasicGameState {
 			new ArrayList<GameObject>());
 	private int minToWin;
 	private int nArrivedShips;
+
 	private boolean won;
+	private boolean loosed;
 
 	static int nextFlagNum = 1;
 
@@ -71,6 +73,8 @@ public class PlayState extends BasicGameState {
 		super.enter(container, game);
 		
 		this.won = false;
+		this.loosed = false;
+		
 		this.nArrivedShips = 0;
 		this.shouldQuit = false;
 		emptyEntities();
@@ -238,6 +242,9 @@ public class PlayState extends BasicGameState {
 		if (won) {
 			game.enterState(WinState.ID);
 		}
+		if (loosed){
+			game.enterState(LoosedState.ID);
+		}
 		
 		handleInput(container);
 		if (shipStack.size() > 0) {
@@ -343,13 +350,13 @@ public class PlayState extends BasicGameState {
 
 	private void checkForWin() {
 		if (nArrivedShips >= minToWin) {
-			System.out.println("C'est gagné !");
 			this.won = true;
 		}
 	}
 
 	private void checkForLose() {
 		if (!won && ships.size() + shipStack.size() < minToWin) {
+			loosed = true;
 			System.out.println("C'est perdu !");
 		}
 	}
