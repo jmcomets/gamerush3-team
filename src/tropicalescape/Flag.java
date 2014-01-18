@@ -4,7 +4,7 @@ import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
 
-import tropicalescape.physics.CompositeRectangle;
+import tropicalescape.physics.Hitbox;
 
 public class Flag extends GameObject {
 
@@ -23,7 +23,7 @@ public class Flag extends GameObject {
 	}
 
 	Flag(String desc, float x, float y) {
-		super(new CompositeRectangle());
+		super(new Hitbox());
 		m_desc = desc;
 		getPosition().x = x;
 		getPosition().y = y;

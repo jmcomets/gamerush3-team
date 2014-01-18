@@ -10,12 +10,12 @@ import org.newdawn.slick.geom.Shape;
 import org.newdawn.slick.geom.Vector2f;
 
 
-public class CompositeRectangle implements Collidable {
+public class Hitbox implements Collidable {
 
 	private Vector2f origin = new Vector2f();
 	private List<Rectangle> rectangles = new ArrayList<Rectangle>();
 	
-	public boolean intersects(CompositeRectangle cr) {
+	public boolean intersects(Hitbox cr) {
 		for (Rectangle r : cr.getRectangles())  {
 			if (intersects(r)) {
 				return true;
@@ -38,8 +38,8 @@ public class CompositeRectangle implements Collidable {
 
 	@Override
 	public boolean intersects(Collidable collidable) {
-		if (collidable instanceof CompositeRectangle) {
-			return intersects((CompositeRectangle) collidable);
+		if (collidable instanceof Hitbox) {
+			return intersects((Hitbox) collidable);
 		}
 		return false;
 	}

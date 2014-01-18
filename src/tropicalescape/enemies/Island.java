@@ -3,14 +3,14 @@ import org.newdawn.slick.Animation;
 import org.newdawn.slick.Graphics;
 
 import tropicalescape.Ship;
-import tropicalescape.physics.CompositeRectangle;
+import tropicalescape.physics.Hitbox;
 
 
 public abstract class Island extends Enemy {
 	
 	private Animation animation;
 	
-	public Island(Animation anim, CompositeRectangle rectangles) {
+	public Island(Animation anim, Hitbox rectangles) {
 		super(rectangles);
 	}
 

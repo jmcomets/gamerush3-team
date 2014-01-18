@@ -6,7 +6,7 @@ import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.geom.Vector2f;
 
-import tropicalescape.physics.CompositeRectangle;
+import tropicalescape.physics.Hitbox;
 
 public class Ship extends GameObject {
 
@@ -25,7 +25,7 @@ public class Ship extends GameObject {
 	}
 
 	Ship(float x, float y) {
-		super(new CompositeRectangle()); // TODO
+		super(new Hitbox()); // TODO
 		hp = MAX_HP;
 		dir = Direction.E;
 	}
