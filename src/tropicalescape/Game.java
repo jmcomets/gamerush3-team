@@ -67,7 +67,7 @@ public class Game extends BasicGame {
 				String[] tokens = text.split(" ");
 				if (tokens[0].equals("ISLAND")) {
 					if (tokens.length == 3) {
-						// TODO à faire
+						// TODO
 					}
 				} else if (tokens[0].equals("SHIP")) {
 					if (tokens.length == 3) {
@@ -135,9 +135,14 @@ public class Game extends BasicGame {
 		}
 		ships.removeAll(deadShips);
 
+		List<Enemy> deadEnemies = new ArrayList<Enemy>();
 		for (Enemy enemy : enemies) {
 			enemy.baseUpdate(delta);
+			if (!enemy.isAlive()) {
+				deadEnemies.add(enemy);
+			}
 		}
+		enemies.removeAll(deadEnemies);
 	}
 
 	public static void main(String[] args) {
