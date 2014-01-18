@@ -12,22 +12,32 @@ public class OneHitMonster extends Enemy {
 	private static final int GIANT_LOBSTER_DAMAGE = 60;
 	private static final int KRAKEN_DAMAGE = 70;
 
-	private static int KRAKEN_DURATION = 1;
-	private static int GIANT_LOBSTER_DURATION = 1;
+	private static int KRAKEN_DURATION = 300;
+	private static int GIANT_LOBSTER_DURATION = 30;
 
-	private static final String[] KRAKEN_IMAGE_FILES = { "res/animations/kraken/dummy.png" };
+	private static final String[] KRAKEN_IMAGE_FILES = {
+		"res/animations/kraken/dummy1.png",
+		"res/animations/kraken/dummy2.png",
+		"res/animations/kraken/dummy3.png"
+		};
 	private static final String[] KRAKEN_HITBOX_FILES = { "res/hitboxes/kraken/dummy.txt" };
+
 	private static final String[] GIANT_LOBSTER_IMAGE_FILES = { "res/animations/giant-lobster/dummy.png" };
 	private static final String[] GIANT_LOBSTER_HITBOX_FILES = { "res/hitboxes/giant-lobster/dummy.txt" };
 
-	private enum MonsterType {
+	private static final String[] END_KRAKEN_IMAGE_FILES = { "res/animations/kraken/dummy.png" };
+	private static final String[] END_GIANT_LOBSTER_IMAGE_FILES = { "res/animations/giant-lobster/dummy.png" };
+
+	public enum Type {
 		KRAKEN, GIANT_LOBSTER
 	}
 
-	private int damage;
+	private boolean hitDone = false;
+	private Type type;
+	private HitboxAnimation endAnimation;
 
-	private static HitboxAnimation makeHitboxAnimation(MonsterType type) {
-		if (type == MonsterType.KRAKEN) {
+	private static HitboxAnimation makeHitboxAnimation(Type type) {
+		if (type == Type.KRAKEN) {
 			return HitboxAnimationFactory.create(KRAKEN_IMAGE_FILES,
 					KRAKEN_HITBOX_FILES, KRAKEN_DURATION);
 		} else {
@@ -36,22 +46,39 @@ public class OneHitMonster extends Enemy {
 		}
 	}
 
-	public OneHitMonster(MonsterType type, Hitbox rectangles) {
+	public OneHitMonster(Type type) {
 		super(makeHitboxAnimation(type));
-		if (type == MonsterType.KRAKEN) {
-			damage = KRAKEN_DAMAGE;
+		this.type = type;
+		if (type == Type.KRAKEN) {
+			endAnimation = HitboxAnimationFactory.create(END_KRAKEN_IMAGE_FILES,
+					emptyArray, KRAKEN_DURATION);
 		} else {
-			damage = GIANT_LOBSTER_DAMAGE;
+			HitboxAnimationFactory.create(END_GIANT_LOBSTER_IMAGE_FILES,
+					emptyArray, GIANT_LOBSTER_DURATION);
 		}
 	}
+	
+	private static String [] emptyArray = {};
 
 	@Override
 	public void onHitShip(Ship ship) {
-		ship.loseHealth(damage);
+		if (type == Type.KRAKEN) {
+			ship.loseHealth(KRAKEN_DAMAGE);
+		} else {
+			ship.loseHealth(GIANT_LOBSTER_DAMAGE);
+		}
+		hitDone = true;
+		
+		// Start end animation
+//		setHitboxAnimation(endAnimation);
+//		getHitboxAnimation().setLooping(false);
 	}
 
 	@Override
 	public void update(GameContainer gc, int delta) {
+		if (hitDone && getHitboxAnimation().isStopped()) {
+			//setAlive(false);
+		}
 	}
-	
+
 }
