@@ -6,7 +6,7 @@ import org.newdawn.slick.geom.Vector2f;
 import tropicalescape.physics.Collidable;
 import tropicalescape.physics.Hitbox;
 
-public abstract class GameObject implements Collidable {
+public class GameObject implements Collidable {
 	
 	private Vector2f position = new Vector2f();
 	private Vector2f speed = new Vector2f();
@@ -42,7 +42,15 @@ public abstract class GameObject implements Collidable {
 		return hitboxAnimation.intersects(collidable);
 	}
 
-	public Hitbox getRectangles() {
+	public HitboxAnimation getHitboxAnimation() {
+		return hitboxAnimation;
+	}
+
+	public void setHitboxAnimation(HitboxAnimation hitboxAnimation) {
+		this.hitboxAnimation = hitboxAnimation;
+	}
+
+	public Hitbox getHitbox() {
 		return hitboxAnimation.getHitbox();
 	}
 
@@ -62,6 +70,9 @@ public abstract class GameObject implements Collidable {
 		this.speed = speed;
 	}
 	
-	public abstract void render(Graphics g);
-	public abstract void update(int delta);
+	public void render(Graphics g) {
+	}
+	
+	public void update(int delta) {
+	}
 }
