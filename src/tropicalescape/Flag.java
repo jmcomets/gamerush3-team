@@ -36,8 +36,8 @@ public class Flag extends GameObject {
 	}
 
 	@Override
-	public void baseUpdate(GameContainer gc, int delta) {
-
+	public void update(GameContainer gc, int delta) {
+		
 		boolean leftClicked = isLeftClicked(gc);
 		if (leftClicked || selected) {
 			HitboxAnimation hitAnim = getHitboxAnimation();
@@ -55,7 +55,6 @@ public class Flag extends GameObject {
 				selected = true;
 			}
 		}
-
-		super.baseUpdate(gc, delta);
+		
 	}
 }

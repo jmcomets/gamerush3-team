@@ -32,7 +32,7 @@ public class GameObject implements Collidable {
 		speed2.y *= (float) delta;
 		position.add(speed2);
 		hitboxAnimation.getHitbox().setOrigin(position);
-		this.update(delta);
+		this.update(gc, delta);
 	}
 	
 	public boolean isMouseOver(GameContainer gc) {
@@ -125,6 +125,6 @@ public class GameObject implements Collidable {
 	 * 
 	 * @param delta
 	 */
-	public void update(int delta) {
+	public void update(GameContainer gc, int delta) {
 	}
 }

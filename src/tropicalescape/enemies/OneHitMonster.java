@@ -1,5 +1,7 @@
 package tropicalescape.enemies;
 
+import org.newdawn.slick.GameContainer;
+
 import tropicalescape.HitboxAnimation;
 import tropicalescape.HitboxAnimationFactory;
 import tropicalescape.Ship;
@@ -49,7 +51,7 @@ public class OneHitMonster extends Enemy {
 	}
 
 	@Override
-	public void update(int delta) {
+	public void update(GameContainer gc, int delta) {
 	}
 	
 }
