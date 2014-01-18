@@ -6,9 +6,9 @@ import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.geom.Circle;
 import org.newdawn.slick.geom.Vector2f;
 
-import tropicalescape.Game;
 import tropicalescape.HitboxAnimation;
 import tropicalescape.HitboxAnimationFactory;
+import tropicalescape.PlayState;
 import tropicalescape.Ship;
 
 public class OneHitMonster extends Enemy {
@@ -115,12 +115,12 @@ public class OneHitMonster extends Enemy {
 
 	@Override
 	public void update(GameContainer gc, int delta) {
+		PlayState gameInstance = PlayState.getInstance(0, 0);
 		if (type == Type.COCONUT_THROWER) {
 			// Un ship a proximité ? On envoie des noix de coco !
 			if (krakenNextAttack <= 0) {
 				Circle circle = new Circle(getPosition().x, getPosition().y,
 						COCONUT_THROWER_ATTACK_RADIUS);
-				Game gameInstance = Game.getInstance(null);
 				List<Ship> ships = gameInstance.getShips();
 				for (Ship s : ships) {
 					if (circle.contains(s.getPosition().x, s.getPosition().y)) {
@@ -151,8 +151,8 @@ public class OneHitMonster extends Enemy {
 				krakenNextAttack -= delta;
 			}
 		} else if (type == Type.COCONUT) {
-			if (getPosition().x < 0 || getPosition().x > Game.HEIGHT
-					|| getPosition().y < 0 || getPosition().y > Game.WIDTH) {
+			if (getPosition().x < 0 || getPosition().x > gameInstance.height
+					|| getPosition().y < 0 || getPosition().y > gameInstance.width) {
 				setAlive(false);
 			}
 		}

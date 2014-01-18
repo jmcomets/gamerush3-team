@@ -9,14 +9,16 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
 
 public class GameManager extends StateBasedGame{
-
+	
+	private static final int WIDTH = 640;
+	private static final int HEIGHT = 480;
     
 	public static void main(String[] args) {
 		try {
 			AppGameContainer appgc;
 			GameManager game = new GameManager("Tropical Escape !");
 			appgc = new AppGameContainer(game);
-			appgc.setDisplayMode(640, 480, false);
+			appgc.setDisplayMode(WIDTH, HEIGHT, false);
 			// appgc.setFullscreen(true);
 			appgc.setShowFPS(false);
 			appgc.start();
@@ -33,7 +35,7 @@ public class GameManager extends StateBasedGame{
 	@Override
 	public void initStatesList(GameContainer container) throws SlickException {
 		addState(new MenuGameState());
-		addState(new PlayState());
+		addState(PlayState.getInstance(WIDTH, HEIGHT));
 		
 	}
 
