@@ -122,8 +122,11 @@ public class Game extends BasicGame {
 	public void update(GameContainer gc, int delta) throws SlickException {
 		handleInput(gc);
 		List<Ship> deadShips = new ArrayList<Ship>();
+		for (Flag flag : flags) {
+			flag.baseUpdate(gc, delta);
+		}
 		for (Ship ship : ships) {
-			ship.baseUpdate(delta);
+			ship.baseUpdate(gc, delta);
 			for (Enemy enemy : enemies) {
 				if (enemy.intersects(ship.getHitboxAnimation())) {
 					System.out.print("Intersect");
@@ -159,7 +162,7 @@ public class Game extends BasicGame {
 
 		List<Enemy> deadEnemies = new ArrayList<Enemy>();
 		for (Enemy enemy : enemies) {
-			enemy.baseUpdate(delta);
+			enemy.baseUpdate(gc, delta);
 			if (!enemy.isAlive()) {
 				deadEnemies.add(enemy);
 			}
