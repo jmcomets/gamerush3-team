@@ -22,10 +22,9 @@ public class Flag extends GameObject {
 	public void render(Graphics g) {
 		Vector2f pos = getPosition();
 		if (pos.y - DESC_HEIGHT_SHIFT < 0) {
-			int h = getHitboxAnimation().getHeight();
-			g.drawString(description, pos.x, h);
+			g.drawString(description, 0, getHitboxAnimation().getHeight());
 		} else {
-			g.drawString(description, pos.x, pos.y - DESC_HEIGHT_SHIFT);
+			g.drawString(description, 0, -DESC_HEIGHT_SHIFT);
 		}
 	}
 
