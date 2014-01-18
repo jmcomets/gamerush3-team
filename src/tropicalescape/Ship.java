@@ -10,7 +10,6 @@ import tropicalescape.physics.Hitbox;
 
 public class Ship extends GameObject {
 
-	static final String IMG_FILE = "res/ship/ship-east.png";
 	static final int MAX_HP = 50;
 	static final int EPSILON = 5;
 	static final int SLOW_FACTOR = 10;
@@ -20,7 +19,12 @@ public class Ship extends GameObject {
 	private Direction dir;
 	private boolean arrived = false;
 
-	static Image img;
+	static Image img_N;
+	static Image img_E;
+	static Image img_W;
+	static Image img_S;
+	
+	private Image img_act = img_N;
 
 	public enum Direction {
 		E, NE, N, NW, W, SW, S, SE
@@ -38,7 +42,10 @@ public class Ship extends GameObject {
 
 	static {
 		try {
-			img = new Image(IMG_FILE);
+			img_N = new Image("res/ship/ship-north.png");
+			img_S = new Image("res/ship/ship-south.png");
+			img_E = new Image("res/ship/ship-east.png");
+			img_W = new Image("res/ship/ship-west.png");
 		} catch (SlickException e) {
 			e.printStackTrace();
 		}
@@ -70,7 +77,6 @@ public class Ship extends GameObject {
 
 
 		}
-		System.out.println(speed);
 
 		setSpeed(speed);
 	}
@@ -109,37 +115,56 @@ public class Ship extends GameObject {
 
 	@Override
 	public void render(Graphics g) {
-		float centerX = getPosition().x - img.getWidth() / 2f;
-		float centerY = getPosition().y - img.getHeight() / 2f;
-		img.draw(centerX, centerY);
+		switch (dir) {
+        case N:  img_act = img_N;
+            break;
+        case S:  img_act = img_S;
+        	break;
+        case E:  img_act = img_E;
+        	break;
+        case W:  img_act = img_W;
+        	break;
+        case NW:  img_act = img_N;
+        	break;
+        case NE:  img_act = img_E;
+        	break;
+        case SE:  img_act = img_S;
+        	break;
+        case SW:  img_act = img_W;
+        	break;
+    }
+
+		float centerX = getPosition().x - img_act.getWidth() / 2f;
+		float centerY = getPosition().y - img_act.getHeight() / 2f;
+		img_act.draw(centerX, centerY);
 	}
 
 	@Override
 	public void update(int delta) {
 		computePath();
 
-		/*double angle = getSpeed().getTheta();
+		double angle = getSpeed().getTheta();
 		System.out.println(angle);
 		
-		if (337.5 >= angle || angle < 22.5) {
+		if (337.5 <= angle || angle < 22.5) {
 			dir = Direction.E;
 		} else if (22.5 <= angle && angle < 67.5) {
-			dir = Direction.NE;
+			dir = Direction.SE;
 		} else if (67.5 <= angle && angle < 112.5) {
-			dir = Direction.N;
+			dir = Direction.S;
 		} else if (112.5 <= angle && angle < 157.5) {
-			dir = Direction.NW;
+			dir = Direction.SW;
 		} else if (157.5 <= angle && angle < 202.5) {
 			dir = Direction.W;
 		} else if (202.5 <= angle && angle < 247.5) {
-			dir = Direction.SW;
+			dir = Direction.NW;
 		} else if (247.5 <= angle && angle < 292.5) {
-			dir = Direction.S;
+			dir = Direction.N;
 		} else if (292.5 <= angle && angle < 337.5) {
-			dir = Direction.SE;
+			dir = Direction.NE;
 		}
 		
-		System.out.println(dir);*/
+		System.out.println(dir);
 	}
 	
 	public void kill(){
