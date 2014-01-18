@@ -19,6 +19,7 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.geom.Vector2f;
 
 import tropicalescape.enemies.Enemy;
+import tropicalescape.enemies.Island;
 import tropicalescape.enemies.OneHitMonster;
 import tropicalescape.enemies.SleepingIsland;
 
@@ -26,7 +27,9 @@ public class Game extends BasicGame {
 
 	private static final Color BG_COLOR = new Color(18, 54, 103);
 	private List<Enemy> enemies = new ArrayList<Enemy>();
-	private List<Flag> flags = new ArrayList<Flag>();
+	private StartFlag startFlag;
+	private FinishFlag finishFlag;
+	private List<Flag> userFlags = new ArrayList<Flag>();
 	private List<Ship> ships = new ArrayList<Ship>();
 
 	private boolean shouldQuit = false;
@@ -60,11 +63,15 @@ public class Game extends BasicGame {
 		g.setColor(BG_COLOR);
 		g.fillRect(0, 0, container.getWidth(), container.getHeight());
 
+		// Start and end flag
+		startFlag.baseRender(g);
+		finishFlag.baseRender(g);
+
 		// Draw all game objects
 		for (Enemy enemy : enemies) {
 			enemy.baseRender(g);
 		}
-		for (Flag flag : flags) {
+		for (Flag flag : userFlags) {
 			flag.baseRender(g);
 		}
 		for (Ship ship : ships) {
@@ -86,7 +93,9 @@ public class Game extends BasicGame {
 
 				GameObject obj = null;
 				if (tokens[0].equals("ISLAND")) {
-					// TODO
+					Island island = new Island();
+					enemies.add(island);
+					obj = island;
 				} else if (tokens[0].equals("SLEEPING-ISLAND")) {
 					SleepingIsland sleepingIsland = new SleepingIsland();
 					enemies.add(sleepingIsland);
@@ -97,8 +106,14 @@ public class Game extends BasicGame {
 					obj = ship;
 				} else if (tokens[0].equals("FLAG")) {
 					Flag flag = new Flag(tokens[1]);
-					flags.add(flag);
+					userFlags.add(flag);
 					obj = flag;
+				} else if (tokens[0].equals("START")) {
+					startFlag = new StartFlag(tokens[1]);
+					obj = startFlag;
+				} else if (tokens[0].equals("FINISH")) {
+					finishFlag = new FinishFlag(tokens[1]);
+					obj = finishFlag;
 				} else if (tokens[0].equals("KRAKEN")) {
 					OneHitMonster ohm = new OneHitMonster(OneHitMonster.Type.KRAKEN);
 					enemies.add(ohm);
@@ -114,13 +129,16 @@ public class Game extends BasicGame {
 							.parseFloat(tokens[tokens.length - 1])));
 				}
 			}
+			
+			System.out.println(ships);
+			System.out.println(enemies);
 
-			if (flags.size() > 0) {
+			if (startFlag != null && finishFlag != null) {
 				for (Ship s : ships) {
-					s.setNextFlag(flags.get(0));
+					s.setNextFlag(startFlag);
 				}
 			} else {
-				System.out.println("Pas de flags sur la map !");
+				System.out.println("Attention pas de start ou de finish flag");
 			}
 		} finally {
 			if (reader != null) {
@@ -133,14 +151,16 @@ public class Game extends BasicGame {
 	public void update(GameContainer gc, int delta) throws SlickException {
 		handleInput(gc);
 		List<Ship> deadShips = new ArrayList<Ship>();
-		for (Flag flag : flags) {
+		for (Flag flag : userFlags) {
 			flag.baseUpdate(gc, delta);
 		}
 		for (Ship ship : ships) {
+			System.out.println("ship " + ship);
 			ship.baseUpdate(gc, delta);
 			for (Enemy enemy : enemies) {
+				System.out.println("enemy " + enemy);
 				if (enemy.intersects(ship.getHitboxAnimation())) {
-					System.out.print("Intersect");
+					System.out.println("Intersect");
 					enemy.onHitShip(ship);
 					if (!ship.isAlive()) {
 						deadShips.add(ship);
@@ -153,18 +173,20 @@ public class Game extends BasicGame {
 				continue;
 			}
 
-			// TODO : peut être le remplacer par un rectangle de colision si
-			// ship trop rapide
 			Flag flag = ship.getNextFlag();
 			if (flag != null) {
 				if (ship.hasArrived()) {
-					int i = flags.indexOf(flag);
 
-					// Dernier flag atteint
-					if (i == flags.size() - 1) {
-						ship.setNextFlag(null);
+					if (ship.getNextFlag() == finishFlag) {
+						System.out.println("C'est gagné c'est gagné !");
 					} else {
-						ship.setNextFlag(flags.get(i + 1));
+						int i = userFlags.indexOf(flag);
+						// Dernier user flag atteint
+						if (i == userFlags.size() - 1) {
+							ship.setNextFlag(finishFlag);
+						} else {
+							ship.setNextFlag(userFlags.get(i + 1));
+						}
 					}
 				}
 			}

@@ -74,15 +74,18 @@ public class GameObject implements Collidable {
 	}
 
 	public boolean intersects(HitboxAnimation hitboxAnimation) {
-		return hitboxAnimation.intersects(hitboxAnimation);
+		return this.hitboxAnimation.intersects(hitboxAnimation);
 	}
 
 	public boolean intersects(GameObject o) {
-		return hitboxAnimation.intersects(o.getHitboxAnimation());
+		return intersects(o.getHitboxAnimation());
 	}
 	
 	@Override
 	public boolean intersects(Collidable collidable) {
+		if (collidable instanceof GameObject) {
+			intersects((GameObject) collidable);
+		}
 		return hitboxAnimation.intersects(collidable);
 	}
 
@@ -102,7 +105,7 @@ public class GameObject implements Collidable {
 		return position;
 	}
 
-	public void setPosition(Vector2f position) {
+	public void setPosition(Vector2f position) {	
 		this.position = position;
 	}
 
