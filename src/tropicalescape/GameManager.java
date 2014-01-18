@@ -37,6 +37,7 @@ public class GameManager extends StateBasedGame{
 		addState(new MenuGameState());
 		addState(PlayState.getInstance(WIDTH, HEIGHT));
 		addState(new WinState());
+		addState(new LoosedState());
 	}
 
 }
