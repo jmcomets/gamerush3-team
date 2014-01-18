@@ -31,22 +31,19 @@ public class MenuGameState extends BasicGameState {
 	    g.setColor(Color.white);
 	    g.drawString("Menu", 50, 10);
 
-	    g.drawString("1. Play Game", 50, 100);
-	    g.drawString("2. Level Selection", 50, 140);
-	    g.drawString("3. Quit", 50, 180);
+	    g.drawString("1. Level Selection", 50, 100);
+	    g.drawString("2. Quit", 50, 140);
 	}
 	
 	@Override
 	public void keyPressed(int key, char c) {
 		if(key == Input.KEY_1){
-			launchGame = true;	    
-		}
-		if(key == Input.KEY_3){
+			levelSelect  = true;   
+		} else if(key == Input.KEY_2){
 			quitGame = true;	    
 		}
-		if(key == Input.KEY_2){
-			levelSelect  = true;	    
-		}
+
+
 	}
 	
 	@Override
