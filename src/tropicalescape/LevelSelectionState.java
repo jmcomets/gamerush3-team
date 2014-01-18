@@ -36,6 +36,7 @@ public class LevelSelectionState extends BasicGameState {
 	private List<Level> listLevels;
 	private int current = 0;
 	private boolean loadLevel = false;
+	private boolean returnToMenu = false;
 
 	LevelSelectionState() {
 		listLevels = new ArrayList<Level>();
@@ -44,31 +45,6 @@ public class LevelSelectionState extends BasicGameState {
 	@Override
 	public void init(GameContainer container, StateBasedGame game)
 			throws SlickException {
-
-	}
-
-	@Override
-	public void keyPressed(int key, char c) {
-		if (key == Input.KEY_DOWN) {
-			if (++current >= listLevels.size()) {
-				current = 0;
-			}
-		} else if (key == Input.KEY_UP) {
-			if (--current < 0) {
-				current = listLevels.size() - 1;
-			}
-		} else if (key == Input.KEY_ENTER) {
-			loadLevel  = true;
-			
-		}
-	}
-
-	@Override
-	public void enter(GameContainer container, StateBasedGame game)
-			throws SlickException {
-		loadLevel = false;
-		super.enter(container, game);
-
 		int difficulty = 0;
 
 		File folder = new File("res/levels");
@@ -118,6 +94,34 @@ public class LevelSelectionState extends BasicGameState {
 	}
 
 	@Override
+	public void keyPressed(int key, char c) {
+		if (key == Input.KEY_DOWN) {
+			if (++current >= listLevels.size()) {
+				current = 0;
+			}
+		} else if (key == Input.KEY_UP) {
+			if (--current < 0) {
+				current = listLevels.size() - 1;
+			}
+		} else if (key == Input.KEY_ENTER) {
+			loadLevel  = true;
+			
+		} else if (key == Input.KEY_Q || key == Input.KEY_ESCAPE) {
+			returnToMenu  = true;
+			
+		}
+	}
+
+	@Override
+	public void enter(GameContainer container, StateBasedGame game)
+			throws SlickException {
+		loadLevel = false;
+		returnToMenu = false;
+		super.enter(container, game);
+
+	}
+
+	@Override
 	public void render(GameContainer container, StateBasedGame game, Graphics g)
 			throws SlickException {
 
@@ -138,6 +142,8 @@ public class LevelSelectionState extends BasicGameState {
 
 			i++;
 		}
+		
+		g.drawString("Q : return to menu", PADDING, container.getHeight()-PADDING);
 
 	}
 
@@ -146,10 +152,13 @@ public class LevelSelectionState extends BasicGameState {
 			throws SlickException {
 		if(loadLevel){
 			((GameManager)game).launchLevel(PATH + listLevels.get(current).name);
+		} else if(returnToMenu){
+			game.enterState(MenuGameState.ID);
 		}
 
 	}
-
+	
+	
 	@Override
 	public int getID() {
 		return ID;
