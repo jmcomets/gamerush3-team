@@ -114,7 +114,10 @@ public class Game extends BasicGame {
 		for (Ship ship : ships) {
 			ship.baseUpdate(delta);
 			for (Enemy enemy : enemies) {
-				if (enemy.intersects(ship)) {
+				System.out.println("SHIP : " + ship.toString());
+				System.out.println("Enemy : " + enemy.toString());
+				if (enemy.intersects(ship.getHitboxAnimation())) {
+					System.out.print("Intersect");
 					enemy.onHitShip(ship);
 					if (!ship.isAlive()) {
 						deadShips.add(ship);
