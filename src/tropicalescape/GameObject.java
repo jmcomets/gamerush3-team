@@ -26,7 +26,10 @@ public abstract class GameObject implements Collidable {
 	}
 
 	public void baseRender(Graphics g) {
+		g.pushTransform();
+		g.translate(position.x, position.y);
 		rectangles.render(g);
+		g.popTransform();
 	}
 
 	public boolean intersects(Shape shape) {

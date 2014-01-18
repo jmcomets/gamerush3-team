@@ -45,8 +45,8 @@ public class Ship extends GameObject {
 			speed.x = 0;
 			speed.y = 0;
 		} else {
-			float vectorX = getPosition().x - nextFlag.getX();
-			float vectorY = getPosition().y - nextFlag.getY();
+			float vectorX = getPosition().x - nextFlag.getPosition().x;
+			float vectorY = getPosition().y - nextFlag.getPosition().y;
 
 			// normalise le vecteur
 			float norme = (float) Math.sqrt(vectorX * vectorX + vectorY

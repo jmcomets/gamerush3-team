@@ -65,7 +65,7 @@ public class Game extends BasicGame {
 			// TODO : peut être le remplacer par un rectangle de colision si
 			// ship trop rapide
 			Flag flag = ship.getNextFlag();
-			if (flag.getX() == ship.getX() && flag.getY() == ship.getY()) {
+			if (flag.getPosition().x == ship.getX() && flag.getPosition().y == ship.getY()) {
 				int i = flags.indexOf(flag);
 
 				// Dernier flag atteint

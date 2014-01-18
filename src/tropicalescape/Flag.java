@@ -12,8 +12,6 @@ public class Flag extends GameObject {
 	static final String IMG_FILE = "res/flag.png";
 
 	String m_desc;
-	float m_x;
-	float m_y;
 	static Image m_img;
 
 	static {
@@ -27,30 +25,21 @@ public class Flag extends GameObject {
 	Flag(String desc, float x, float y) {
 		super(new CompositeRectangle());
 		m_desc = desc;
-		m_x = x;
-		m_y = y;
+		getPosition().x = x;
+		getPosition().y = y;
 	}
 
 	@Override
 	public void render(Graphics g) {
-		m_img.draw(m_x, m_y);
-		if (m_y - DESC_HEIGHT_SHIFT < 0) {
-			g.drawString(m_desc, m_x, m_y + m_img.getHeight());
+		m_img.draw();
+		if (getPosition().y - DESC_HEIGHT_SHIFT < 0) {
+			g.drawString(m_desc, 0, m_img.getHeight());
 		} else {
-			g.drawString(m_desc, m_x, m_y - DESC_HEIGHT_SHIFT);
+			g.drawString(m_desc, 0, -DESC_HEIGHT_SHIFT);
 		}
 	}
 
 	@Override
 	public void update(int delta) {
-		//
-	}
-
-	public float getX() {
-		return m_x;
-	}
-
-	public float getY() {
-		return m_y;
 	}
 }
