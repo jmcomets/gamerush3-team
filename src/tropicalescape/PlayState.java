@@ -18,8 +18,11 @@ import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 
+import tropicalescape.enemies.CoconutThrower;
 import tropicalescape.enemies.Enemy;
+import tropicalescape.enemies.GiantLobster;
 import tropicalescape.enemies.Island;
+import tropicalescape.enemies.Kraken;
 import tropicalescape.enemies.OneHitMonster;
 import tropicalescape.enemies.SleepingIsland;
 
@@ -136,8 +139,7 @@ public class PlayState extends BasicGameState {
 					enemies.add(island);
 					obj = island;
 				} else if (tokens[0].equals("COCONUT-THROWER")) {
-					OneHitMonster ohm = new OneHitMonster(
-							OneHitMonster.Type.COCONUT_THROWER);
+					OneHitMonster ohm = new CoconutThrower();
 					enemies.add(ohm);
 					obj = ohm;
 				} else if (tokens[0].equals("SLEEPING-ISLAND")) {
@@ -155,13 +157,11 @@ public class PlayState extends BasicGameState {
 					finishFlag = new FinishFlag(tokens[1]);
 					obj = finishFlag;
 				} else if (tokens[0].equals("KRAKEN")) {
-					OneHitMonster ohm = new OneHitMonster(
-							OneHitMonster.Type.KRAKEN);
+					OneHitMonster ohm = new Kraken();
 					enemies.add(ohm);
 					obj = ohm;
 				} else if (tokens[0].equals("GIANT_LOBSTER")) {
-					OneHitMonster ohm = new OneHitMonster(
-							OneHitMonster.Type.GIANT_LOBSTER);
+					OneHitMonster ohm = new GiantLobster();
 					enemies.add(ohm);
 					obj = ohm;
 				}
