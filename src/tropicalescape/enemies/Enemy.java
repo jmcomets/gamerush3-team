@@ -2,10 +2,10 @@ package tropicalescape.enemies;
 
 import tropicalescape.GameObject;
 import tropicalescape.Ship;
-import tropicalescape.physics.CompositeRectangle;
+import tropicalescape.physics.Hitbox;
 
 public abstract class Enemy extends GameObject {
-	public Enemy(CompositeRectangle rectangles) {
+	public Enemy(Hitbox rectangles) {
 		super(rectangles);
 	}
 

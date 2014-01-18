@@ -117,15 +117,18 @@ public class Game extends BasicGame {
 			// ship trop rapide
 			Flag flag = ship.getNextFlag();
 			if (flag != null) {
-                            if (flag.getPosition().x == ship.getX() && flag.getPosition().y == ship.getY()) {
-				if (flag.getX() == ship.getX() && flag.getY() == ship.getY()) {
-					int i = flags.indexOf(flag);
+				if (flag.getPosition().x == ship.getX()
+						&& flag.getPosition().y == ship.getY()) {
+					if (flag.getPosition().x == ship.getX()
+							&& flag.getPosition().y == ship.getY()) {
+						int i = flags.indexOf(flag);
 
-					// Dernier flag atteint
-					if (i == flags.size()) {
-						ship.setNextFlag(null);
-					} else {
-						ship.setNextFlag(flags.get(i + 1));
+						// Dernier flag atteint
+						if (i == flags.size()) {
+							ship.setNextFlag(null);
+						} else {
+							ship.setNextFlag(flags.get(i + 1));
+						}
 					}
 				}
 			}

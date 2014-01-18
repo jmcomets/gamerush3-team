@@ -7,10 +7,10 @@ import java.io.IOException;
 
 import org.newdawn.slick.geom.Rectangle;
 
-public class CompositeRectangleFactory {
-	public static CompositeRectangle loadFromTXT(String path)
+public class HitboxLoader {
+	public static Hitbox loadFromTXT(String path)
 			throws IOException {
-		CompositeRectangle cr = new CompositeRectangle();
+		Hitbox cr = new Hitbox();
 		File file = new File(path);
 		BufferedReader reader = null;
 		try {

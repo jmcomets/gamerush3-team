@@ -4,15 +4,15 @@ import org.newdawn.slick.geom.Shape;
 import org.newdawn.slick.geom.Vector2f;
 
 import tropicalescape.physics.Collidable;
-import tropicalescape.physics.CompositeRectangle;
+import tropicalescape.physics.Hitbox;
 
 public abstract class GameObject implements Collidable {
 	
 	private Vector2f position;
 	private Vector2f speed;
-	private CompositeRectangle rectangles;
+	private Hitbox rectangles;
 	
-	public GameObject(CompositeRectangle rectangles) {
+	public GameObject(Hitbox rectangles) {
 		this.rectangles = rectangles;
 	}
 
