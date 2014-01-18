@@ -1,9 +1,10 @@
-import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.geom.Shape;
 import org.newdawn.slick.geom.Vector2f;
+
+import physics.Collidable;
 
 
 
@@ -17,8 +18,9 @@ public class Ship implements GameObject, Collidable{
 	private int hp;
 	private float x;
 	private float y;
+	private Flag nextFlag;
 	
-	public Vector2f vector;
+	private Vector2f vector;
 	
 	static Image img;
 	
@@ -26,6 +28,9 @@ public class Ship implements GameObject, Collidable{
 		this.x = x;
 		this.y = y;
 		hp = MAX_HP;
+		vector = new Vector2f();
+		vector.x = 0;
+		vector.y = 0;
 	}
 
 	static {
@@ -36,6 +41,27 @@ public class Ship implements GameObject, Collidable{
 		}
 	}
 	
+	private void computePath() {
+		
+		if (nextFlag != null){
+			vector.x = 0;
+			vector.y = 0;
+		}
+		else{
+			float vectorX = x - nextFlag.getX();
+			float vectorY = y - nextFlag.getY();
+			
+			//normalise le vecteur
+			float norme = (float) Math.sqrt(vectorX*vectorX + vectorY * vectorY);
+			
+			vectorX = vectorX/norme;
+			vectorY = vectorY/norme;
+			
+			vector.x = vectorX;
+			vector.y = vectorY;
+		}
+	}
+
 	public int loseHealh(int dmgValue){
 		hp-=dmgValue;
 		return hp;
@@ -49,6 +75,17 @@ public class Ship implements GameObject, Collidable{
 		return y;
 	}
 
+	
+	
+	public Flag getNextFlag() {
+		return nextFlag;
+	}
+
+	public void setNextFlag(Flag nextFlag) {
+		this.nextFlag = nextFlag;
+		computePath();
+	}
+
 	@Override
 	public void render(Graphics g) {
 		img.draw(x, y);
@@ -56,7 +93,8 @@ public class Ship implements GameObject, Collidable{
 
 	@Override
 	public void update(int delta) {
-			
+		x = x+vector.x*delta;
+		y = y+vector.y*delta;
 	}
 
 	@Override
@@ -64,6 +102,12 @@ public class Ship implements GameObject, Collidable{
 		// TODO Auto-generated method stub
 		return false;
 	}
-		
+
+	@Override
+	public boolean intersects(Collidable collidable) {
+		// TODO Auto-generated method stub
+		return false;
 	}
+		
+}
 	
