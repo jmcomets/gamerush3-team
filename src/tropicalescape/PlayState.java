@@ -251,37 +251,29 @@ public class PlayState extends BasicGameState {
 			obj.baseUpdate(container, delta);
 		}
 
-		List<Ship> deadShips = new ArrayList<Ship>();
+		List<Ship> shipsToRemove = new ArrayList<Ship>();
 		for (Ship ship : ships) {
 
 			resolveShipCollision(ship);
 			if (!ship.isAlive()) {
-				deadShips.add(ship);
+				shipsToRemove.add(ship);
+				// ship died
 				continue;
 			}
 
 			Flag flag = ship.getNextFlag();
 			if (flag != null) {
-				if (ship.hasArrived()) {
-					updateShipFlag(ship, flag);
+				if (ship.hasArrivedToNextFlag()) {
+					if (flag == finishFlag) {
+						nArrivedShips++;
+						shipsToRemove.add(ship);
+						checkForWin();
+					} else {
+						recomputeShipPath(ship, flag);
+					}
 				}
 			}
 		}
-
-		// Handle ship death toll
-		ships.removeAll(deadShips);
-		gameObjects.removeAll(deadShips);
-		checkForLose();
-
-		// Handle enemy death toll
-		List<Enemy> deadEnemies = new ArrayList<Enemy>();
-		for (Enemy enemy : enemies) {
-			if (!enemy.isAlive()) {
-				deadEnemies.add(enemy);
-			}
-		}
-		enemies.removeAll(deadEnemies);
-		gameObjects.removeAll(deadEnemies);
 
 		// Gestion des inputs, a mettre toujours APRES les MAJ des objets
 		Input input = container.getInput();
@@ -308,7 +300,7 @@ public class PlayState extends BasicGameState {
 				for (Ship ship : ships) {
 					Flag shipNextFlag = ship.getNextFlag();
 					if (shipNextFlag == selectedObject) {
-						updateShipFlag(ship, shipNextFlag);
+						recomputeShipPath(ship, shipNextFlag);
 					}
 				}
 				userFlags.remove(selectedObject);
@@ -321,23 +313,31 @@ public class PlayState extends BasicGameState {
 			}
 			GameObject.setSelectedObject(null);
 		}
+
+		// Handle ships to remove
+		ships.removeAll(shipsToRemove);
+		gameObjects.removeAll(shipsToRemove);
+		checkForLose();
+
+		// Handle enemies to remove
+		List<Enemy> enemiesToRemove = new ArrayList<Enemy>();
+		for (Enemy enemy : enemies) {
+			if (!enemy.isAlive()) {
+				enemiesToRemove.add(enemy);
+			}
+		}
+		enemies.removeAll(enemiesToRemove);
+		gameObjects.removeAll(enemiesToRemove);
 	}
 
-	private void updateShipFlag(Ship ship, Flag flag) {
-		if (ship.getNextFlag() == finishFlag) {
-			nArrivedShips++;
-			// TODO : remove flag from screen (but cannot in here)
-			//ships.remove(ship);
-			//gameObjects.remove(ship);
-			checkForWin();
+	private void recomputeShipPath(Ship ship, Flag previousFlag) {
+		int i = userFlags.indexOf(previousFlag);
+		
+		// Dernier user flag atteint
+		if (i == userFlags.size() - 1) {
+			ship.setNextFlag(finishFlag);
 		} else {
-			int i = userFlags.indexOf(flag);
-			// Dernier user flag atteint
-			if (i == userFlags.size() - 1) {
-				ship.setNextFlag(finishFlag);
-			} else {
-				ship.setNextFlag(userFlags.get(i + 1));
-			}
+			ship.setNextFlag(userFlags.get(i + 1));
 		}
 	}
 
@@ -349,7 +349,7 @@ public class PlayState extends BasicGameState {
 	}
 
 	private void checkForLose() {
-		if (ships.size() + shipStack.size() < minToWin) {
+		if (!won && ships.size() + shipStack.size() < minToWin) {
 			System.out.println("C'est perdu !");
 		}
 	}
