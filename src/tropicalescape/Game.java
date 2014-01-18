@@ -1,6 +1,6 @@
+package tropicalescape;
 import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.Map.Entry;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -10,6 +10,7 @@ import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;
 
+
 public class Game extends BasicGame {
 
 	ArrayList<Ship> ships;
@@ -17,6 +18,14 @@ public class Game extends BasicGame {
 
 	public Game(String title) {
 		super(title);
+	}
+	private List<GameObject> gameObjects = new ArrayList<GameObject>();
+	
+	public Game(String title) {
+		super(title);
+	}
+	
+	private void addGameObject(GameObject obj) {
 	}
 
 	@Override

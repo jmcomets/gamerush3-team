@@ -1,10 +1,11 @@
-package physics;
+package tropicalescape.physics;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.newdawn.slick.geom.Rectangle;
 import org.newdawn.slick.geom.Shape;
+import org.newdawn.slick.geom.Vector2f;
 
 
 public class CompositeRectangle implements Collidable {
@@ -44,5 +45,9 @@ public class CompositeRectangle implements Collidable {
 
 	public List<Rectangle> getRectangles() {
 		return rectangles;
+	}
+
+	public void setOrigin(Vector2f position) {
+		// TODO
 	}
 }
