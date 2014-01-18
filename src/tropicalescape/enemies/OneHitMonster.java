@@ -5,7 +5,6 @@ import org.newdawn.slick.GameContainer;
 import tropicalescape.HitboxAnimation;
 import tropicalescape.HitboxAnimationFactory;
 import tropicalescape.Ship;
-import tropicalescape.physics.Hitbox;
 
 public class OneHitMonster extends Enemy {
 

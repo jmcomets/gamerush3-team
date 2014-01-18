@@ -1,7 +1,7 @@
 package tropicalescape;
 
-import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Color;
+import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.Input;
@@ -23,7 +23,8 @@ public class Flag extends GameObject {
 	}
 
 	Flag(String description) {
-		this(HitboxAnimationFactory.create(IMG_FILES, HITBOX_FILES, DURATION), description);
+		this(HitboxAnimationFactory.create(IMG_FILES, HITBOX_FILES, DURATION),
+				description);
 	}
 
 	@Override
@@ -41,13 +42,14 @@ public class Flag extends GameObject {
 	@Override
 	public void update(GameContainer gc, int delta) {
 
+		Input input = gc.getInput();
+
 		boolean leftClicked = isLeftClicked(gc);
 		if (leftClicked
 				&& (getSelectedObject() == this || getSelectedObject() == null)
 				|| !leftClicked && getSelectedObject() == this) {
 			HitboxAnimation hitAnim = getHitboxAnimation();
 			Image frame = hitAnim.getCurrentFrame();
-			Input input = gc.getInput();
 			int x = input.getMouseX() - frame.getWidth() / 2;
 			int y = input.getMouseY() - frame.getHeight() / 2;
 
@@ -58,6 +60,11 @@ public class Flag extends GameObject {
 		if (getSelectedObject() == this
 				&& !gc.getInput().isMouseButtonDown(Input.MOUSE_LEFT_BUTTON)) {
 			setSelectedObject(null);
+		}
+
+		if (isRightClicked(gc)
+				&& input.isMouseButtonDown(Input.MOUSE_RIGHT_BUTTON)) {
+			setSelectedObject(this);
 		}
 
 	}
