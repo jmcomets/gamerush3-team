@@ -15,6 +15,7 @@ import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;
+import org.newdawn.slick.geom.Vector2f;
 
 import tropicalescape.enemies.Enemy;
 import tropicalescape.enemies.SleepingIsland;
@@ -70,10 +71,12 @@ public class Game extends BasicGame {
 					if (tokens.length == 3) {
 						// TODO
 					}
-				} 
-				else if (tokens[0].equals("SLEEPING-ISLAND")) {
+				} else if (tokens[0].equals("SLEEPING-ISLAND")) {
 					if (tokens.length == 3) {
 						SleepingIsland sleepingIsland = new SleepingIsland();
+						sleepingIsland.setPosition(new Vector2f(Float
+								.parseFloat(tokens[1]), Float
+								.parseFloat(tokens[2])));
 						enemies.add(sleepingIsland);
 					}
 				} else if (tokens[0].equals("SHIP")) {
