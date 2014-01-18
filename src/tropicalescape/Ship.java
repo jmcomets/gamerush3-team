@@ -1,4 +1,5 @@
 package tropicalescape;
+
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
@@ -6,18 +7,16 @@ import org.newdawn.slick.geom.Vector2f;
 
 import tropicalescape.physics.CompositeRectangle;
 
-
-
 public class Ship extends GameObject {
-	
+
 	static final String IMG_FILE = "res/ship.png";
 	static final int MAX_HP = 50;
-	
+
 	private int hp;
 	private Flag nextFlag;
-	
+
 	static Image img;
-	
+
 	Ship(float x, float y) {
 		super(new CompositeRectangle()); // TODO
 		hp = MAX_HP;
@@ -30,34 +29,40 @@ public class Ship extends GameObject {
 			e.printStackTrace();
 		}
 	}
-	
+
 	private void computePath() {
 		Vector2f speed = new Vector2f();
-		
-		if (nextFlag != null){	
-			speed.x=0;
-			speed.y=0;
-		}
-		else{
+
+		if (nextFlag != null) {
+			speed.x = 0;
+			speed.y = 0;
+		} else {
 			float vectorX = getPosition().x - nextFlag.getX();
 			float vectorY = getPosition().y - nextFlag.getY();
-			
-			//normalise le vecteur
-			float norme = (float) Math.sqrt(vectorX*vectorX + vectorY * vectorY);
-			
-			vectorX = vectorX/norme;
-			vectorY = vectorY/norme;
-			
+
+			// normalise le vecteur
+			float norme = (float) Math.sqrt(vectorX * vectorX + vectorY
+					* vectorY);
+
+			vectorX = vectorX / norme;
+			vectorY = vectorY / norme;
+
 			speed.x = vectorX;
 			speed.y = vectorY;
 		}
-		
+
 		setSpeed(speed);
 	}
 
-	public int loseHealh(int dmgValue){
-		hp-=dmgValue;
-		return hp;
+	public void loseHealh(int dmgValue) {
+		hp -= dmgValue;
+	}
+
+	public boolean isAlive() {
+		if (hp > 0) {
+			return true;
+		}
+		return false;
 	}
 
 	public float getX() {
@@ -68,8 +73,6 @@ public class Ship extends GameObject {
 		return getPosition().y;
 	}
 
-	
-	
 	public Flag getNextFlag() {
 		return nextFlag;
 	}
@@ -86,8 +89,7 @@ public class Ship extends GameObject {
 
 	@Override
 	public void update(int delta) {
-		
+
 	}
-		
+
 }
-	
