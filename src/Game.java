@@ -1,3 +1,6 @@
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.Map.Entry;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -6,32 +9,16 @@ import org.newdawn.slick.BasicGame;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;
-import org.newdawn.slick.geom.Vector2f;
 
 public class Game extends BasicGame {
+
+	ArrayList<Ship> ships;
+	ArrayList<Flag> flags;
 
 	public Game(String title) {
 		super(title);
 	}
 
-	public void computePath(Ship ship, Flag nextFlag) {
-		
-		float vectorX = ship.getX() - nextFlag.getX();
-		float vectorY = ship.getY() - nextFlag.getY();
-		
-		//normalise le vecteur
-		float norme = (float) Math.sqrt(vectorX*vectorX + vectorY * vectorY);
-		
-		vectorX = vectorX/norme;
-		vectorY = vectorY/norme;
-		
-		Vector2f vector = new Vector2f();
-		vector.x = vectorX;
-		vector.y = vectorY;
-		
-		ship.vector.set(vector);
-	}
-	
 	@Override
 	public void init(GameContainer container) throws SlickException {
 	}
@@ -42,8 +29,25 @@ public class Game extends BasicGame {
 	}
 
 	@Override
-	public void update(GameContainer container, int delta)
-			throws SlickException {
+	public void update(GameContainer gc, int frame) throws SlickException {
+
+		for (Ship ship : ships) {
+
+			Flag flag = ship.getNextFlag();
+
+			// TODO : peut être le remplacer par un rectangle de colision si
+			// ship trop rapide
+			if (flag.getX() == ship.getX() && flag.getY() == ship.getY()) {
+				int i = flags.indexOf(flag);
+				if (i == flags.size()) // Dernier flag atteint
+				{
+					ship.setNextFlag(null);
+				} else {
+					ship.setNextFlag(flags.get(i + 1));
+				}
+			}
+		}
+
 	}
 
 	public static void main(String[] args) {
