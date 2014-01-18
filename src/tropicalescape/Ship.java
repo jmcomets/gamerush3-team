@@ -116,5 +116,8 @@ public class Ship extends GameObject {
 			dir=Direction.SE;
 		}
 	}
-
+	
+	public void kill(){
+		this.hp = 0;
+	}
 }
