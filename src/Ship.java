@@ -5,6 +5,7 @@ import org.newdawn.slick.geom.Shape;
 import org.newdawn.slick.geom.Vector2f;
 
 import physics.Collidable;
+import physics.CompositeRectangle;
 
 
 
@@ -19,6 +20,7 @@ public class Ship implements GameObject, Collidable{
 	private float x;
 	private float y;
 	private Flag nextFlag;
+	private CompositeRectangle rectangles;
 	
 	private Vector2f vector;
 	
@@ -105,8 +107,7 @@ public class Ship implements GameObject, Collidable{
 
 	@Override
 	public boolean intersects(Collidable collidable) {
-		// TODO Auto-generated method stub
-		return false;
+		return rectangles.intersects(collidable);
 	}
 		
 }
