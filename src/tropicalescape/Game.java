@@ -29,13 +29,12 @@ public class Game extends BasicGame {
 
 	@Override
 	public void init(GameContainer container) throws SlickException {
-		/*String lvlName = "res/levels/test.lvl";
-		try {
-			loadLevel(lvlName);
-		} catch (IOException e) {
-			new SlickException("Problème au chargement du niveau " + lvlName
-					+ " : " + e.getMessage());
-		}*/
+		/*
+		 * String lvlName = "res/levels/test.lvl"; try { loadLevel(lvlName); }
+		 * catch (IOException e) { new
+		 * SlickException("Problème au chargement du niveau " + lvlName + " : "
+		 * + e.getMessage()); }
+		 */
 	}
 
 	@Override
@@ -115,14 +114,16 @@ public class Game extends BasicGame {
 			// TODO : peut être le remplacer par un rectangle de colision si
 			// ship trop rapide
 			Flag flag = ship.getNextFlag();
-			if (flag.getX() == ship.getX() && flag.getY() == ship.getY()) {
-				int i = flags.indexOf(flag);
+			if (flag != null) {
+				if (flag.getX() == ship.getX() && flag.getY() == ship.getY()) {
+					int i = flags.indexOf(flag);
 
-				// Dernier flag atteint
-				if (i == flags.size()) {
-					ship.setNextFlag(null);
-				} else {
-					ship.setNextFlag(flags.get(i + 1));
+					// Dernier flag atteint
+					if (i == flags.size()) {
+						ship.setNextFlag(null);
+					} else {
+						ship.setNextFlag(flags.get(i + 1));
+					}
 				}
 			}
 		}
