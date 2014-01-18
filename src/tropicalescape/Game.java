@@ -111,14 +111,12 @@ public class Game extends BasicGame {
 					Flag flag = new Flag(tokens[1]);
 					userFlags.add(flag);
 					obj = flag;
-<<<<<<< HEAD
 				} else if (tokens[0].equals("START")) {
 					startFlag = new StartFlag(tokens[1]);
 					obj = startFlag;
 				} else if (tokens[0].equals("FINISH")) {
 					finishFlag = new FinishFlag(tokens[1]);
 					obj = finishFlag;
-=======
 				} else if (tokens[0].equals("KRAKEN")) {
 					OneHitMonster ohm = new OneHitMonster(OneHitMonster.Type.KRAKEN);
 					enemies.add(ohm);
@@ -127,7 +125,6 @@ public class Game extends BasicGame {
 					OneHitMonster ohm = new OneHitMonster(OneHitMonster.Type.GIANT_LOBSTER);
 					enemies.add(ohm);
 					obj = ohm;
->>>>>>> 92afa2d43b2b21cce366c1c39620162c5b4ba1cc
 				}
 				if (obj != null) {
 					obj.setPosition(new Vector2f(Float
