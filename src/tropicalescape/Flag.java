@@ -3,6 +3,7 @@ package tropicalescape;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
+import org.newdawn.slick.geom.Vector2f;
 
 import tropicalescape.physics.Hitbox;
 
@@ -31,11 +32,12 @@ public class Flag extends GameObject {
 
 	@Override
 	public void render(Graphics g) {
-		m_img.draw();
+		Vector2f pos = getPosition();
+		m_img.draw(pos.x, pos.y);
 		if (getPosition().y - DESC_HEIGHT_SHIFT < 0) {
-			g.drawString(m_desc, 0, m_img.getHeight());
+			g.drawString(m_desc, pos.x, m_img.getHeight());
 		} else {
-			g.drawString(m_desc, 0, -DESC_HEIGHT_SHIFT);
+			g.drawString(m_desc, pos.x, pos.y - DESC_HEIGHT_SHIFT);
 		}
 	}
 
