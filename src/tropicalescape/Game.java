@@ -34,6 +34,8 @@ public class Game extends BasicGame {
 
 	private boolean shouldQuit = false;
 
+	static int nextFlagNum = 1;
+
 	public Game(String title) {
 		super(title);
 	}
@@ -131,9 +133,6 @@ public class Game extends BasicGame {
 							.parseFloat(tokens[tokens.length - 1])));
 				}
 			}
-			
-			System.out.println(ships);
-			System.out.println(enemies);
 
 			if (startFlag == null) {
 				startFlag = new StartFlag("Start");
@@ -145,7 +144,7 @@ public class Game extends BasicGame {
 			for (Ship s : ships) {
 				s.setNextFlag(startFlag);
 			}
-			
+
 		} finally {
 			if (reader != null) {
 				reader.close();
@@ -161,12 +160,10 @@ public class Game extends BasicGame {
 			flag.baseUpdate(gc, delta);
 		}
 		for (Ship ship : ships) {
-			System.out.println("ship " + ship);
 			ship.baseUpdate(gc, delta);
 			for (Enemy enemy : enemies) {
-				System.out.println("enemy " + enemy);
 				if (enemy.intersects(ship.getHitboxAnimation())) {
-					System.out.println("Intersect");
+					System.out.print("Intersect");
 					enemy.onHitShip(ship);
 					if (!ship.isAlive()) {
 						deadShips.add(ship);
@@ -182,18 +179,7 @@ public class Game extends BasicGame {
 			Flag flag = ship.getNextFlag();
 			if (flag != null) {
 				if (ship.hasArrived()) {
-
-					if (ship.getNextFlag() == finishFlag) {
-						System.out.println("C'est gagné c'est gagné !");
-					} else {
-						int i = userFlags.indexOf(flag);
-						// Dernier user flag atteint
-						if (i == userFlags.size() - 1) {
-							ship.setNextFlag(finishFlag);
-						} else {
-							ship.setNextFlag(userFlags.get(i + 1));
-						}
-					}
+					updateShipFlag(ship, flag);
 				}
 			}
 		}
@@ -207,6 +193,52 @@ public class Game extends BasicGame {
 			}
 		}
 		enemies.removeAll(deadEnemies);
+
+		// Gestion des inputs, a mettre toujours APRES les MAJ des objets
+		Input input = gc.getInput();
+		if (input.isMousePressed(Input.MOUSE_LEFT_BUTTON)) {
+			if (GameObject.getSelectedObject() == null) {
+				Flag flag = new Flag("" + nextFlagNum++);
+				int mouseX = input.getMouseX();
+				int mouseY = input.getMouseY();
+				flag.setPosition(new Vector2f(mouseX, mouseY));
+				userFlags.add(flag);
+				for (Ship ship : ships) {
+					Flag shipNextFlag = ship.getNextFlag();
+					if (shipNextFlag == finishFlag) {
+						ship.setNextFlag(flag);
+					}
+				}
+			}
+		} else if (input.isMousePressed(Input.MOUSE_RIGHT_BUTTON)) {
+			GameObject selectedObject = GameObject.getSelectedObject();
+			if (selectedObject instanceof Flag
+					&& !(selectedObject instanceof StartFlag || selectedObject instanceof FinishFlag)) {
+				// Rediriger les ships vers leur prochaine destination
+				for (Ship ship : ships) {
+					Flag shipNextFlag = ship.getNextFlag();
+					if (shipNextFlag == selectedObject) {
+						updateShipFlag(ship, shipNextFlag);
+					}
+				}
+				userFlags.remove(selectedObject);
+			}
+			GameObject.setSelectedObject(null);
+		}
+	}
+
+	private void updateShipFlag(Ship ship, Flag flag) {
+		if (ship.getNextFlag() == finishFlag) {
+			System.out.println("C'est gagné c'est gagné !");
+		} else {
+			int i = userFlags.indexOf(flag);
+			// Dernier user flag atteint
+			if (i == userFlags.size() - 1) {
+				ship.setNextFlag(finishFlag);
+			} else {
+				ship.setNextFlag(userFlags.get(i + 1));
+			}
+		}
 	}
 
 	private void handleInput(GameContainer gc) {
