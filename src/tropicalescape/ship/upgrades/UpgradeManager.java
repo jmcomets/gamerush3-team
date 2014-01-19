@@ -23,14 +23,14 @@ public class UpgradeManager<T extends Upgrade> {
 		}
 	}
 	
-	public int getNextUpgradeCost() {
+	public T getNextUpgrade() {
 		int i = allUpgrades.indexOf(currentUpgrade);
 		if (i != allUpgrades.size() - 1) {
 			T nextUpgrade = allUpgrades.get(i + 1);
-			return nextUpgrade.getCost();
+			return nextUpgrade;
 		}
 		else {
-			return -1;
+			return null;
 		}
 	}
 

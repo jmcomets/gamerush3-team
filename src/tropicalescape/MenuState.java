@@ -20,6 +20,7 @@ public class MenuState extends BasicGameState {
 	private boolean launchGame = false;
 	private boolean quitGame = false;
 	private boolean levelSelect = false;
+	private boolean manageUpgrades = false;
 	private TrueTypeFont font;
 	private TrueTypeFont font2;
 	private Image img;
@@ -69,7 +70,8 @@ public class MenuState extends BasicGameState {
 		g.setColor(Color.white);
 		font2.drawString(10, 50, "Tropical Escape",Color.black);
 		font.drawString(10, 150, "1 Level Selection",Color.black);
-		font.drawString(10, 200, "2 Quit",Color.black);
+		font.drawString(10, 200, "2 Manage upgrades",Color.black);
+		font.drawString(10, 250, "3 Quit",Color.black);
 	}
 
 	@Override
@@ -78,8 +80,11 @@ public class MenuState extends BasicGameState {
 				|| key == Input.KEY_ENTER || key == Input.KEY_NUMPADENTER
 				|| key == Input.KEY_SPACE) {
 			levelSelect = true;
-		} else if (key == Input.KEY_2 || key == Input.KEY_ESCAPE) {
+		} else if (key == Input.KEY_3 || key == Input.KEY_ESCAPE) {
 			quitGame = true;
+		}
+		else if (key == Input.KEY_2) {
+			manageUpgrades = true;
 		}
 	}
 
@@ -89,6 +94,7 @@ public class MenuState extends BasicGameState {
 		super.enter(container, game);
 		launchGame = false;
 		levelSelect = false;
+		manageUpgrades = false;
 	}
 
 	@Override
@@ -102,6 +108,9 @@ public class MenuState extends BasicGameState {
 		}
 		if (levelSelect) {
 			game.enterState(LevelSelectionState.ID);
+		}
+		if(manageUpgrades) {
+			game.enterState(UpgradeState.ID);
 		}
 	}
 

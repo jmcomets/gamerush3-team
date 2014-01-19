@@ -11,11 +11,13 @@ import org.newdawn.slick.state.StateBasedGame;
 import tropicalescape.ship.upgrades.ArmorUpgrade;
 import tropicalescape.ship.upgrades.HealthUpgrade;
 import tropicalescape.ship.upgrades.SpeedUpgrade;
+import tropicalescape.ship.upgrades.Upgrade;
 import tropicalescape.ship.upgrades.UpgradeManager;
 
 public class UpgradeState extends BasicGameState {
 
 	public static final int ID = 6;
+	private boolean changeLevel = false;
 	private boolean replay = false;
 
 	UpgradeState() {
@@ -30,50 +32,113 @@ public class UpgradeState extends BasicGameState {
 	@Override
 	public void render(GameContainer container, StateBasedGame game, Graphics g)
 			throws SlickException {
-		PlayState playState = PlayState.getInstance();
+
+		Player player = Player.getInstance();
 		g.setColor(Color.white);
-		
-		String message = "SELECT YOUR UPGRADES";
+
+		String message = "SELECT YOUR UPGRADES (You have " + player.getGolds()
+				+ " gold coins)";
 
 		int x = (container.getWidth() - g.getFont().getWidth(message)) / 2;
 		int y = 50;
 		g.drawString(message, x, y);
 
-		UpgradeManager<HealthUpgrade> healthUpgradesManager = playState.getHealthUpgradesManager();
-		message = "Upgrade ship HPs - Cost : " + healthUpgradesManager.getNextUpgradeCost();
-		message = "\nCurrent level : " + healthUpgradesManager.getCurrentUpgrade().getName() + ")";
-		message = "\nNext level : +" + healthUpgradesManager.getCurrentUpgrade().getName() + ")";
+		x = 50;
+		y += g.getFont().getLineHeight() + 30;
 
-		x = (container.getWidth() - g.getFont().getWidth(message)) / 2;
-		y = 50;
+		UpgradeManager<HealthUpgrade> healthUpgradesManager = player
+				.getHealthUpgradesManager();
+		Upgrade currentUpgrade = healthUpgradesManager.getCurrentUpgrade();
+		Upgrade nextUpgrade = healthUpgradesManager.getNextUpgrade();
+
+		message = "(1) Upgrade ship HPs - Cost : ";
+		message += nextUpgrade != null ? nextUpgrade.getCost() : "0";
+		g.drawString(message, x, y);
+		y += g.getFont().getLineHeight() + 10;
+		message = "Current level : " + currentUpgrade.getDescription();
+		g.drawString(message, x, y);
+		y += g.getFont().getLineHeight() + 10;
+		message = "Next level : ";
+		message += nextUpgrade != null ? nextUpgrade.getDescription() : "MAXED";
 		g.drawString(message, x, y);
 
-		UpgradeManager<ArmorUpgrade> armorUpgradesManager = playState.getArmorUpgradesManager();
-		message = "Upgrade ship ARMOR - Cost : " + armorUpgradesManager.getNextUpgradeCost();
-		message = "\nCurrent level : " + armorUpgradesManager.getCurrentUpgrade().getName() + ")";
-		message = "\nNext level : " + armorUpgradesManager.getCurrentUpgrade().getName() + ")";
+		y += g.getFont().getLineHeight() + 30;
 
-		x = (container.getWidth() - g.getFont().getWidth(message)) / 2;
-		y = 50;
+		UpgradeManager<SpeedUpgrade> speedUpgradesManager = player
+				.getSpeedUpgradesManager();
+		currentUpgrade = speedUpgradesManager.getCurrentUpgrade();
+		nextUpgrade = speedUpgradesManager.getNextUpgrade();
+
+		message = "(2) Upgrade ship SPEED - Cost : ";
+		message += nextUpgrade != null ? nextUpgrade.getCost() : "0";
+		g.drawString(message, x, y);
+		y += g.getFont().getLineHeight() + 10;
+		message = "Current level : " + currentUpgrade.getDescription();
+		g.drawString(message, x, y);
+		y += g.getFont().getLineHeight() + 10;
+		message = "Next level : ";
+		message += nextUpgrade != null ? nextUpgrade.getDescription() : "MAXED";
 		g.drawString(message, x, y);
 
-		UpgradeManager<SpeedUpgrade> speedUpgradesManager = playState.getSpeedUpgradesManager();
-		message = "Upgrade ship SPEED - Cost : " + speedUpgradesManager.getNextUpgradeCost();
-		message = "\nCurrent level : " + speedUpgradesManager.getCurrentUpgrade().getName() + ")";
-		message = "\nNext level : " + speedUpgradesManager.getCurrentUpgrade().getName() + ")";
+		y += g.getFont().getLineHeight() + 30;
 
-		x = (container.getWidth() - g.getFont().getWidth(message)) / 2;
-		y = 50;
+		UpgradeManager<ArmorUpgrade> armorUpgradesManager = player
+				.getArmorUpgradesManager();
+		currentUpgrade = armorUpgradesManager.getCurrentUpgrade();
+		nextUpgrade = armorUpgradesManager.getNextUpgrade();
+
+		message = "(3) Upgrade ship DEF - Cost : ";
+		message += nextUpgrade != null ? nextUpgrade.getCost() : "0";
+		g.drawString(message, x, y);
+		y += g.getFont().getLineHeight() + 10;
+		message = "Current level : " + currentUpgrade.getDescription();
+		g.drawString(message, x, y);
+		y += g.getFont().getLineHeight() + 10;
+		message = "Next level : ";
+		message += nextUpgrade != null ? nextUpgrade.getDescription() : "MAXED";
 		g.drawString(message, x, y);
 
+		y += g.getFont().getLineHeight() + 10;
 		g.drawString("Press Enter to replay", x, y + 100);
+		y += g.getFont().getLineHeight() + 50;
+		g.drawString("Press Escape to select level", x, y);
+		;
 	}
 
 	@Override
 	public void keyPressed(int key, char c) {
-		if (key == Input.KEY_ENTER) {
+
+		Player player = Player.getInstance();
+		int spent = 0;
+		UpgradeManager<HealthUpgrade> healthUpgradesManager = player
+				.getHealthUpgradesManager();
+		UpgradeManager<SpeedUpgrade> speedUpgradesManager = player
+				.getSpeedUpgradesManager();
+		UpgradeManager<ArmorUpgrade> armorUpgradesManager = player
+				.getArmorUpgradesManager();
+
+		if (key == Input.KEY_1) {
+			if (healthUpgradesManager.canBuyNextUpgrade(player.getGolds())) {
+				healthUpgradesManager.applyNextUpgrade();
+				spent = healthUpgradesManager.getCurrentUpgrade().getCost();
+			}
+		} else if (key == Input.KEY_2) {
+			if (speedUpgradesManager.canBuyNextUpgrade(player.getGolds())) {
+				speedUpgradesManager.applyNextUpgrade();
+				spent = speedUpgradesManager.getCurrentUpgrade().getCost();
+			}
+		} else if (key == Input.KEY_3) {
+			if (armorUpgradesManager.canBuyNextUpgrade(player.getGolds())) {
+				armorUpgradesManager.applyNextUpgrade();
+				spent = armorUpgradesManager.getCurrentUpgrade().getCost();
+			}
+		} else if (key == Input.KEY_ENTER) {
 			replay = true;
+		} else if (key == Input.KEY_ESCAPE) {
+			changeLevel = true;
 		}
+		
+		player.decreaseGolds(spent);
 	}
 
 	@Override
@@ -81,6 +146,7 @@ public class UpgradeState extends BasicGameState {
 			throws SlickException {
 		super.enter(container, game);
 		replay = false;
+		changeLevel = false;
 	}
 
 	@Override
@@ -88,6 +154,8 @@ public class UpgradeState extends BasicGameState {
 			throws SlickException {
 		if (replay) {
 			game.enterState(PlayState.ID);
+		} else if (changeLevel) {
+			game.enterState(LevelSelectionState.ID);
 		}
 	}
 

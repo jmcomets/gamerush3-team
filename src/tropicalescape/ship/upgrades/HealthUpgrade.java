@@ -13,4 +13,9 @@ public class HealthUpgrade extends Upgrade {
 		return bonusHp;
 	}
 
+	@Override
+	public String getDescription() {
+		return getName() + " +" + bonusHp + "HP";
+	}
+
 }

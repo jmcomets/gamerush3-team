@@ -11,7 +11,7 @@ import org.newdawn.slick.state.StateBasedGame;
 public class WinState extends BasicGameState {
 	
 	public static final int ID = 3;
-	private boolean replay = false;
+	private boolean goOn = false;
 
 	WinState() {
 		
@@ -32,13 +32,13 @@ public class WinState extends BasicGameState {
 	    int y = 50;
 	    g.drawString(message, x, y);
 	    
-	    g.drawString("Press Enter to replay", x, y + 100);
+	    g.drawString("Press Enter to continue", x, y + 100);
 	}
 	
 	@Override
 	public void keyPressed(int key, char c) {
 		if(key == Input.KEY_ENTER){
-			replay = true;    
+			goOn = true;    
 		}
 	}
 	
@@ -46,14 +46,14 @@ public class WinState extends BasicGameState {
 	public void enter(GameContainer container, StateBasedGame game)
 			throws SlickException {
 		super.enter(container, game);
-		replay  = false;
+		goOn  = false;
 	}
 	
 	@Override
 	public void update(GameContainer container, StateBasedGame game, int delta)
 			throws SlickException {
-	    if(replay) {
-	    	game.enterState(PlayState.ID);	    	
+	    if(goOn) {
+	    	game.enterState(UpgradeState.ID);	    	
 	    }
 	}
 
