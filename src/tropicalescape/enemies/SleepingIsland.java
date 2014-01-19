@@ -34,38 +34,47 @@ public class SleepingIsland extends Island {
 	public static final int AWAKE = 1;
 	public static final int TIMER_DURATION = 5000;
 
-	private int state = SleepingIsland.AWAKE;
-	private int timer = SleepingIsland.TIMER_DURATION;
-
-	private void switchState() {
-		switch (this.state) {
-		case SleepingIsland.AWAKE:
-			this.state = SleepingIsland.SLEEPING;
-			this.setHitboxAnimation(this.sleep);
-			break;
-
-		case SleepingIsland.SLEEPING:
-			this.state = SleepingIsland.AWAKE;
-			this.setHitboxAnimation(this.up);
-			break;
-		}
-	}
+	private int maxTimer = TIMER_DURATION;
+	private int timer;
+	private int state;
 
 	public SleepingIsland() {
 		super();
-		this.up.setLooping(false);
-		this.sleep.setLooping(false);
-		this.setHitboxAnimation(this.up);
+		up.setLooping(false);
+		sleep.setLooping(false);
+		state = AWAKE;
+		setHitboxAnimation(up);
+		timer = maxTimer;
+	}
+
+	public void setState(int state) {
+		switch (state) {
+		case SleepingIsland.AWAKE:
+			this.state = SleepingIsland.AWAKE;
+			setHitboxAnimation(up);
+			break;
+
+		case SleepingIsland.SLEEPING:
+			this.state = SleepingIsland.SLEEPING;
+			setHitboxAnimation(sleep);
+			break;
+		}
 	}
 
 	@Override
 	public void update(GameContainer gc, int delta) {
-
-		this.timer -= delta;
+		timer -= delta;
 		if (timer <= 0) {
-			this.switchState();
-			this.timer = TIMER_DURATION;
+			setState(1 - state);
+			timer = maxTimer;
 		}
+	}
+
+	public void setMaxTimer(int maxTimer) {
+		if (timer == this.maxTimer) {
+			timer = maxTimer;
+		}
+		this.maxTimer = maxTimer;
 	}
 
 }

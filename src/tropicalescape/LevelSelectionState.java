@@ -13,8 +13,17 @@ import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
+import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
+
+import tropicalescape.enemies.CoconutThrower;
+import tropicalescape.enemies.GiantLobster;
+import tropicalescape.enemies.Island;
+import tropicalescape.enemies.Kraken;
+import tropicalescape.enemies.OneHitMonster;
+import tropicalescape.enemies.SleepingIsland;
+import tropicalescape.enemies.Wave;
 
 class Level {
 	public int difficulty;
@@ -47,8 +56,6 @@ public class LevelSelectionState extends BasicGameState {
 	@Override
 	public void init(GameContainer container, StateBasedGame game)
 			throws SlickException {
-		int difficulty = 0;
-
 		File folder = new File("res/levels");
 		File[] listOfFiles = folder.listFiles();
 
@@ -56,36 +63,35 @@ public class LevelSelectionState extends BasicGameState {
 
 		for (int i = 0; i < listOfFiles.length; i++) {
 			if (listOfFiles[i].isFile()) {
-
 				try {
 					reader = new BufferedReader(new FileReader(listOfFiles[i]));
 					String text = null;
-					text = reader.readLine();
-					String[] array = text.split("\\s+");
-					if (array.length < 2) {
-						throw new IOException("Difficulty isn't set correctly");
-					}
-					try {
-						difficulty = Integer.parseInt(array[1]);
-						Level tmpLevel = new Level(listOfFiles[i].getName(),
-								difficulty);
-						listLevels.add(tmpLevel);
+					int difficulty = 0;
+					while ((text = reader.readLine()) != null) {
+						String[] tokens = text.split("\\s+");
+						if (tokens.length < 1) {
+							System.err.println("Need at least 3 tokens");
+						}
 
-					} catch (NumberFormatException e) {
-						throw new IOException(e);
+						GameObject obj = null;
+						if (tokens[0].equals("DIFFICULTY")) {
+							difficulty = Integer.parseInt(tokens[1]);
+						}
 					}
-				} catch (FileNotFoundException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
+					Level tmpLevel = new Level(listOfFiles[i].getName(),
+							difficulty);
+					listLevels.add(tmpLevel);
+				} catch (FileNotFoundException e) {
+					e.printStackTrace();
+				} catch (NumberFormatException e) {
+					e.printStackTrace();
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				} finally {
 					if (reader != null) {
 						try {
 							reader.close();
 						} catch (IOException e) {
-							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
 					}
