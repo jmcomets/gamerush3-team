@@ -258,7 +258,6 @@ public class PlayState extends BasicGameState {
 	}
 
 	public void loadLevel(String path) throws IOException {
-		System.out.println(path);
 		File file = new File(path);
 		BufferedReader reader = null;
 		try {
@@ -351,6 +350,9 @@ public class PlayState extends BasicGameState {
 							.parseFloat(tokens[2])));
 					gameObjects.add(obj);
 				}
+				/**add random waves*/
+				WaveGenerator wg = new WaveGenerator();
+				gameObjects.addAll(wg.generateWaves());
 			}
 
 		} finally {
