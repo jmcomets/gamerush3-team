@@ -99,7 +99,7 @@ public class PlayState extends BasicGameState {
 	}
 
 	private void checkForLose() {
-		if (!won && ships.size() + shipStack.size() < minToWin) {
+		if (!won && nArrivedShips +  ships.size() + shipStack.size() < minToWin) {
 			lost = true;
 			System.out.println("C'est perdu !");
 		}
