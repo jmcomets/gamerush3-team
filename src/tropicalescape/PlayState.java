@@ -250,9 +250,11 @@ public class PlayState extends BasicGameState {
 					userFlags.add(flag);
 					obj = flag;
 				} else if (tokens[0].equals("START")) {
+					gameObjects.remove(startFlag);
 					startFlag = new StartFlag(tokens[1]);
 					obj = startFlag;
 				} else if (tokens[0].equals("FINISH")) {
+					gameObjects.remove(finishFlag);
 					finishFlag = new FinishFlag(tokens[1]);
 					obj = finishFlag;
 				} else if (tokens[0].equals("KRAKEN")) {
