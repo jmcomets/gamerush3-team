@@ -135,11 +135,26 @@ public class PlayState extends BasicGameState {
 		
 		nArrivedShips = 0;
 		emptyEntities();
+		
+		placeDefaultFlags(container.getWidth(), container.getHeight());
 		try {
 			loadLevel(lvlName);
 		} catch (IOException e) {
 			new SlickException("Problème au chargement du niveau " + lvlName
 					+ " : " + e.getMessage());
+		}
+	}
+	
+	public void placeDefaultFlags(int width, int height){
+		if (startFlag == null) {
+			startFlag = new StartFlag("Start");
+			startFlag.setPosition(new Vector2f(-40, -40));
+			gameObjects.add(startFlag);
+		}
+		if (finishFlag == null) {
+			finishFlag = new FinishFlag("Finish");
+			finishFlag.setPosition(new Vector2f(width, height));
+			gameObjects.add(finishFlag);
 		}
 	}
 
@@ -234,9 +249,11 @@ public class PlayState extends BasicGameState {
 					userFlags.add(flag);
 					obj = flag;
 				} else if (tokens[0].equals("START")) {
+					gameObjects.remove(startFlag);
 					startFlag = new StartFlag(tokens[1]);
 					obj = startFlag;
 				} else if (tokens[0].equals("FINISH")) {
+					gameObjects.remove(finishFlag);
 					finishFlag = new FinishFlag(tokens[1]);
 					obj = finishFlag;
 				} else if (tokens[0].equals("KRAKEN")) {
@@ -260,13 +277,6 @@ public class PlayState extends BasicGameState {
 				}
 			}
 
-			if (startFlag == null) {
-				startFlag = new StartFlag("Start");
-			}
-			if (finishFlag == null) {
-				finishFlag = new FinishFlag("Finish");
-				finishFlag.setPosition(new Vector2f(600, 440));
-			}
 		} finally {
 			if (reader != null) {
 				reader.close();
@@ -402,10 +412,10 @@ public class PlayState extends BasicGameState {
 		}
 	}
 
-	private void resolveShipCollision(Ship ship) {
+	private void resolveShipCollision(Ship ship, int delta) {
 		for (Enemy enemy : enemies) {
 			if (enemy.intersects(ship)) {
-				enemy.onHitShip(ship);
+				enemy.onHitShip(ship, delta);
 				if (!ship.isAlive()) {
 					break;
 				}
@@ -446,7 +456,7 @@ public class PlayState extends BasicGameState {
 
 		List<Ship> shipsToRemove = new ArrayList<Ship>();
 		for (Ship ship : ships) {
-			resolveShipCollision(ship);
+			resolveShipCollision(ship, delta);
 			if (!ship.isAlive()) {
 				shipsToRemove.add(ship);
 				// ship died

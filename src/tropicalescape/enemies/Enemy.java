@@ -20,5 +20,5 @@ public abstract class Enemy extends GameObject {
 		this.alive = alive;
 	}
 
-	public abstract void onHitShip(Ship ship);
+	public abstract void onHitShip(Ship ship, int delta);
 }
