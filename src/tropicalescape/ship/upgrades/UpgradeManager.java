@@ -2,12 +2,12 @@ package tropicalescape.ship.upgrades;
 
 import java.util.ArrayList;
 
-public class UpgradeManager {
+public class UpgradeManager<T extends Upgrade> {
 
-	protected ArrayList<Upgrade> allUpgrades;
-	protected Upgrade currentUpgrade;
+	protected ArrayList<T> allUpgrades;
+	protected T currentUpgrade;
 
-	public UpgradeManager(ArrayList<Upgrade> allUpgrades, Upgrade currentUpgrade) {
+	public UpgradeManager(ArrayList<T> allUpgrades, T currentUpgrade) {
 		this.allUpgrades = allUpgrades;
 		this.currentUpgrade = currentUpgrade;
 	}
@@ -22,16 +22,27 @@ public class UpgradeManager {
 			return gold - nextUpgrade.getCost() >= 0;
 		}
 	}
+	
+	public int getNextUpgradeCost() {
+		int i = allUpgrades.indexOf(currentUpgrade);
+		if (i != allUpgrades.size() - 1) {
+			T nextUpgrade = allUpgrades.get(i + 1);
+			return nextUpgrade.getCost();
+		}
+		else {
+			return -1;
+		}
+	}
 
 	public void applyNextUpgrade() {
 		int i = allUpgrades.indexOf(currentUpgrade);
 		if (i != allUpgrades.size() - 1) {
-			Upgrade nextUpgrade = allUpgrades.get(i + 1);
+			T nextUpgrade = allUpgrades.get(i + 1);
 			currentUpgrade = nextUpgrade;
 		}
 	}
 
-	public Upgrade getCurrentUpgrade() {
+	public T getCurrentUpgrade() {
 		return currentUpgrade;
 	}
 
