@@ -25,29 +25,29 @@ public class Ship extends GameObject {
 	private boolean arrived = false;
 	private HealthBar healthBar = new HealthBar(HPBAR_HEIGHT, HPBAR_WIDHT, MAX_HP, MAX_HP);
 
-	static String[] N_IMG_FILES = { "res/ship/resized/Boat1-up.png",
-			"res/ship/resized/Boat2-up.png", "res/ship/resized/Boat3-up.png" };
-	static String[] NE_IMG_FILES = { "res/ship/resized/Boat1-rightup.png",
-			"res/ship/resized/Boat2-rightup.png",
-			"res/ship/resized/Boat3-rightup.png" };
-	static String[] NW_IMG_FILES = { "res/ship/resized/Boat1-leftup.png",
-			"res/ship/resized/Boat2-leftup.png",
-			"res/ship/resized/Boat3-leftup.png" };
-	static String[] S_IMG_FILES = { "res/ship/resized/Boat1-down.png",
-			"res/ship/resized/Boat2-down.png",
-			"res/ship/resized/Boat3-down.png" };
-	static String[] SW_IMG_FILES = { "res/ship/resized/Boat1-leftdown.png",
-			"res/ship/resized/Boat2-leftdown.png",
-			"res/ship/resized/Boat3-leftdown.png" };
-	static String[] SE_IMG_FILES = { "res/ship/resized/Boat1-rightdown.png",
-			"res/ship/resized/Boat2-rightdown.png",
-			"res/ship/resized/Boat3-rightdown.png" };
-	static String[] E_IMG_FILES = { "res/ship/resized/Boat1-right.png",
-			"res/ship/resized/Boat2-right.png",
-			"res/ship/resized/Boat3-right.png" };
-	static String[] W_IMG_FILES = { "res/ship/resized/Boat1-left.png",
-			"res/ship/resized/Boat2-left.png",
-			"res/ship/resized/Boat3-left.png" };
+	static String[] N_IMG_FILES = { "res/animations/ship/Boat1-up.png",
+			"res/animations/ship/Boat2-up.png", "res/animations/ship/Boat3-up.png" };
+	static String[] NE_IMG_FILES = { "res/animations/ship/Boat1-rightup.png",
+			"res/animations/ship/Boat2-rightup.png",
+			"res/animations/ship/Boat3-rightup.png" };
+	static String[] NW_IMG_FILES = { "res/animations/ship/Boat1-leftup.png",
+			"res/animations/ship/Boat2-leftup.png",
+			"res/animations/ship/Boat3-leftup.png" };
+	static String[] S_IMG_FILES = { "res/animations/ship/Boat1-down.png",
+			"res/animations/ship/Boat2-down.png",
+			"res/animations/ship/Boat3-down.png" };
+	static String[] SW_IMG_FILES = { "res/animations/ship/Boat1-leftdown.png",
+			"res/animations/ship/Boat2-leftdown.png",
+			"res/animations/ship/Boat3-leftdown.png" };
+	static String[] SE_IMG_FILES = { "res/animations/ship/Boat1-rightdown.png",
+			"res/animations/ship/Boat2-rightdown.png",
+			"res/animations/ship/Boat3-rightdown.png" };
+	static String[] E_IMG_FILES = { "res/animations/ship/Boat1-right.png",
+			"res/animations/ship/Boat2-right.png",
+			"res/animations/ship/Boat3-right.png" };
+	static String[] W_IMG_FILES = { "res/animations/ship/Boat1-left.png",
+			"res/animations/ship/Boat2-left.png",
+			"res/animations/ship/Boat3-left.png" };
 
 	static String[] N_HB_FILES = { "res/hitboxes/ship/vertical.txt",
 			"res/hitboxes/ship/vertical.txt", "res/hitboxes/ship/vertical.txt" };
