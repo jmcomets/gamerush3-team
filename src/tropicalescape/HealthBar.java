@@ -52,28 +52,27 @@ public class HealthBar {
 		if (hp == maxHp) {
 			return;
 		}
-		
+
 		float oldLineWidth = g.getLineWidth();
 		Color oldColor = g.getColor();
 
 		g.setLineWidth(BORDER_WIDTH);
 
-		g.setColor(Color.black);
-		g.drawRect(position.x, position.y, width, height);
-
 		float orangeBarWidth = lastStableHp * (float) (width - BORDER_WIDTH)
 				/ (float) maxHp;
 
 		g.setColor(Color.orange);
-		g.fillRect(position.x + BORDER_WIDTH, position.y + BORDER_WIDTH,
-				orangeBarWidth, height - BORDER_WIDTH);
+		g.fillRect(position.x, position.y, orangeBarWidth + BORDER_WIDTH, height
+				);
 
 		float hpWidth = renderHp * (float) (width - BORDER_WIDTH)
 				/ (float) maxHp;
 
 		g.setColor(Color.red);
-		g.fillRect(position.x + BORDER_WIDTH, position.y + BORDER_WIDTH,
-				hpWidth, height - BORDER_WIDTH);
+		g.fillRect(position.x, position.y, hpWidth + BORDER_WIDTH, height);
+
+		g.setColor(Color.black);
+		g.drawRect(position.x, position.y, width, height);
 
 		g.setColor(oldColor);
 		g.setLineWidth(oldLineWidth);
