@@ -23,6 +23,7 @@ public class GameManager extends StateBasedGame {
 			appgc = new AppGameContainer(game);
 			appgc.setDisplayMode(WIDTH, HEIGHT, false);
 			// appgc.setFullscreen(true);
+			//appgc.setVSync(true);
 			appgc.setShowFPS(false);
 			appgc.start();
 		} catch (SlickException ex) {

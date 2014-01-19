@@ -22,7 +22,8 @@ public class LevelSelectionState extends BasicGameState {
 	static final int ID = 4;
 	private static final String PATH = "res/levels/";
 	private static final float PADDING = 35;
-	private static final int MARGIN = 10;
+	private static final float MARGIN_TOP = 70;
+	private static final int LINE_HEIGHT = 10;
 	private static final int HEIGHT = 40;
 	private List<Level> listLevels;
 	private int current = 0;
@@ -40,14 +41,13 @@ public class LevelSelectionState extends BasicGameState {
 	public void init(GameContainer container, StateBasedGame game)
 			throws SlickException {
 		try {
-			img = new Image("res/animations/background/water.jpg");
+			img = new Image("res/animations/background/carte-large.png");
 			
 		} catch (SlickException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
-
 		File folder = new File("res/levels");
 		File[] listOfFiles = folder.listFiles();
 
@@ -113,9 +113,7 @@ public class LevelSelectionState extends BasicGameState {
 			setCurrent(true, false);
 		} else {
 			setCurrent(false, false);
-
 		}
-
 	}
 
 	private void setCurrent(boolean up) {
@@ -146,12 +144,16 @@ public class LevelSelectionState extends BasicGameState {
 	@Override
 	public void render(GameContainer container, StateBasedGame game, Graphics g)
 			throws SlickException {
-		img.draw(0,0);
-
-		int i = 0;
 		
-		g.drawString("Select your level : ", PADDING , container.getHeight()/2);
+		img.draw(0, scrolling);
+		
+		String message = "============= Select your level ============";
+		float cx = (container.getWidth() / 2),
+				ty = scrolling + MARGIN_TOP + PADDING - 10;
+		g.drawString(message, cx - g.getFont().getWidth(message)/2, ty);
 
+		cx -= 60;
+		int i = 0;
 		for (Level entry : listLevels) {
 			if (i == current) {
 				g.setColor(Color.red);
@@ -163,10 +165,8 @@ public class LevelSelectionState extends BasicGameState {
 
 			//g.drawRect(PADDING, i * (HEIGHT + MARGIN) + PADDING + scrolling,
 			//		container.getWidth() - PADDING * 2, HEIGHT);
-			g.drawString(valeur.toString(), PADDING*10, i * (HEIGHT + MARGIN)
-					+ HEIGHT / 2 + scrolling + PADDING - 10);
-			g.drawString(clef, PADDING * 12, i * (HEIGHT + MARGIN) + HEIGHT / 2
-					+ scrolling + PADDING - 10);
+			g.drawString(valeur.toString(), cx - PADDING, ty + (i+1) * (HEIGHT + LINE_HEIGHT) + HEIGHT / 2);
+			g.drawString(clef, cx, ty + (i+1) * (HEIGHT + LINE_HEIGHT) + HEIGHT / 2);
 
 			i++;
 		}
@@ -184,10 +184,10 @@ public class LevelSelectionState extends BasicGameState {
 		} else if (returnToMenu) {
 			game.enterState(MenuState.ID);
 		}
-
-		if (current * (HEIGHT + MARGIN) + PADDING + scrolling <= 60 / 2) {
+		
+		if ((current+1) * (HEIGHT + LINE_HEIGHT) + PADDING - MARGIN_TOP + scrolling <= 60 / 2) {
 			scrolling += 10;
-		} else if (current * (HEIGHT + MARGIN) + PADDING + scrolling + HEIGHT >= containerHeight - 60 / 2) {
+		} else if ((current+1) * (HEIGHT + LINE_HEIGHT) + PADDING + MARGIN_TOP + scrolling + HEIGHT >= containerHeight - 60 / 2) {
 			scrolling -= 10;
 		}
 
