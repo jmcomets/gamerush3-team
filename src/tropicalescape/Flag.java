@@ -9,7 +9,11 @@ public class Flag extends GameObject {
 	private static final int DESC_HEIGHT_SHIFT = 15;
 
 	private static int DURATION = 1;
-	private static final String[] IMG_FILES = { "res/animations/flag/base.png" };
+	private static final String[] IMG_FILES = { 
+		"res/animations/flag/tonneau1.png",
+		"res/animations/flag/tonneau2.png",
+		"res/animations/flag/tonneau3.png",
+		};
 	private static final String[] HITBOX_FILES = { "res/hitboxes/flag/base.txt" };
 
 	protected String description;
