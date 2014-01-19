@@ -79,8 +79,6 @@ public class PlayState extends BasicGameState {
 
 	private int nTotalShips;
 
-
-
 	private static boolean nextLevel = false;
 
 	private static PlayState instance;
@@ -159,9 +157,10 @@ public class PlayState extends BasicGameState {
 		if (lvlName == null) {
 			System.out.println("not next");
 			lvlName = PATH + listLevels.get(0).name;
-		} else if (nextLevel){
+		} else if (nextLevel) {
 			System.out.println("next");
-			lvlName = PATH +listLevels.get(listLevels.indexOf(lvlName)+2).name;
+			lvlName = PATH
+					+ listLevels.get(listLevels.indexOf(lvlName) + 2).name;
 		}
 		try {
 			loadLevel(lvlName);
@@ -201,7 +200,7 @@ public class PlayState extends BasicGameState {
 			float goldRate = (ships.size() + shipStack.size() + nArrivedShips)
 					/ nTotalShips;
 			Player.getInstance().increaseGolds(
-					(int) ((float)levelReward / 2f * (1f + goldRate)));
+					(int) ((float) levelReward / 2f * (1f + goldRate)));
 			game.enterState(WinState.ID);
 		}
 		if (lost) {
@@ -345,12 +344,11 @@ public class PlayState extends BasicGameState {
 					obj = w;
 				}
 				if (obj != null) {
-					obj.setPosition(new Vector2f(Float
-							.parseFloat(tokens[1]), Float
-							.parseFloat(tokens[2])));
+					obj.setPosition(new Vector2f(Float.parseFloat(tokens[1]),
+							Float.parseFloat(tokens[2])));
 					gameObjects.add(obj);
 				}
-				/**add random waves*/
+				/** add random waves */
 				WaveGenerator wg = new WaveGenerator();
 				gameObjects.addAll(wg.generateWaves());
 			}
@@ -385,7 +383,8 @@ public class PlayState extends BasicGameState {
 		}
 
 		if (button == Input.MOUSE_LEFT_BUTTON) {
-			if (clickedObject == null && userCanEdit() && hasRemainingFlags()) {
+			if ((clickedObject == null || clickedObject instanceof SmallWave)
+					&& userCanEdit() && hasRemainingFlags()) {
 				Flag flag = new Flag("" + (userFlags.size() + 1));
 				flag.setPosition(new Vector2f(x, y));
 				userFlags.add(flag);
@@ -563,11 +562,11 @@ public class PlayState extends BasicGameState {
 				// ship died
 				continue;
 			}
-			
+
 			if (ship.isDying()) {
 				continue;
 			}
-			
+
 			resolveShipCollision(ship, delta);
 			if (!ship.isAlive()) {
 				shipsToRemove.add(ship);
@@ -609,7 +608,7 @@ public class PlayState extends BasicGameState {
 	private boolean userCanEdit() {
 		return placeFlagsDelay > 0 || niceModeActivated || godModeActivated;
 	}
-	
+
 	public String getLvlName() {
 		return lvlName;
 	}
@@ -637,7 +636,5 @@ public class PlayState extends BasicGameState {
 	public static void setNextLevel(boolean nextLevel) {
 		PlayState.nextLevel = nextLevel;
 	}
-	
-	
 
 }
