@@ -54,7 +54,7 @@ public class MenuState extends BasicGameState {
 					.getResourceAsStream("res/fonts/PiratesBay.ttf");
 
 			Font awtFont2 = Font.createFont(Font.TRUETYPE_FONT, inputStream);
-			awtFont2 = awtFont2.deriveFont(60f); // set font size
+			awtFont2 = awtFont2.deriveFont(63f); // set font size
 			font2 = new TrueTypeFont(awtFont2, true);
 
 		} catch (Exception e) {
@@ -67,9 +67,9 @@ public class MenuState extends BasicGameState {
 			throws SlickException {
 		img.draw(0,0,0.7f);
 		g.setColor(Color.white);
-		font2.drawString(10, 50, "Tropical Escape");
-		font.drawString(10, 150, "1 Level Selection");
-		font.drawString(10, 200, "2 Quit");
+		font2.drawString(10, 50, "Tropical Escape",Color.black);
+		font.drawString(10, 150, "1 Level Selection",Color.black);
+		font.drawString(10, 200, "2 Quit",Color.black);
 	}
 
 	@Override
