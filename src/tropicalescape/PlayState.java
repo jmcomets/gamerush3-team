@@ -30,19 +30,13 @@ import tropicalescape.enemies.Wave;
 
 public class PlayState extends BasicGameState {
 
-	private static PlayState instance;
-
-	private static final Color BG_COLOR = new Color(45, 85, 117);
 	public static final int ID = 2;
-
+	
+	private static final Color BG_COLOR = new Color(45, 85, 117);
 	private static final int MAX_PLACE_DELAY = 5000;
-
-	public static PlayState getInstance(int width, int height) {
-		if (instance == null) {
-			instance = new PlayState(width, height);
-		}
-		return instance;
-	}
+	private static final int MAX_DELAY_INDICATOR_DIAMETER = 80;
+	private static final int MIN_DELAY_INDICATOR_R = 20;
+	private static final int MAX_FLAGS = -1;
 
 	private StartFlag startFlag;
 	private FinishFlag finishFlag;
@@ -53,39 +47,42 @@ public class PlayState extends BasicGameState {
 	private List<Enemy> enemies = new ArrayList<Enemy>();
 	private List<Ship> ships = new ArrayList<Ship>();
 	private Stack<Ship> shipStack = new Stack<Ship>();
-	private int shipPopDelay = 1000;
-	private int shipPopTimer = 0;
-
-	private Vector2f shipPopPosition = new Vector2f();
 	private List<GameObject> gameObjects = new ArrayList<GameObject>();
-	private int minToWin;
 
 	private int nArrivedShips;
+	
 	private boolean won;
-
 	private boolean lost;
-
-	static int nextFlagNum = 1;
-	public int width;
-
-	public int height;
-	private int placeFlagsDelay;
+	
+	private GameObject draggingObject = null;
 
 	private String lvlName;
 
-	private GameObject draggingObject = null;
-	private boolean godModeActivated;
+	private int minToWin;
 
+	private Vector2f shipPopPosition = new Vector2f();
+	private int shipPopDelay = 1000;
+	private int shipPopTimer = 0;
+	
+	private int remainingFlags;
+	private int placeFlagsDelay;
+	
+	private boolean godModeActivated;
 	private boolean niceModeActivated;
 
-	private static final int MAX_DELAY_INDICATOR_DIAMETER = 80;
+	private boolean exit = false;
 
-	private static final int MIN_DELAY_INDICATOR_R = 20;
+	private static PlayState instance;
 
-	private PlayState(int width, int height) {
-		this.width = width;
-		this.height = height;
-		hud = new HeadUpDisplay(this);
+	public static PlayState getInstance() {
+		if (instance == null) {
+			instance = new PlayState();
+		}
+		return instance;
+	}
+
+	private PlayState() {
+	hud = new HeadUpDisplay(this);
 	}
 
 	public void addEnemy(Enemy enemy) {
@@ -129,7 +126,12 @@ public class PlayState extends BasicGameState {
 			throws SlickException {
 		super.enter(container, game);
 
+		// Flags
 		placeFlagsDelay = MAX_PLACE_DELAY;
+		
+		// Exit ?
+		exit = false;
+		remainingFlags = MAX_FLAGS;
 
 		// Win-lose
 		won = false;
@@ -215,7 +217,9 @@ public class PlayState extends BasicGameState {
 				}
 
 				GameObject obj = null;
-				if (tokens[0].equals("PLACE-DELAY")) {
+				if (tokens[0].equals("MAX-FLAGS")) {
+					remainingFlags = Integer.parseInt(tokens[1]);
+				} else if (tokens[0].equals("PLACE-DELAY")) {
 					placeFlagsDelay = MAX_PLACE_DELAY;
 					if (tokens.length > 1) {
 						placeFlagsDelay = Integer.parseInt(tokens[1]);
@@ -253,9 +257,11 @@ public class PlayState extends BasicGameState {
 					userFlags.add(flag);
 					obj = flag;
 				} else if (tokens[0].equals("START")) {
+					gameObjects.remove(startFlag);
 					startFlag = new StartFlag(tokens[1]);
 					obj = startFlag;
 				} else if (tokens[0].equals("FINISH")) {
+					gameObjects.remove(finishFlag);
 					finishFlag = new FinishFlag(tokens[1]);
 					obj = finishFlag;
 				} else if (tokens[0].equals("KRAKEN")) {
@@ -287,6 +293,16 @@ public class PlayState extends BasicGameState {
 	}
 
 	@Override
+	public void keyReleased(int key, char c) {
+		
+		if (Input.KEY_ESCAPE == key) {
+			exit = true;
+		}
+
+		super.keyReleased(key, c);
+	}
+
+	@Override
 	public void mouseClicked(int button, int x, int y, int clickCount) {
 		super.mouseClicked(button, x, y, clickCount);
 
@@ -299,8 +315,7 @@ public class PlayState extends BasicGameState {
 		}
 
 		if (button == Input.MOUSE_LEFT_BUTTON) {
-			if (clickedObject == null && userCanEdit()) { // création d'un
-															// drapeau
+			if (clickedObject == null && userCanEdit() && hasRemainingFlags()) {
 				Flag flag = new Flag("" + (userFlags.size() + 1));
 				flag.setPosition(new Vector2f(x, y));
 				userFlags.add(flag);
@@ -310,6 +325,9 @@ public class PlayState extends BasicGameState {
 					if (shipNextFlag == finishFlag) {
 						ship.setNextFlag(flag);
 					}
+				}
+				if (remainingFlags != -1) {
+					remainingFlags--;
 				}
 			}
 		} else if (button == Input.MOUSE_RIGHT_BUTTON) {
@@ -327,6 +345,9 @@ public class PlayState extends BasicGameState {
 				}
 				userFlags.remove(clickedObject);
 				gameObjects.remove(clickedObject);
+				if (remainingFlags != -1) {
+					remainingFlags++;
+				}
 
 				// Refaire la numérotation
 				for (int i = 0; i < userFlags.size(); i++) {
@@ -334,6 +355,10 @@ public class PlayState extends BasicGameState {
 				}
 			}
 		}
+	}
+
+	private boolean hasRemainingFlags() {
+		return remainingFlags > 0 || remainingFlags == -1;
 	}
 
 	@Override
@@ -433,6 +458,11 @@ public class PlayState extends BasicGameState {
 	@Override
 	public void update(GameContainer container, StateBasedGame game, int delta)
 			throws SlickException {
+		
+		if(exit) {
+			game.enterState(MenuState.ID);
+		}
+		
 		// Continuous
 		handleContinuousInput(container.getInput());
 
@@ -440,12 +470,9 @@ public class PlayState extends BasicGameState {
 		// Wait for the user to place his flags
 		if (placeFlagsDelay > 0) {
 			placeFlagsDelay -= delta;
-			System.out.println("il reste " + placeFlagsDelay / 1000
-					+ " secondes");
 			return;
 		}
-		// System.out.println(placeFlagsDelay);
-
+		
 		// Win or lost ?
 		handleWinLose(game);
 
