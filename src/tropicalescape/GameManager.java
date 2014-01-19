@@ -33,6 +33,7 @@ public class GameManager extends StateBasedGame{
     }
     
     public void launchLevel(String level){
+    	PlayState.getInstance().setNextLevel(false);
     	PlayState.getInstance().setLvlName(level);
     	enterState(PlayState.ID);
     }
@@ -45,6 +46,12 @@ public class GameManager extends StateBasedGame{
 		addState(new LevelSelectionState());
 		addState(new LoosedState());
 		addState(new UpgradeState());
+	}
+
+	public void launchNextLevel() {
+    	PlayState.getInstance().setNextLevel(true);
+    	enterState(PlayState.ID);
+		
 	}
 
 }

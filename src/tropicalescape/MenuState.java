@@ -66,12 +66,12 @@ public class MenuState extends BasicGameState {
 	@Override
 	public void render(GameContainer container, StateBasedGame game, Graphics g)
 			throws SlickException {
-		img.draw(0,0,0.7f);
+		img.draw(0, 0, 0.7f);
 		g.setColor(Color.white);
-		font2.drawString(10, 50, "Tropical Escape",Color.black);
-		font.drawString(10, 150, "1 Level Selection",Color.black);
-		font.drawString(10, 200, "2 Manage upgrades",Color.black);
-		font.drawString(10, 250, "3 Quit",Color.black);
+		font2.drawString(10, 50, "Tropical Escape", Color.black);
+		font.drawString(10, 150, "1 Launch game", Color.black);
+		font.drawString(10, 200, "2 Manage upgrades", Color.black);
+		font.drawString(10, 250, "3 Quit", Color.black);
 	}
 
 	@Override
@@ -79,12 +79,11 @@ public class MenuState extends BasicGameState {
 		if (key == Input.KEY_1 || key == Input.KEY_NUMPAD0
 				|| key == Input.KEY_ENTER || key == Input.KEY_NUMPADENTER
 				|| key == Input.KEY_SPACE) {
-			levelSelect = true;
+			launchGame = true;
+		}  else if (key == Input.KEY_2) {
+			manageUpgrades = true;
 		} else if (key == Input.KEY_3 || key == Input.KEY_ESCAPE) {
 			quitGame = true;
-		}
-		else if (key == Input.KEY_2) {
-			manageUpgrades = true;
 		}
 	}
 
@@ -101,7 +100,7 @@ public class MenuState extends BasicGameState {
 	public void update(GameContainer container, StateBasedGame game, int delta)
 			throws SlickException {
 		if (launchGame) {
-			game.enterState(PlayState.ID);
+			((GameManager) game).launchLevel(null);
 		}
 		if (quitGame) {
 			container.exit();
@@ -109,7 +108,7 @@ public class MenuState extends BasicGameState {
 		if (levelSelect) {
 			game.enterState(LevelSelectionState.ID);
 		}
-		if(manageUpgrades) {
+		if (manageUpgrades) {
 			game.enterState(UpgradeState.ID);
 		}
 	}

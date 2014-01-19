@@ -2,6 +2,7 @@ package tropicalescape;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -37,6 +38,7 @@ public class PlayState extends BasicGameState {
 	private static final int MAX_DELAY_INDICATOR_DIAMETER = 80;
 	private static final int MIN_DELAY_INDICATOR_R = 20;
 	private static final int MAX_FLAGS = -1;
+	private static final String PATH = "res/levels/";
 
 	private StartFlag startFlag;
 	private FinishFlag finishFlag;
@@ -48,6 +50,7 @@ public class PlayState extends BasicGameState {
 	private List<Ship> ships = new ArrayList<Ship>();
 	private Stack<Ship> shipStack = new Stack<Ship>();
 	private List<GameObject> gameObjects = new ArrayList<GameObject>();
+	private List<Level> listLevels = new ArrayList<Level>();
 
 	private int nArrivedShips;
 
@@ -75,6 +78,10 @@ public class PlayState extends BasicGameState {
 	private boolean exit = false;
 
 	private int nTotalShips;
+
+
+
+	private static boolean nextLevel = false;
 
 	private static PlayState instance;
 
@@ -149,6 +156,13 @@ public class PlayState extends BasicGameState {
 		emptyEntities();
 
 		placeDefaultFlags(container.getWidth(), container.getHeight());
+		if (lvlName == null) {
+			System.out.println("not next");
+			lvlName = PATH + listLevels.get(0).name;
+		} else if (nextLevel){
+			System.out.println("next");
+			lvlName = PATH +listLevels.get(listLevels.indexOf(lvlName)+2).name;
+		}
 		try {
 			loadLevel(lvlName);
 		} catch (IOException e) {
@@ -195,18 +209,50 @@ public class PlayState extends BasicGameState {
 		}
 	}
 
-	public void init(GameContainer container) throws SlickException {
-	}
-
 	@Override
 	public void init(GameContainer container, StateBasedGame game)
 			throws SlickException {
-		String lvlName = "res/levels/test.lvl";
-		try {
-			loadLevel(lvlName);
-		} catch (IOException e) {
-			new SlickException("Problème au chargement du niveau " + lvlName
-					+ " : " + e.getMessage());
+		File folder = new File("res/levels");
+		File[] listOfFiles = folder.listFiles();
+
+		BufferedReader reader = null;
+
+		for (int i = 0; i < listOfFiles.length; i++) {
+			if (listOfFiles[i].isFile()) {
+				try {
+					reader = new BufferedReader(new FileReader(listOfFiles[i]));
+					String text = null;
+					int difficulty = 0;
+					while ((text = reader.readLine()) != null) {
+						String[] tokens = text.split("\\s+");
+						if (tokens.length < 1) {
+							System.err.println("Need at least 3 tokens");
+						}
+
+						GameObject obj = null;
+						if (tokens[0].equals("DIFFICULTY")) {
+							difficulty = Integer.parseInt(tokens[1]);
+						}
+					}
+					Level tmpLevel = new Level(listOfFiles[i].getName(),
+							difficulty);
+					listLevels.add(tmpLevel);
+				} catch (FileNotFoundException e) {
+					e.printStackTrace();
+				} catch (NumberFormatException e) {
+					e.printStackTrace();
+				} catch (IOException e) {
+					e.printStackTrace();
+				} finally {
+					if (reader != null) {
+						try {
+							reader.close();
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+					}
+				}
+			}
 		}
 
 	}
@@ -550,7 +596,7 @@ public class PlayState extends BasicGameState {
 	private boolean userCanEdit() {
 		return placeFlagsDelay > 0 || niceModeActivated;
 	}
-
+	
 	public String getLvlName() {
 		return lvlName;
 	}
@@ -574,5 +620,11 @@ public class PlayState extends BasicGameState {
 	public boolean isNiceModeActivated() {
 		return niceModeActivated;
 	}
+
+	public static void setNextLevel(boolean nextLevel) {
+		PlayState.nextLevel = nextLevel;
+	}
+	
+	
 
 }
