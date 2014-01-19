@@ -12,7 +12,7 @@ public abstract class Enemy extends GameObject {
 		super(ha);
 	}
 
-	public abstract void onHitShip(Ship ship);
+	public abstract void onHitShip(Ship ship, int delta);
 
 	public boolean isAlive() {
 		return alive;

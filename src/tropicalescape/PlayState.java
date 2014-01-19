@@ -394,10 +394,10 @@ public class PlayState extends BasicGameState {
 		}
 	}
 
-	private void resolveShipCollision(Ship ship) {
+	private void resolveShipCollision(Ship ship, int delta) {
 		for (Enemy enemy : enemies) {
 			if (enemy.intersects(ship)) {
-				enemy.onHitShip(ship);
+				enemy.onHitShip(ship, delta);
 				if (!ship.isAlive()) {
 					break;
 				}
@@ -441,7 +441,7 @@ public class PlayState extends BasicGameState {
 
 		List<Ship> shipsToRemove = new ArrayList<Ship>();
 		for (Ship ship : ships) {
-			resolveShipCollision(ship);
+			resolveShipCollision(ship, delta);
 			if (!ship.isAlive()) {
 				shipsToRemove.add(ship);
 				// ship died

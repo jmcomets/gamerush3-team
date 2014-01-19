@@ -19,7 +19,7 @@ public abstract class OneHitMonster extends Enemy {
 	protected static final String[] emptyArray = {};
 
 	@Override
-	public void onHitShip(Ship ship) {
+	public void onHitShip(Ship ship, int delta) {
 		ship.loseHealth(damageOnHit);
 		hitDone = true;
 

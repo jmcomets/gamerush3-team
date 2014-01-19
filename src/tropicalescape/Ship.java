@@ -18,6 +18,7 @@ public class Ship extends GameObject {
 	static final int SLOW_FACTOR = 10;
 	static final int FRAME_DURATION = 125;
 
+	private int invincibilyPeriod = 0;
 	private int hp;
 	private Flag nextFlag;
 	private Direction dir;
@@ -166,6 +167,14 @@ public class Ship extends GameObject {
 	public void setNextFlag(Flag nextFlag) {
 		this.nextFlag = nextFlag;
 		arrived = false;
+	}
+
+	public int getInvincibilyPeriod() {
+		return invincibilyPeriod;
+	}
+
+	public void setInvincibilyPeriod(int invincibilyPeriod) {
+		this.invincibilyPeriod = invincibilyPeriod;
 	}
 
 	@Override

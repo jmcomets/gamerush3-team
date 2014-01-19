@@ -18,7 +18,7 @@ public class Island extends Enemy {
 	}
 
 	@Override
-	public void onHitShip(Ship ship) {
+	public void onHitShip(Ship ship, int delta) {
 		ship.kill();
 	}
 }
