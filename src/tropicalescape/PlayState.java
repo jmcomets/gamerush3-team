@@ -138,11 +138,26 @@ public class PlayState extends BasicGameState {
 		
 		nArrivedShips = 0;
 		emptyEntities();
+		
+		placeDefaultFlags(container.getWidth(), container.getHeight());
 		try {
 			loadLevel(lvlName);
 		} catch (IOException e) {
 			new SlickException("Problème au chargement du niveau " + lvlName
 					+ " : " + e.getMessage());
+		}
+	}
+	
+	public void placeDefaultFlags(int width, int height){
+		if (startFlag == null) {
+			startFlag = new StartFlag("Start");
+			startFlag.setPosition(new Vector2f(-40, -40));
+			gameObjects.add(startFlag);
+		}
+		if (finishFlag == null) {
+			finishFlag = new FinishFlag("Finish");
+			finishFlag.setPosition(new Vector2f(width, height));
+			gameObjects.add(finishFlag);
 		}
 	}
 
@@ -261,13 +276,6 @@ public class PlayState extends BasicGameState {
 				}
 			}
 
-			if (startFlag == null) {
-				startFlag = new StartFlag("Start");
-			}
-			if (finishFlag == null) {
-				finishFlag = new FinishFlag("Finish");
-				finishFlag.setPosition(new Vector2f(600, 440));
-			}
 		} finally {
 			if (reader != null) {
 				reader.close();
