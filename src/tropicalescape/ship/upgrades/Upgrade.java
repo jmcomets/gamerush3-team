@@ -18,4 +18,8 @@ public class Upgrade {
 		return cost;
 	}
 
+	public String getDescription() {
+		return name;
+	}
+
 }

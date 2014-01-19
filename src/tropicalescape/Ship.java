@@ -18,20 +18,19 @@ public class Ship extends GameObject {
 	private static final int HPBAR_POSY = 10;
 	static final int HPBAR_HEIGHT = 10;
 	static final int HPBAR_WIDHT = 60;
-	static final int MAX_HP = 50;
 	static final int EPSILON = 5;
 	static final int SLOW_FACTOR = 10;
 	static final int FRAME_DURATION = 125;
 
 	private int invincibilyPeriod = 0;
 	private int hp;
+	private int maxHp = 50;
 	private float armor;
 	private float speedBonus;
 	private Flag nextFlag;
 	private Direction dir;
 	private boolean arrived = false;
-	private HealthBar healthBar = new HealthBar(HPBAR_HEIGHT, HPBAR_WIDHT,
-			MAX_HP, MAX_HP);
+	private HealthBar healthBar;
 
 	static String[] N_IMG_FILES = { "res/animations/ship/Boat1-up.png",
 			"res/animations/ship/Boat2-up.png",
@@ -90,22 +89,26 @@ public class Ship extends GameObject {
 	Ship() {
 		super(new HitboxAnimation());
 
-		hp = MAX_HP;
-		UpgradeManager<HealthUpgrade> healthUpgradesManager = PlayState
+		hp = maxHp;
+		UpgradeManager<HealthUpgrade> healthUpgradesManager = Player
 				.getInstance().getHealthUpgradesManager();
 		HealthUpgrade currentUpgrade = healthUpgradesManager
 				.getCurrentUpgrade();
 		hp += currentUpgrade.getBonusHp();
+		maxHp = hp;
 
-		UpgradeManager<ArmorUpgrade> armorUpgradesManager = PlayState
+		UpgradeManager<ArmorUpgrade> armorUpgradesManager = Player
 				.getInstance().getArmorUpgradesManager();
 		ArmorUpgrade armorUpgrade = armorUpgradesManager.getCurrentUpgrade();
 		armor = armorUpgrade.getArmorPercent();
 
-		UpgradeManager<SpeedUpgrade> speedUpgradesManager = PlayState
+		UpgradeManager<SpeedUpgrade> speedUpgradesManager = Player
 				.getInstance().getSpeedUpgradesManager();
 		SpeedUpgrade speedUpgrade = speedUpgradesManager.getCurrentUpgrade();
 		speedBonus = speedUpgrade.getSpeedBonusPercent();
+
+		healthBar = new HealthBar(HPBAR_HEIGHT, HPBAR_WIDHT,
+					maxHp, maxHp);
 
 		dir = Direction.E;
 

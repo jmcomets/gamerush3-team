@@ -13,4 +13,9 @@ public class SpeedUpgrade extends Upgrade {
 		return speedBonusPercent;
 	}
 
+	@Override
+	public String getDescription() {
+		return getName() + " +" + speedBonusPercent + "%";
+	}
+
 }
