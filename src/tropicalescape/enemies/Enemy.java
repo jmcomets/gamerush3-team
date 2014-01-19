@@ -12,8 +12,6 @@ public abstract class Enemy extends GameObject {
 		super(ha);
 	}
 
-	public abstract void onHitShip(Ship ship, int delta);
-
 	public boolean isAlive() {
 		return alive;
 	}
@@ -21,4 +19,6 @@ public abstract class Enemy extends GameObject {
 	public void setAlive(boolean alive) {
 		this.alive = alive;
 	}
+
+	public abstract void onHitShip(Ship ship, int delta);
 }
