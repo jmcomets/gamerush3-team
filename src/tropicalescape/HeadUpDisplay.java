@@ -2,9 +2,7 @@ package tropicalescape;
 
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
-
 import org.newdawn.slick.Image;
-import org.newdawn.slick.Renderable;
 import org.newdawn.slick.SlickException;
 
 public class HeadUpDisplay {
@@ -13,40 +11,31 @@ public class HeadUpDisplay {
 	private static final int PADDING = 10;
 	private PlayState state;
 	private Image img;
-	private Image border;
 
 	public HeadUpDisplay(PlayState state){
 		this.state = state;
 		try {
-			img = new Image("res/animations/background/back.png");
+			img = new Image("res/animations/background/carte.png");
 		} catch (SlickException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		try {
-			border = new Image("res/animations/background/border.png");
-		} catch (SlickException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
 	}
 
 	public void draw(Graphics g, float x, float y){
 		//background
+		float backgroundOffset = -30;
 		for(int i = 0; i < 1 ; i++){
 			for(int j = 0; j < 1 ; j++){
-				img.draw(x+i*img.getWidth(),y+j*img.getHeight());
+				img.draw(backgroundOffset + x + i * img.getWidth(),
+						backgroundOffset + y + j * img.getHeight());
 			}
 		}
-		border.draw(x-15,y-45);
 		
-		g.setColor(Color.white);
+		g.setColor(Color.black);
 
 		g.drawString("Flags # : " + state.getNbrShips(), x + 10, 1*HEIGHT);
-
 		g.drawString("Monsters # : " + state.getNbrEnemies(), x + 10, 2*HEIGHT);
-		
 		g.drawString("To win : " + state.getMinToWin(), x + 10, 3*HEIGHT);
 		
 		String mode;

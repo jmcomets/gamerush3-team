@@ -32,7 +32,7 @@ public class MenuState extends BasicGameState {
 	public void init(GameContainer container, StateBasedGame game)
 			throws SlickException {
 		try {
-			img = new Image("res/animations/background/isle.jpg");
+			img = new Image("res/animations/background/main-menu.png");
 		} catch (SlickException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -66,23 +66,25 @@ public class MenuState extends BasicGameState {
 	@Override
 	public void render(GameContainer container, StateBasedGame game, Graphics g)
 			throws SlickException {
-		img.draw(0, 0, 0.7f);
+		img.draw(0, 0);
 		g.setColor(Color.white);
-		font2.drawString(10, 50, "Tropical Escape", Color.black);
-		font.drawString(10, 150, "1 Launch game", Color.black);
-		font.drawString(10, 200, "2 Manage upgrades", Color.black);
-		font.drawString(10, 250, "3 Quit", Color.black);
+		//font2.drawString(10, 50, "Tropical Escape", Color.black);
+		font.drawString(60, container.getHeight() - 250, "1 Launch game", Color.black);
+		font.drawString(60, container.getHeight() - 200, "2 Ship upgrades", Color.black);
+		font.drawString(60, container.getHeight() - 150, "3 Quit", Color.black);
+		
+		g.setFont(this.font);
 	}
 
 	@Override
 	public void keyPressed(int key, char c) {
-		if (key == Input.KEY_1 || key == Input.KEY_NUMPAD0
+		if (key == Input.KEY_1 || key == Input.KEY_NUMPAD1
 				|| key == Input.KEY_ENTER || key == Input.KEY_NUMPADENTER
 				|| key == Input.KEY_SPACE) {
 			launchGame = true;
-		}  else if (key == Input.KEY_2) {
+		}  else if (key == Input.KEY_2 || key == Input.KEY_NUMPAD2) {
 			manageUpgrades = true;
-		} else if (key == Input.KEY_3 || key == Input.KEY_ESCAPE) {
+		} else if (key == Input.KEY_3 || key == Input.KEY_NUMPAD3 || key == Input.KEY_ESCAPE) {
 			quitGame = true;
 		}
 	}

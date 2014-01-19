@@ -19,7 +19,7 @@ public class GameManager extends StateBasedGame{
 			GameManager game = new GameManager("Tropical Escape !");
 			appgc = new AppGameContainer(game);
 			appgc.setDisplayMode(WIDTH, HEIGHT, false);
-//			 appgc.setFullscreen(true);
+			// appgc.setFullscreen(true);
 			appgc.setShowFPS(false);
 			appgc.start();
 		} catch (SlickException ex) {
@@ -42,8 +42,8 @@ public class GameManager extends StateBasedGame{
 	public void initStatesList(GameContainer container) throws SlickException {
 		addState(new MenuState());
 		addState(PlayState.getInstance());
-		addState(new WinState());
 		addState(new LevelSelectionState());
+		addState(new WinState());
 		addState(new LoosedState());
 		addState(new UpgradeState());
 	}
