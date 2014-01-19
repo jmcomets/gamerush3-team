@@ -72,9 +72,9 @@ public class PlayState extends BasicGameState {
 	private String lvlName;
 
 	private GameObject draggingObject = null;
-	private boolean godModeActivated = false;
+	private boolean godModeActivated;
 
-	private boolean niceModeActivated = false;
+	private boolean niceModeActivated;
 
 	private static final int MAX_DELAY_INDICATOR_DIAMETER = 80;
 
@@ -128,9 +128,14 @@ public class PlayState extends BasicGameState {
 
 		placeFlagsDelay = MAX_PLACE_DELAY;
 
+		// Win-lose
 		won = false;
 		lost = false;
 
+		// Modes
+		godModeActivated = false;
+		niceModeActivated = false;
+		
 		nArrivedShips = 0;
 		emptyEntities();
 		try {
@@ -192,7 +197,11 @@ public class PlayState extends BasicGameState {
 				}
 
 				GameObject obj = null;
-				if (tokens[0].equals("MIN-WIN")) {
+				if (tokens[0].equals("GODE-MODE")) {
+					godModeActivated = true;
+				} else if (tokens[0].equals("NICE-MODE")) {
+					niceModeActivated = true;
+				} else if (tokens[0].equals("MIN-WIN")) {
 					minToWin = Integer.parseInt(tokens[1]);
 				} else if (tokens[0].equals("SHIPS")) {
 					shipPopPosition.x = Integer.parseInt(tokens[1]);
@@ -324,11 +333,10 @@ public class PlayState extends BasicGameState {
 		super.mousePressed(button, x, y);
 		if (button == Input.MOUSE_LEFT_BUTTON) {
 			for (GameObject obj : gameObjects) {
-				if (obj instanceof Flag && !godModeActivated) {
-					continue;
-				}
-				if (obj.getTranslatedHitbox().contains(x, y)) {
-					draggingObject = obj;
+				if (obj instanceof Flag || godModeActivated) {
+					if (obj.getTranslatedHitbox().contains(x, y)) {
+						draggingObject = obj;
+					}
 				}
 			}
 		}
