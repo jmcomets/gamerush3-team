@@ -9,11 +9,10 @@ import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 
 public class WinState extends BasicGameState {
-	
+
 	public static final int ID = 3;
 	private boolean goToNext = false;
-	private static String lastLevel;
-	
+
 	private static WinState instance;
 
 	public static WinState getInstance() {
@@ -24,7 +23,7 @@ public class WinState extends BasicGameState {
 	}
 
 	WinState() {
-		
+
 	}
 
 	@Override
@@ -34,51 +33,42 @@ public class WinState extends BasicGameState {
 
 	@Override
 	public void render(GameContainer container, StateBasedGame game, Graphics g)
-	        throws SlickException {
-	    g.setColor(Color.white);
-	    String message = "YOU'RE BETTER THAN UNICORNS§§";
-	    
-	    int x = (container.getWidth() - g.getFont().getWidth(message)) / 2;
-	    int y = 50;
-	    g.drawString(message, x, y);
-	    
-	    g.drawString("Press Enter to go to next level", x, y + 100);
+			throws SlickException {
+		g.setColor(Color.white);
+		String message = "YOU'RE BETTER THAN UNICORNS§§";
+
+		int x = (container.getWidth() - g.getFont().getWidth(message)) / 2;
+		int y = 50;
+		g.drawString(message, x, y);
+
+		g.drawString("Press Enter to continue", x, y + 100);
 	}
-	
+
 	@Override
 	public void keyPressed(int key, char c) {
-		if(key == Input.KEY_ENTER){
-			goToNext = true;    
+		if (key == Input.KEY_ENTER) {
+			goToNext = true;
 		}
 	}
-	
+
 	@Override
 	public void enter(GameContainer container, StateBasedGame game)
 			throws SlickException {
 		super.enter(container, game);
-		goToNext  = false;
+		goToNext = false;
 	}
-	
+
 	@Override
 	public void update(GameContainer container, StateBasedGame game, int delta)
 			throws SlickException {
-	    if(goToNext) {
-	    	((GameManager)game).launchNextLevel();   	
-	    }
-	}
-	
-	public String getLastLevel() {
-		return lastLevel;
-	}
-
-	public void setLastLevel(String lastLevel) {
-		this.lastLevel = lastLevel;
+		if (goToNext) {
+			game.enterState(UpgradeState.ID);
+		}
 	}
 
 	@Override
 	public int getID() {
 		return ID;
 	}
-
 
 }

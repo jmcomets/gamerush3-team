@@ -20,6 +20,7 @@ public class MenuState extends BasicGameState {
 	private boolean launchGame = false;
 	private boolean quitGame = false;
 	private boolean levelSelect = false;
+	private boolean manageUpgrades = false;
 	private TrueTypeFont font;
 	private TrueTypeFont font2;
 	private Image img;
@@ -65,12 +66,12 @@ public class MenuState extends BasicGameState {
 	@Override
 	public void render(GameContainer container, StateBasedGame game, Graphics g)
 			throws SlickException {
-		img.draw(0,0,0.7f);
+		img.draw(0, 0, 0.7f);
 		g.setColor(Color.white);
-		font2.drawString(10, 50, "Tropical Escape",Color.black);
-		font.drawString(10, 150, "1 Launch game",Color.black);
-		font.drawString(10, 200, "2 Level Selection",Color.black);
-		font.drawString(10, 250, "3 Quit",Color.black);
+		font2.drawString(10, 50, "Tropical Escape", Color.black);
+		font.drawString(10, 150, "1 Launch game", Color.black);
+		font.drawString(10, 200, "2 Manage upgrades", Color.black);
+		font.drawString(10, 250, "3 Quit", Color.black);
 	}
 
 	@Override
@@ -79,9 +80,9 @@ public class MenuState extends BasicGameState {
 				|| key == Input.KEY_ENTER || key == Input.KEY_NUMPADENTER
 				|| key == Input.KEY_SPACE) {
 			launchGame = true;
-		}else if (key == Input.KEY_2) {
-			levelSelect = true;
-		}else if (key == Input.KEY_3 || key == Input.KEY_ESCAPE) {
+		}  else if (key == Input.KEY_2) {
+			manageUpgrades = true;
+		} else if (key == Input.KEY_3 || key == Input.KEY_ESCAPE) {
 			quitGame = true;
 		}
 	}
@@ -92,6 +93,7 @@ public class MenuState extends BasicGameState {
 		super.enter(container, game);
 		launchGame = false;
 		levelSelect = false;
+		manageUpgrades = false;
 	}
 
 	@Override
@@ -105,6 +107,9 @@ public class MenuState extends BasicGameState {
 		}
 		if (levelSelect) {
 			game.enterState(LevelSelectionState.ID);
+		}
+		if (manageUpgrades) {
+			game.enterState(UpgradeState.ID);
 		}
 	}
 

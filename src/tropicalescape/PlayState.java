@@ -28,11 +28,6 @@ import tropicalescape.enemies.Kraken;
 import tropicalescape.enemies.OneHitMonster;
 import tropicalescape.enemies.SleepingIsland;
 import tropicalescape.enemies.Wave;
-import tropicalescape.ship.upgrades.ArmorUpgrade;
-import tropicalescape.ship.upgrades.HealthUpgrade;
-import tropicalescape.ship.upgrades.SpeedUpgrade;
-import tropicalescape.ship.upgrades.UpgradeManager;
-import tropicalescape.ship.upgrades.UpgradeManagerFactory;
 
 public class PlayState extends BasicGameState {
 
@@ -44,8 +39,6 @@ public class PlayState extends BasicGameState {
 	private static final int MIN_DELAY_INDICATOR_R = 20;
 	private static final int MAX_FLAGS = -1;
 	private static final String PATH = "res/levels/";
-
-	private static final String UPGRADES_PATH = "res/ship/upgrades.txt";
 
 	private StartFlag startFlag;
 	private FinishFlag finishFlag;
@@ -80,13 +73,7 @@ public class PlayState extends BasicGameState {
 	private boolean godModeActivated;
 	private boolean niceModeActivated;
 
-	// Upgrade system
-	private int golds = 0;
 	private int levelReward;
-	private UpgradeManager<ArmorUpgrade> armorUpgradesManager;
-	private UpgradeManager<HealthUpgrade> healthUpgradesManager;
-	private UpgradeManager<SpeedUpgrade> speedUpgradesManager;
-	//
 
 	private boolean exit = false;
 
@@ -107,20 +94,6 @@ public class PlayState extends BasicGameState {
 
 	private PlayState() {
 		hud = new HeadUpDisplay(this);
-		// Charger les upgrades une seule fois !
-		loadUpgrades();
-	}
-
-	private void loadUpgrades() {
-		UpgradeManagerFactory factory = new UpgradeManagerFactory();
-		try {
-			factory.loadFromFile(UPGRADES_PATH);
-		} catch (IOException e) {
-			System.err.println("Erreur chargement  : " + UPGRADES_PATH);
-		}
-		armorUpgradesManager = factory.getArmorUpgradesManager();
-		speedUpgradesManager = factory.getSpeedUpgradesManager();
-		healthUpgradesManager = factory.getHealthUpgradesManager();
 	}
 
 	public void addEnemy(Enemy enemy) {
@@ -227,7 +200,8 @@ public class PlayState extends BasicGameState {
 		if (won) {
 			float goldRate = (ships.size() + shipStack.size() + nArrivedShips)
 					/ nTotalShips;
-			golds += levelReward / 2 * (1 + goldRate);
+			Player.getInstance().increaseGolds(
+					(int) (levelReward / 2 * (1 + goldRate)));
 			game.enterState(WinState.ID);
 		}
 		if (lost) {
@@ -622,23 +596,7 @@ public class PlayState extends BasicGameState {
 	private boolean userCanEdit() {
 		return placeFlagsDelay > 0 || niceModeActivated;
 	}
-
-	public UpgradeManager<ArmorUpgrade> getArmorUpgradesManager() {
-		return armorUpgradesManager;
-	}
-
-	public UpgradeManager<HealthUpgrade> getHealthUpgradesManager() {
-		return healthUpgradesManager;
-	}
-
-	public UpgradeManager<SpeedUpgrade> getSpeedUpgradesManager() {
-		return speedUpgradesManager;
-	}
-
-	public int getGolds() {
-		return golds;
-	}
-
+	
 	public String getLvlName() {
 		return lvlName;
 	}
