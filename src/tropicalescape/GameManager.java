@@ -10,8 +10,8 @@ import org.newdawn.slick.state.StateBasedGame;
 
 public class GameManager extends StateBasedGame{
 	
-	private static final int WIDTH = 800;
-	private static final int HEIGHT = 600;
+	private static final int WIDTH = 1024;
+	private static final int HEIGHT = 576;
     
 	public static void main(String[] args) {
 		try {
