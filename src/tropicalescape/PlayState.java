@@ -2,6 +2,7 @@ package tropicalescape;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -27,11 +28,6 @@ import tropicalescape.enemies.Kraken;
 import tropicalescape.enemies.OneHitMonster;
 import tropicalescape.enemies.SleepingIsland;
 import tropicalescape.enemies.Wave;
-import tropicalescape.ship.upgrades.ArmorUpgrade;
-import tropicalescape.ship.upgrades.HealthUpgrade;
-import tropicalescape.ship.upgrades.SpeedUpgrade;
-import tropicalescape.ship.upgrades.UpgradeManager;
-import tropicalescape.ship.upgrades.UpgradeManagerFactory;
 
 public class PlayState extends BasicGameState {
 
@@ -42,8 +38,7 @@ public class PlayState extends BasicGameState {
 	private static final int MAX_DELAY_INDICATOR_DIAMETER = 80;
 	private static final int MIN_DELAY_INDICATOR_R = 20;
 	private static final int MAX_FLAGS = -1;
-
-	private static final String UPGRADES_PATH = "res/ship/upgrades.txt";
+	private static final String PATH = "res/levels/";
 
 	private StartFlag startFlag;
 	private FinishFlag finishFlag;
@@ -55,6 +50,7 @@ public class PlayState extends BasicGameState {
 	private List<Ship> ships = new ArrayList<Ship>();
 	private Stack<Ship> shipStack = new Stack<Ship>();
 	private List<GameObject> gameObjects = new ArrayList<GameObject>();
+	private List<Level> listLevels = new ArrayList<Level>();
 
 	private int nArrivedShips;
 
@@ -77,17 +73,15 @@ public class PlayState extends BasicGameState {
 	private boolean godModeActivated;
 	private boolean niceModeActivated;
 
-	// Upgrade system
-	private int golds = 0;
 	private int levelReward;
-	private UpgradeManager<ArmorUpgrade> armorUpgradesManager;
-	private UpgradeManager<HealthUpgrade> healthUpgradesManager;
-	private UpgradeManager<SpeedUpgrade> speedUpgradesManager;
-	//
 
 	private boolean exit = false;
 
 	private int nTotalShips;
+
+
+
+	private static boolean nextLevel = false;
 
 	private static PlayState instance;
 
@@ -100,20 +94,6 @@ public class PlayState extends BasicGameState {
 
 	private PlayState() {
 		hud = new HeadUpDisplay(this);
-		// Charger les upgrades une seule fois !
-		loadUpgrades();
-	}
-
-	private void loadUpgrades() {
-		UpgradeManagerFactory factory = new UpgradeManagerFactory();
-		try {
-			factory.loadFromFile(UPGRADES_PATH);
-		} catch (IOException e) {
-			System.err.println("Erreur chargement  : " + UPGRADES_PATH);
-		}
-		armorUpgradesManager = factory.getArmorUpgradesManager();
-		speedUpgradesManager = factory.getSpeedUpgradesManager();
-		healthUpgradesManager = factory.getHealthUpgradesManager();
 	}
 
 	public void addEnemy(Enemy enemy) {
@@ -176,6 +156,13 @@ public class PlayState extends BasicGameState {
 		emptyEntities();
 
 		placeDefaultFlags(container.getWidth(), container.getHeight());
+		if (lvlName == null) {
+			System.out.println("not next");
+			lvlName = PATH + listLevels.get(0).name;
+		} else if (nextLevel){
+			System.out.println("next");
+			lvlName = PATH +listLevels.get(listLevels.indexOf(lvlName)+2).name;
+		}
 		try {
 			loadLevel(lvlName);
 		} catch (IOException e) {
@@ -211,8 +198,10 @@ public class PlayState extends BasicGameState {
 
 	private void handleWinLose(StateBasedGame game) {
 		if (won) {
-			float goldRate = (ships.size() + shipStack.size() + nArrivedShips) / nTotalShips;
-			golds += levelReward / 2 * (1 + goldRate);
+			float goldRate = (ships.size() + shipStack.size() + nArrivedShips)
+					/ nTotalShips;
+			Player.getInstance().increaseGolds(
+					(int) ((float)levelReward / 2f * (1f + goldRate)));
 			game.enterState(WinState.ID);
 		}
 		if (lost) {
@@ -220,18 +209,50 @@ public class PlayState extends BasicGameState {
 		}
 	}
 
-	public void init(GameContainer container) throws SlickException {
-	}
-
 	@Override
 	public void init(GameContainer container, StateBasedGame game)
 			throws SlickException {
-		String lvlName = "res/levels/test.lvl";
-		try {
-			loadLevel(lvlName);
-		} catch (IOException e) {
-			new SlickException("Problème au chargement du niveau " + lvlName
-					+ " : " + e.getMessage());
+		File folder = new File("res/levels");
+		File[] listOfFiles = folder.listFiles();
+
+		BufferedReader reader = null;
+
+		for (int i = 0; i < listOfFiles.length; i++) {
+			if (listOfFiles[i].isFile()) {
+				try {
+					reader = new BufferedReader(new FileReader(listOfFiles[i]));
+					String text = null;
+					int difficulty = 0;
+					while ((text = reader.readLine()) != null) {
+						String[] tokens = text.split("\\s+");
+						if (tokens.length < 1) {
+							System.err.println("Need at least 3 tokens");
+						}
+
+						GameObject obj = null;
+						if (tokens[0].equals("DIFFICULTY")) {
+							difficulty = Integer.parseInt(tokens[1]);
+						}
+					}
+					Level tmpLevel = new Level(listOfFiles[i].getName(),
+							difficulty);
+					listLevels.add(tmpLevel);
+				} catch (FileNotFoundException e) {
+					e.printStackTrace();
+				} catch (NumberFormatException e) {
+					e.printStackTrace();
+				} catch (IOException e) {
+					e.printStackTrace();
+				} finally {
+					if (reader != null) {
+						try {
+							reader.close();
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+					}
+				}
+			}
 		}
 
 	}
@@ -256,7 +277,7 @@ public class PlayState extends BasicGameState {
 					if (tokens.length > 1) {
 						placeFlagsDelay = Integer.parseInt(tokens[1]);
 					}
-				} else if (tokens[0].equals("GODE-MODE")) {
+				} else if (tokens[0].equals("GOD-MODE")) {
 					godModeActivated = true;
 				} else if (tokens[0].equals("NICE-MODE")) {
 					niceModeActivated = true;
@@ -280,9 +301,9 @@ public class PlayState extends BasicGameState {
 					enemies.add(island);
 					obj = island;
 				} else if (tokens[0].equals("COCONUT-THROWER")) {
-					OneHitMonster ohm = new CoconutThrower();
-					enemies.add(ohm);
-					obj = ohm;
+					Enemy e = new CoconutThrower();
+					enemies.add(e);
+					obj = e;
 				} else if (tokens[0].equals("SLEEPING-ISLAND")) {
 					SleepingIsland sleepingIsland = new SleepingIsland();
 					if (tokens.length > 4) {
@@ -314,7 +335,7 @@ public class PlayState extends BasicGameState {
 					Kraken ohm = new Kraken();
 					enemies.add(ohm);
 					obj = ohm;
-				} else if (tokens[0].equals("GIANT_LOBSTER")) {
+				} else if (tokens[0].equals("GIANT-LOBSTER")) {
 					OneHitMonster ohm = new GiantLobster();
 					enemies.add(ohm);
 					obj = ohm;
@@ -325,8 +346,8 @@ public class PlayState extends BasicGameState {
 				}
 				if (obj != null) {
 					obj.setPosition(new Vector2f(Float
-							.parseFloat(tokens[tokens.length - 2]), Float
-							.parseFloat(tokens[tokens.length - 1])));
+							.parseFloat(tokens[1]), Float
+							.parseFloat(tokens[2])));
 					gameObjects.add(obj);
 				}
 				/**add random waves*/
@@ -353,6 +374,7 @@ public class PlayState extends BasicGameState {
 	@Override
 	public void mouseClicked(int button, int x, int y, int clickCount) {
 		super.mouseClicked(button, x, y, clickCount);
+		System.out.println(x + " " + y);
 
 		// On récupère l'objet cliqué
 		GameObject clickedObject = null;
@@ -536,6 +558,16 @@ public class PlayState extends BasicGameState {
 
 		List<Ship> shipsToRemove = new ArrayList<Ship>();
 		for (Ship ship : ships) {
+			if (!ship.isAlive()) {
+				shipsToRemove.add(ship);
+				// ship died
+				continue;
+			}
+			
+			if (ship.isDying()) {
+				continue;
+			}
+			
 			resolveShipCollision(ship, delta);
 			if (!ship.isAlive()) {
 				shipsToRemove.add(ship);
@@ -575,23 +607,7 @@ public class PlayState extends BasicGameState {
 	}
 
 	private boolean userCanEdit() {
-		return placeFlagsDelay > 0 || niceModeActivated;
-	}
-
-	public UpgradeManager<ArmorUpgrade> getArmorUpgradesManager() {
-		return armorUpgradesManager;
-	}
-
-	public UpgradeManager<HealthUpgrade> getHealthUpgradesManager() {
-		return healthUpgradesManager;
-	}
-
-	public UpgradeManager<SpeedUpgrade> getSpeedUpgradesManager() {
-		return speedUpgradesManager;
-	}
-
-	public int getGolds() {
-		return golds;
+		return placeFlagsDelay > 0 || niceModeActivated || godModeActivated;
 	}
 	
 	public String getLvlName() {
@@ -617,5 +633,11 @@ public class PlayState extends BasicGameState {
 	public boolean isNiceModeActivated() {
 		return niceModeActivated;
 	}
+
+	public static void setNextLevel(boolean nextLevel) {
+		PlayState.nextLevel = nextLevel;
+	}
+	
+	
 
 }

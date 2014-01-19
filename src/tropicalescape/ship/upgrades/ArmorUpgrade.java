@@ -13,4 +13,9 @@ public class ArmorUpgrade extends Upgrade {
 		return armorPercent;
 	}
 
+	@Override
+	public String getDescription() {
+		return getName() + " +" + armorPercent + "DEF";
+	}
+
 }

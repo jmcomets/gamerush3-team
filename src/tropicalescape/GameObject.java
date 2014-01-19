@@ -10,7 +10,7 @@ import org.newdawn.slick.geom.Vector2f;
 import tropicalescape.physics.Collidable;
 import tropicalescape.physics.Hitbox;
 
-public class GameObject implements Collidable {
+public abstract class GameObject implements Collidable {
 
 	private Vector2f position = new Vector2f();
 	private Vector2f speed = new Vector2f();
@@ -118,6 +118,12 @@ public class GameObject implements Collidable {
 	public void setSpeed(Vector2f speed) {
 		this.speed = speed;
 	}
+	
+	/**
+	 * 
+	 * @return if the GameObject should be updated/rendered
+	 */
+	public abstract boolean isAlive();
 
 	/**
 	 * Event called when this object is rendered (after the baseRender)

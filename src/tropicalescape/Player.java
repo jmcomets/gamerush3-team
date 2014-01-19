@@ -1,4 +1,4 @@
-package tropicalescape.ship.upgrades;
+package tropicalescape;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -6,14 +6,33 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class UpgradeManagerFactory {
+import tropicalescape.ship.upgrades.ArmorUpgrade;
+import tropicalescape.ship.upgrades.HealthUpgrade;
+import tropicalescape.ship.upgrades.SpeedUpgrade;
+import tropicalescape.ship.upgrades.UpgradeManager;
+
+public class Player {
+
+	private static final String UPGRADES_PATH = "res/ship/upgrades.txt";
+
+	private static Player instance;
+
+	private int golds = 0;
 
 	private UpgradeManager<ArmorUpgrade> armorUpgradesManager;
 	private UpgradeManager<HealthUpgrade> healthUpgradesManager;
 	private UpgradeManager<SpeedUpgrade> speedUpgradesManager;
 
-	public void loadFromFile(String path) throws IOException {
-		File file = new File(path);
+	private Player() {
+		try {
+			loadUpgrades();
+		} catch (IOException e) {
+			System.err.println("Erreur chargement  : " + UPGRADES_PATH);
+		}
+	}
+
+	private void loadUpgrades() throws IOException {
+		File file = new File(UPGRADES_PATH);
 		BufferedReader reader = null;
 		ArrayList<ArmorUpgrade> armorUpgrades = new ArrayList<ArmorUpgrade>();
 		ArrayList<HealthUpgrade> healthUpgrades = new ArrayList<HealthUpgrade>();
@@ -52,6 +71,28 @@ public class UpgradeManagerFactory {
 				speedUpgrades.get(0));
 	}
 
+	public static Player getInstance() {
+		if (instance == null) {
+			instance = new Player();
+		}
+		return instance;
+	}
+
+	public void increaseGolds(int g) {
+		golds += g;
+	}
+
+	public void decreaseGolds(int g) {
+		golds -= g;
+		if (golds < 0) {
+			golds = 0;
+		}
+	}
+
+	public int getGolds() {
+		return golds;
+	}
+
 	public UpgradeManager<ArmorUpgrade> getArmorUpgradesManager() {
 		return armorUpgradesManager;
 	}
@@ -63,5 +104,4 @@ public class UpgradeManagerFactory {
 	public UpgradeManager<SpeedUpgrade> getSpeedUpgradesManager() {
 		return speedUpgradesManager;
 	}
-
 }

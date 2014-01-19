@@ -18,20 +18,19 @@ public class Ship extends GameObject {
 	private static final int HPBAR_POSY = 10;
 	static final int HPBAR_HEIGHT = 10;
 	static final int HPBAR_WIDHT = 60;
-	static final int MAX_HP = 50;
 	static final int EPSILON = 5;
 	static final int SLOW_FACTOR = 10;
 	static final int FRAME_DURATION = 125;
 
 	private int invincibilyPeriod = 0;
 	private int hp;
+	private int maxHp = 50;
 	private float armor;
 	private float speedBonus;
 	private Flag nextFlag;
 	private Direction dir;
 	private boolean arrived = false;
-	private HealthBar healthBar = new HealthBar(HPBAR_HEIGHT, HPBAR_WIDHT,
-			MAX_HP, MAX_HP);
+	private HealthBar healthBar;
 
 	static String[] N_IMG_FILES = { "res/animations/ship/Boat1-up.png",
 			"res/animations/ship/Boat2-up.png",
@@ -90,22 +89,26 @@ public class Ship extends GameObject {
 	Ship() {
 		super(new HitboxAnimation());
 
-		hp = MAX_HP;
-		UpgradeManager<HealthUpgrade> healthUpgradesManager = PlayState
+		hp = maxHp;
+		UpgradeManager<HealthUpgrade> healthUpgradesManager = Player
 				.getInstance().getHealthUpgradesManager();
 		HealthUpgrade currentUpgrade = healthUpgradesManager
 				.getCurrentUpgrade();
 		hp += currentUpgrade.getBonusHp();
+		maxHp = hp;
 
-		UpgradeManager<ArmorUpgrade> armorUpgradesManager = PlayState
+		UpgradeManager<ArmorUpgrade> armorUpgradesManager = Player
 				.getInstance().getArmorUpgradesManager();
 		ArmorUpgrade armorUpgrade = armorUpgradesManager.getCurrentUpgrade();
 		armor = armorUpgrade.getArmorPercent();
 
-		UpgradeManager<SpeedUpgrade> speedUpgradesManager = PlayState
+		UpgradeManager<SpeedUpgrade> speedUpgradesManager = Player
 				.getInstance().getSpeedUpgradesManager();
 		SpeedUpgrade speedUpgrade = speedUpgradesManager.getCurrentUpgrade();
 		speedBonus = speedUpgrade.getSpeedBonusPercent();
+
+		healthBar = new HealthBar(HPBAR_HEIGHT, HPBAR_WIDHT,
+					maxHp, maxHp);
 
 		dir = Direction.E;
 
@@ -168,17 +171,37 @@ public class Ship extends GameObject {
 
 	public void setHp(int hp) {
 		this.hp = hp;
+		if (this.hp <= 0) {
+			startDying();
+		}
+	}
+
+	private boolean dying = false;
+	
+	public boolean isDying() {
+		return dying;
+	}
+
+	public void startDying() {
+		this.dying = true;
+		dyingAnimation.setLooping(false);
+		dyingAnimation.setAngle((float) getSpeed().getTheta());
+		getSpeed().x = getSpeed().y = 0;
+		setHitboxAnimation(dyingAnimation);
 	}
 
 	public void loseHealth(int dmgValue) {
-		hp -= (float) dmgValue * (1f - armor / 100f);
+		setHp((int) (hp - dmgValue * (1f - armor / 100f)));
 	}
 
+	@Override
 	public boolean isAlive() {
-		if (hp > 0) {
-			return true;
+		if (isDying()) {
+			if (dyingAnimation.isStopped()) {
+				return false;
+			}
 		}
-		return false;
+		return true;
 	}
 
 	public boolean hasArrivedToNextFlag() {
@@ -201,20 +224,42 @@ public class Ship extends GameObject {
 	public void setInvincibilyPeriod(int invincibilyPeriod) {
 		this.invincibilyPeriod = invincibilyPeriod;
 	}
+	
+        private static String [] DYING_IMAGES = {
+            "res/animations/ship-dying/Boat-crash10.png",
+            "res/animations/ship-dying/Boat-crash11.png",
+            "res/animations/ship-dying/Boat-crash12.png",
+            "res/animations/ship-dying/Boat-crash1.png",
+            "res/animations/ship-dying/Boat-crash2.png",
+            "res/animations/ship-dying/Boat-crash3.png",
+            "res/animations/ship-dying/Boat-crash4.png",
+            "res/animations/ship-dying/Boat-crash5.png",
+            "res/animations/ship-dying/Boat-crash6.png",
+            "res/animations/ship-dying/Boat-crash7.png",
+            "res/animations/ship-dying/Boat-crash8.png",
+            "res/animations/ship-dying/Boat-crash9.png"
+        };
+	
+	private static final String [] emptyArray = {};
+	private HitboxAnimation dyingAnimation = HitboxAnimationFactory.create(DYING_IMAGES, emptyArray, 100);
 
 	@Override
 	public void render(Graphics g) {
-		healthBar.baseRender(g);
-
-		super.render(g);
+		if (hp > 0) {
+			healthBar.baseRender(g);
+		}
 	}
 
 	@Override
 	public void update(GameContainer gc, int delta) {
-		computePath();
 		healthBar.setHp(hp);
 		healthBar.baseUpdate(gc, delta);
+		
+		if (isDying()) {
+			return;
+		}
 
+		computePath();
 		double angle = getSpeed().getTheta();
 		if (getSpeed().x == 0 && getSpeed().y == 0) {
 			// on ne change pas l'orientation si on n'a pas de vitesse
@@ -247,6 +292,6 @@ public class Ship extends GameObject {
 	}
 
 	public void kill() {
-		this.hp = 0;
+		setHp(0);
 	}
 }

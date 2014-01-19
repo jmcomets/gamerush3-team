@@ -9,16 +9,13 @@ public class Coconut extends OneHitMonster {
 
 	private static final int COCONUT_DAMAGE = 30;
 	private static int COCONUT_ANIM_DURATION = 300;
-	private static int END_COCONUT_DURATION = 300;
 
-	private static final String[] COCONUT_IMAGE_FILES = { "res/animations/coconut/dummy.png" };
-	private static final String[] COCONUT_HITBOX_FILES = { "res/hitboxes/coconut/dummy.txt" };
-	private static final String[] END_COCONUT_IMAGE_FILES = { "res/animations/coconut/dummy.png" };
+	private static final String[] COCONUT_IMAGE_FILES = { "res/animations/coconut/nodkoko.png" };
+	private static final String[] COCONUT_HITBOX_FILES = { "res/hitboxes/coconut/base.txt" };
 
 	public Coconut() {
 		super(makeHitboxAnimation());
-		endAnimation = HitboxAnimationFactory.create(END_COCONUT_IMAGE_FILES,
-				emptyArray, END_COCONUT_DURATION);
+		endAnimation = new HitboxAnimation();
 		damageOnHit = COCONUT_DAMAGE;
 	}
 

@@ -20,12 +20,16 @@ public abstract class OneHitMonster extends Enemy {
 
 	@Override
 	public void onHitShip(Ship ship, int delta) {
-		ship.loseHealth(damageOnHit);
+		ship.loseHealth(getLevel() * damageOnHit);
 		hitDone = true;
 
 		// Start end animation
-		setHitboxAnimation(endAnimation);
-		getHitboxAnimation().setLooping(false);
+		if (endAnimation.getFrameCount() > 0) {
+			setHitboxAnimation(endAnimation);
+			getHitboxAnimation().setLooping(false);
+		} else {
+			setAlive(false);
+		}
 	}
 
 	@Override

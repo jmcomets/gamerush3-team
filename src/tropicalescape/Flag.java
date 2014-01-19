@@ -47,4 +47,9 @@ public class Flag extends GameObject {
 			g.drawString(description, 0, -DESC_HEIGHT_SHIFT);
 		}
 	}
+
+	@Override
+	public boolean isAlive() {
+		return true;
+	}
 }

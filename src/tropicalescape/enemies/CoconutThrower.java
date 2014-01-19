@@ -11,27 +11,24 @@ import tropicalescape.HitboxAnimationFactory;
 import tropicalescape.PlayState;
 import tropicalescape.Ship;
 
-public class CoconutThrower extends OneHitMonster {
+public class CoconutThrower extends Island {
 
-	private static final int COCONUT_THROWER_DAMAGE = 50;
-	private static final String[] COCONUT_THROWER_IMAGE_FILES = { "res/animations/coconut-thrower/dummy.png" };
-	private static final String[] COCONUT_THROWER_HITBOX_FILES = { "res/hitboxes/coconut-thrower/dummy.txt" };
-	private static final String[] END_COCONUT_THROWER_IMAGE_FILES = { "res/animations/coconut-thrower/dummy.png" };
+	private static final String[] COCONUT_THROWER_IMAGE_FILES = {
+			"res/animations/coconut-thrower/Ile-noixcoco1.png",
+			"res/animations/coconut-thrower/Ile-noixcoco2.png",
+			"res/animations/coconut-thrower/Ile-noixcoco3.png" };
+	private static final String[] COCONUT_THROWER_HITBOX_FILES = { "res/hitboxes/coconut-thrower/base.txt" };
 	private static int COCONUT_THROWER_DURATION = 300;
-	private static int END_COCONUT_THROWER_DURATION = 300;
 
 	private static int SLOW_FACTOR = 14;
 
 	private int nextAttack;
 	private static final int COCONUT_THROWER_ATTACK_COOLDOWN = 2000;
-	private static final int COCONUT_THROWER_ATTACK_RADIUS = 300;
+	private static final int COCONUT_THROWER_ATTACK_RADIUS = 200;
 
 	public CoconutThrower() {
-		super(makeHitboxAnimation());
-		endAnimation = HitboxAnimationFactory.create(
-				END_COCONUT_THROWER_IMAGE_FILES, emptyArray,
-				END_COCONUT_THROWER_DURATION);
-		damageOnHit = COCONUT_THROWER_DAMAGE;
+		super();
+		setHitboxAnimation(makeHitboxAnimation());
 	}
 
 	private static HitboxAnimation makeHitboxAnimation() {
@@ -44,7 +41,9 @@ public class CoconutThrower extends OneHitMonster {
 		PlayState gameInstance = PlayState.getInstance();
 		// Un ship a proximité ? On envoie des noix de coco !
 		if (nextAttack <= 0) {
-			Circle circle = new Circle(getPosition().x, getPosition().y,
+			Circle circle = new Circle(getPosition().x
+					+ getHitboxAnimation().getWidth() / 2, getPosition().y
+					+ getHitboxAnimation().getHeight() / 2,
 					COCONUT_THROWER_ATTACK_RADIUS);
 			List<Ship> ships = gameInstance.getShips();
 			for (Ship s : ships) {
@@ -52,6 +51,8 @@ public class CoconutThrower extends OneHitMonster {
 					// Attack
 					OneHitMonster coconut = new Coconut();
 					coconut.setPosition(getPosition().copy());
+					coconut.getPosition().x +=getHitboxAnimation().getWidth() / 2;
+					coconut.getPosition().y +=getHitboxAnimation().getHeight() / 2;
 
 					float vectorX = (s.getPosition().x + s.getHitboxAnimation()
 							.getWidth() / 2) - coconut.getPosition().x;

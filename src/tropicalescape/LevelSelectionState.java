@@ -14,27 +14,8 @@ import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
-import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
-
-import tropicalescape.enemies.CoconutThrower;
-import tropicalescape.enemies.GiantLobster;
-import tropicalescape.enemies.Island;
-import tropicalescape.enemies.Kraken;
-import tropicalescape.enemies.OneHitMonster;
-import tropicalescape.enemies.SleepingIsland;
-import tropicalescape.enemies.Wave;
-
-class Level {
-	public int difficulty;
-	public String name;
-
-	public Level(String name2, int difficulty2) {
-		name = name2;
-		difficulty = difficulty2;
-	}
-}
 
 public class LevelSelectionState extends BasicGameState {
 
@@ -210,6 +191,10 @@ public class LevelSelectionState extends BasicGameState {
 			scrolling -= 10;
 		}
 
+	}
+
+	public List<Level> getListLevels() {
+		return listLevels;
 	}
 
 	@Override
