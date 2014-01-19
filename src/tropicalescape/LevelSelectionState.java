@@ -16,8 +16,6 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 
-import com.sun.xml.internal.ws.api.server.Container;
-
 class Level {
 	public int difficulty;
 	public String name;
@@ -129,12 +127,13 @@ public class LevelSelectionState extends BasicGameState {
 	private void setCurrent(boolean up) {
 		setCurrent(up, true);
 	}
+
 	private void setCurrent(boolean up, boolean loop) {
 		if (up && (loop || current > 0)) {
 			if (--current < 0) {
 				current = listLevels.size() - 1;
 			}
-		} else if (!up && (loop || current < listLevels.size()-1)){
+		} else if (!up && (loop || current < listLevels.size() - 1)) {
 			if (++current >= listLevels.size()) {
 				current = 0;
 			}
@@ -181,21 +180,20 @@ public class LevelSelectionState extends BasicGameState {
 		g.setLineWidth(1);
 		g.drawString("Q : return to menu", PADDING, container.getHeight()
 				- PADDING);
-
 	}
 
 	@Override
 	public void update(GameContainer container, StateBasedGame game, int delta)
 			throws SlickException {
 		containerHeight = container.getHeight();
-		
+
 		if (loadLevel) {
 			((GameManager) game).launchLevel(PATH
 					+ listLevels.get(current).name);
 		} else if (returnToMenu) {
-			game.enterState(MenuGameState.ID);
+			game.enterState(MenuState.ID);
 		}
-		
+
 		if (current * (HEIGHT + MARGIN) + PADDING + scrolling <= 60 / 2) {
 			scrolling += 10;
 		} else if (current * (HEIGHT + MARGIN) + PADDING + scrolling + HEIGHT >= containerHeight - 60 / 2) {
