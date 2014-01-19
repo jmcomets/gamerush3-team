@@ -27,16 +27,20 @@ import tropicalescape.enemies.Kraken;
 import tropicalescape.enemies.OneHitMonster;
 import tropicalescape.enemies.SleepingIsland;
 import tropicalescape.enemies.Wave;
+import tropicalescape.ship.upgrades.UpgradeManager;
+import tropicalescape.ship.upgrades.UpgradeManagerFactory;
 
 public class PlayState extends BasicGameState {
 
 	public static final int ID = 2;
-	
+
 	private static final Color BG_COLOR = new Color(45, 85, 117);
 	private static final int MAX_PLACE_DELAY = 5000;
 	private static final int MAX_DELAY_INDICATOR_DIAMETER = 80;
 	private static final int MIN_DELAY_INDICATOR_R = 20;
 	private static final int MAX_FLAGS = -1;
+
+	private static final String UPGRADES_PATH = "res/ship/upgrades.txt";
 
 	private StartFlag startFlag;
 	private FinishFlag finishFlag;
@@ -48,10 +52,10 @@ public class PlayState extends BasicGameState {
 	private List<GameObject> gameObjects = new ArrayList<GameObject>();
 
 	private int nArrivedShips;
-	
+
 	private boolean won;
 	private boolean lost;
-	
+
 	private GameObject draggingObject = null;
 
 	private String lvlName;
@@ -61,14 +65,24 @@ public class PlayState extends BasicGameState {
 	private Vector2f shipPopPosition = new Vector2f();
 	private int shipPopDelay = 1000;
 	private int shipPopTimer = 0;
-	
+
 	private int remainingFlags;
 	private int placeFlagsDelay;
-	
+
 	private boolean godModeActivated;
 	private boolean niceModeActivated;
 
+	// Upgrade system
+	private int golds = 0;
+	private int levelReward;
+	private UpgradeManager armorUpgradesManager;
+	private UpgradeManager healthUpgradesManager;
+	private UpgradeManager speedUpgradesManager;
+	//
+
 	private boolean exit = false;
+
+	private int nTotalShips;
 
 	private static PlayState instance;
 
@@ -80,6 +94,20 @@ public class PlayState extends BasicGameState {
 	}
 
 	private PlayState() {
+		// Charger les upgrades une seule fois !
+		loadUpgrades();
+	}
+
+	private void loadUpgrades() {
+		UpgradeManagerFactory factory = new UpgradeManagerFactory();
+		try {
+			factory.loadFromFile(UPGRADES_PATH);
+		} catch (IOException e) {
+			System.err.println("Erreur chargement  : " + UPGRADES_PATH);
+		}
+		armorUpgradesManager = factory.getArmorUpgradesManager();
+		speedUpgradesManager = factory.getSpeedUpgradesManager();
+		healthUpgradesManager = factory.getHpUpgradesManager();
 	}
 
 	public void addEnemy(Enemy enemy) {
@@ -125,7 +153,7 @@ public class PlayState extends BasicGameState {
 
 		// Flags
 		placeFlagsDelay = MAX_PLACE_DELAY;
-		
+
 		// Exit ?
 		exit = false;
 		remainingFlags = MAX_FLAGS;
@@ -177,6 +205,8 @@ public class PlayState extends BasicGameState {
 
 	private void handleWinLose(StateBasedGame game) {
 		if (won) {
+			float goldRate = (ships.size() + shipStack.size() + nArrivedShips) / nTotalShips;
+			golds += levelReward / 2 * (1 + goldRate);
 			game.enterState(WinState.ID);
 		}
 		if (lost) {
@@ -225,6 +255,8 @@ public class PlayState extends BasicGameState {
 					godModeActivated = true;
 				} else if (tokens[0].equals("NICE-MODE")) {
 					niceModeActivated = true;
+				} else if (tokens[0].equals("REWARD")) {
+					levelReward = Integer.parseInt(tokens[1]);
 				} else if (tokens[0].equals("MIN-WIN")) {
 					minToWin = Integer.parseInt(tokens[1]);
 				} else if (tokens[0].equals("SHIPS")) {
@@ -234,6 +266,7 @@ public class PlayState extends BasicGameState {
 						Ship ship = new Ship();
 						shipStack.add(ship);
 					}
+					nTotalShips = shipStack.size();
 					if (tokens.length >= 5) {
 						shipPopDelay = Integer.parseInt(tokens[4]);
 					}
@@ -291,7 +324,7 @@ public class PlayState extends BasicGameState {
 
 	@Override
 	public void keyReleased(int key, char c) {
-		
+
 		if (Input.KEY_ESCAPE == key) {
 			exit = true;
 		}
@@ -450,11 +483,11 @@ public class PlayState extends BasicGameState {
 	@Override
 	public void update(GameContainer container, StateBasedGame game, int delta)
 			throws SlickException {
-		
-		if(exit) {
+
+		if (exit) {
 			game.enterState(MenuState.ID);
 		}
-		
+
 		// Continuous
 		handleContinuousInput(container.getInput());
 
@@ -463,7 +496,7 @@ public class PlayState extends BasicGameState {
 			placeFlagsDelay -= delta;
 			return;
 		}
-		
+
 		// Win or lost ?
 		handleWinLose(game);
 
@@ -520,5 +553,21 @@ public class PlayState extends BasicGameState {
 
 	private boolean userCanEdit() {
 		return placeFlagsDelay > 0 || niceModeActivated;
+	}
+
+	public UpgradeManager getArmorUpgradesManager() {
+		return armorUpgradesManager;
+	}
+
+	public UpgradeManager getHealthUpgradesManager() {
+		return healthUpgradesManager;
+	}
+
+	public UpgradeManager getSpeedUpgradesManager() {
+		return speedUpgradesManager;
+	}
+
+	public int getGolds() {
+		return golds;
 	}
 }
