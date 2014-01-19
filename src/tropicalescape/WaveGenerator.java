@@ -24,7 +24,12 @@ public class WaveGenerator{
 			Random rand = new Random();
 			int counter = 0;
 			while ((rand.nextInt(100) > proba) &&  (counter < this.NbMaxWaves) ){
-				GameObject obj = new GameObject(HitboxAnimationFactory.create(IMG_FILES, empty_string, 500));
+				GameObject obj = new GameObject(HitboxAnimationFactory.create(IMG_FILES, empty_string, 500)){
+					@Override 
+					public boolean isAlive(){
+						return true;
+						}
+					};
 				list.add(obj);
 				obj.setPosition(new Vector2f(rand.nextInt(1024), rand.nextInt(576)));
 				counter++;
