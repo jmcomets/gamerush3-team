@@ -65,7 +65,6 @@ public class LevelSelectionState extends BasicGameState {
 			e.printStackTrace();
 		}
 		
-		int difficulty = 0;
 
 		File folder = new File("res/levels");
 		File[] listOfFiles = folder.listFiles();
