@@ -1,12 +1,7 @@
 package tropicalescape;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.lwjgl.Sys;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
-import org.newdawn.slick.Renderable;
 
 public class HeadUpDisplay {
 	private static final int HEIGHT = 40;

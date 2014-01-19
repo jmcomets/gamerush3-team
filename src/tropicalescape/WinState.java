@@ -26,9 +26,13 @@ public class WinState extends BasicGameState {
 	public void render(GameContainer container, StateBasedGame game, Graphics g)
 	        throws SlickException {
 	    g.setColor(Color.white);
-	    g.drawString("YOU'RE BETTER THAN UNICORNS§§", container.getWidth()/2, container.getHeight()/2);
-
-	    g.drawString("Press Enter to replay", container.getWidth()/2, container.getHeight()/2 + 100);
+	    String message = "YOU'RE BETTER THAN UNICORNS§§";
+	    
+	    int x = (container.getWidth() - g.getFont().getWidth(message)) / 2;
+	    int y = 50;
+	    g.drawString(message, x, y);
+	    
+	    g.drawString("Press Enter to replay", x, y + 100);
 	}
 	
 	@Override
