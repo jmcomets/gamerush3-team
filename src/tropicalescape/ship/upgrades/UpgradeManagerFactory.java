@@ -8,16 +8,16 @@ import java.util.ArrayList;
 
 public class UpgradeManagerFactory {
 
-	private UpgradeManager armorUpgradesManager;
-	private UpgradeManager healthUpgradesManager;
-	private UpgradeManager speedUpgradesManager;
+	private UpgradeManager<ArmorUpgrade> armorUpgradesManager;
+	private UpgradeManager<HealthUpgrade> healthUpgradesManager;
+	private UpgradeManager<SpeedUpgrade> speedUpgradesManager;
 
 	public void loadFromFile(String path) throws IOException {
 		File file = new File(path);
 		BufferedReader reader = null;
-		ArrayList<Upgrade> armorUpgrades = new ArrayList<Upgrade>();
-		ArrayList<Upgrade> healthUpgrades = new ArrayList<Upgrade>();
-		ArrayList<Upgrade> speedUpgrades = new ArrayList<Upgrade>();
+		ArrayList<ArmorUpgrade> armorUpgrades = new ArrayList<ArmorUpgrade>();
+		ArrayList<HealthUpgrade> healthUpgrades = new ArrayList<HealthUpgrade>();
+		ArrayList<SpeedUpgrade> speedUpgrades = new ArrayList<SpeedUpgrade>();
 		try {
 			reader = new BufferedReader(new FileReader(file));
 			String text = null;
@@ -43,21 +43,24 @@ public class UpgradeManagerFactory {
 				reader.close();
 			}
 		}
-		
-		armorUpgradesManager = new UpgradeManager(armorUpgrades, armorUpgrades.get(0));
-		healthUpgradesManager = new UpgradeManager(healthUpgrades, healthUpgrades.get(0));
-		speedUpgradesManager = new UpgradeManager(speedUpgrades, speedUpgrades.get(0));
+
+		armorUpgradesManager = new UpgradeManager<ArmorUpgrade>(armorUpgrades,
+				armorUpgrades.get(0));
+		healthUpgradesManager = new UpgradeManager<HealthUpgrade>(
+				healthUpgrades, healthUpgrades.get(0));
+		speedUpgradesManager = new UpgradeManager<SpeedUpgrade>(speedUpgrades,
+				speedUpgrades.get(0));
 	}
 
-	public UpgradeManager getArmorUpgradesManager() {
+	public UpgradeManager<ArmorUpgrade> getArmorUpgradesManager() {
 		return armorUpgradesManager;
 	}
 
-	public UpgradeManager getHpUpgradesManager() {
+	public UpgradeManager<HealthUpgrade> getHealthUpgradesManager() {
 		return healthUpgradesManager;
 	}
 
-	public UpgradeManager getSpeedUpgradesManager() {
+	public UpgradeManager<SpeedUpgrade> getSpeedUpgradesManager() {
 		return speedUpgradesManager;
 	}
 

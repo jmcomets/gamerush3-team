@@ -28,6 +28,9 @@ import tropicalescape.enemies.Kraken;
 import tropicalescape.enemies.OneHitMonster;
 import tropicalescape.enemies.SleepingIsland;
 import tropicalescape.enemies.Wave;
+import tropicalescape.ship.upgrades.ArmorUpgrade;
+import tropicalescape.ship.upgrades.HealthUpgrade;
+import tropicalescape.ship.upgrades.SpeedUpgrade;
 import tropicalescape.ship.upgrades.UpgradeManager;
 import tropicalescape.ship.upgrades.UpgradeManagerFactory;
 
@@ -80,9 +83,9 @@ public class PlayState extends BasicGameState {
 	// Upgrade system
 	private int golds = 0;
 	private int levelReward;
-	private UpgradeManager armorUpgradesManager;
-	private UpgradeManager healthUpgradesManager;
-	private UpgradeManager speedUpgradesManager;
+	private UpgradeManager<ArmorUpgrade> armorUpgradesManager;
+	private UpgradeManager<HealthUpgrade> healthUpgradesManager;
+	private UpgradeManager<SpeedUpgrade> speedUpgradesManager;
 	//
 
 	private boolean exit = false;
@@ -117,7 +120,7 @@ public class PlayState extends BasicGameState {
 		}
 		armorUpgradesManager = factory.getArmorUpgradesManager();
 		speedUpgradesManager = factory.getSpeedUpgradesManager();
-		healthUpgradesManager = factory.getHpUpgradesManager();
+		healthUpgradesManager = factory.getHealthUpgradesManager();
 	}
 
 	public void addEnemy(Enemy enemy) {
@@ -620,15 +623,15 @@ public class PlayState extends BasicGameState {
 		return placeFlagsDelay > 0 || niceModeActivated;
 	}
 
-	public UpgradeManager getArmorUpgradesManager() {
+	public UpgradeManager<ArmorUpgrade> getArmorUpgradesManager() {
 		return armorUpgradesManager;
 	}
 
-	public UpgradeManager getHealthUpgradesManager() {
+	public UpgradeManager<HealthUpgrade> getHealthUpgradesManager() {
 		return healthUpgradesManager;
 	}
 
-	public UpgradeManager getSpeedUpgradesManager() {
+	public UpgradeManager<SpeedUpgrade> getSpeedUpgradesManager() {
 		return speedUpgradesManager;
 	}
 
