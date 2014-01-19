@@ -61,8 +61,8 @@ public class GameManager extends StateBasedGame {
 	public void initStatesList(GameContainer container) throws SlickException {
 		addState(new MenuState());
 		addState(PlayState.getInstance());
-		addState(new WinState());
 		addState(new LevelSelectionState());
+		addState(new WinState());
 		addState(new LoosedState());
 		addState(new UpgradeState());
 	}

@@ -117,22 +117,22 @@ public class UpgradeState extends BasicGameState {
 		UpgradeManager<ArmorUpgrade> armorUpgradesManager = player
 				.getArmorUpgradesManager();
 
-		if (key == Input.KEY_1) {
+		if (key == Input.KEY_1 || key == Input.KEY_NUMPAD1) {
 			if (healthUpgradesManager.canBuyNextUpgrade(player.getGolds())) {
 				healthUpgradesManager.applyNextUpgrade();
 				spent = healthUpgradesManager.getCurrentUpgrade().getCost();
 			}
-		} else if (key == Input.KEY_2) {
+		} else if (key == Input.KEY_2 || key == Input.KEY_NUMPAD2) {
 			if (speedUpgradesManager.canBuyNextUpgrade(player.getGolds())) {
 				speedUpgradesManager.applyNextUpgrade();
 				spent = speedUpgradesManager.getCurrentUpgrade().getCost();
 			}
-		} else if (key == Input.KEY_3) {
+		} else if (key == Input.KEY_3 || key == Input.KEY_NUMPAD3) {
 			if (armorUpgradesManager.canBuyNextUpgrade(player.getGolds())) {
 				armorUpgradesManager.applyNextUpgrade();
 				spent = armorUpgradesManager.getCurrentUpgrade().getCost();
 			}
-		} else if (key == Input.KEY_ENTER) {
+		} else if (key == Input.KEY_ENTER || key == Input.KEY_NUMPADENTER) {
 			replay = true;
 		} else if (key == Input.KEY_ESCAPE) {
 			changeLevel = true;
