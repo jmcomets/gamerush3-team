@@ -53,7 +53,7 @@ public class HitboxAnimation extends Animation {
 		g.translate(offset.x, offset.y);
 		g.rotate(getWidth()/2, getHeight()/2, angle);
 		draw();
-		getHitbox().render(g);
+		//getHitbox().render(g);
 		g.popTransform();
 	}
 	

@@ -18,7 +18,7 @@ public class Kraken extends Enemy {
 	/* TODO : Make it configurable */
 	private static int MAX_NB_KILLS = 2;
 	private int nbMaxKill = MAX_NB_KILLS;
-	private int coolDown = 3;
+	private int coolDown = 1000;
 	/*--------------------------*/
 
 	private static final String[] KRAKEN_IMAGE_FILES = {

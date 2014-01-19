@@ -47,7 +47,7 @@ public class CoconutThrower extends Island {
 					COCONUT_THROWER_ATTACK_RADIUS);
 			List<Ship> ships = gameInstance.getShips();
 			for (Ship s : ships) {
-				if (circle.contains(s.getPosition().x, s.getPosition().y)) {
+				if (s.getHitbox().intersects(circle)) {
 					// Attack
 					OneHitMonster coconut = new Coconut();
 					coconut.setPosition(getPosition().copy());

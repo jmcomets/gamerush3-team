@@ -59,6 +59,7 @@ public class SleepingIsland extends Island {
 			setHitboxAnimation(sleep);
 			break;
 		}
+		getHitboxAnimation().restart();
 	}
 
 	@Override
