@@ -74,14 +74,14 @@ public class PlayState extends BasicGameState {
 
 	private static PlayState instance;
 
-	public static PlayState getInstance() {
+	public static PlayState getInstance(){
 		if (instance == null) {
 			instance = new PlayState();
 		}
 		return instance;
 	}
 
-	private PlayState() {
+	private PlayState(){
 	hud = new HeadUpDisplay(this);
 	}
 
