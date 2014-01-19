@@ -13,11 +13,18 @@ public class HeadUpDisplay {
 	private static final int PADDING = 10;
 	private PlayState state;
 	private Image img;
+	private Image border;
 
 	public HeadUpDisplay(PlayState state){
 		this.state = state;
 		try {
 			img = new Image("res/animations/background/back.png");
+		} catch (SlickException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		try {
+			border = new Image("res/animations/background/border.png");
 		} catch (SlickException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -32,7 +39,7 @@ public class HeadUpDisplay {
 				img.draw(x+i*img.getWidth(),y+j*img.getHeight());
 			}
 		}
-
+		border.draw(x-15,y-45);
 		
 		g.setColor(Color.white);
 
