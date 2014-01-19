@@ -16,7 +16,9 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 
-class Level{
+import com.sun.xml.internal.ws.api.server.Container;
+
+class Level {
 	public int difficulty;
 	public String name;
 
@@ -30,12 +32,15 @@ public class LevelSelectionState extends BasicGameState {
 
 	static final int ID = 4;
 	private static final String PATH = "res/levels/";
-	private static final float PADDING = 20;
+	private static final float PADDING = 35;
 	private static final int MARGIN = 10;
 	private static final int HEIGHT = 40;
 	private List<Level> listLevels;
 	private int current = 0;
 	private boolean loadLevel = false;
+	private boolean returnToMenu = false;
+	private int scrolling = 0;
+	private int containerHeight;
 
 	LevelSelectionState() {
 		listLevels = new ArrayList<Level>();
@@ -44,38 +49,12 @@ public class LevelSelectionState extends BasicGameState {
 	@Override
 	public void init(GameContainer container, StateBasedGame game)
 			throws SlickException {
-
-	}
-
-	@Override
-	public void keyPressed(int key, char c) {
-		if (key == Input.KEY_DOWN) {
-			if (++current >= listLevels.size()) {
-				current = 0;
-			}
-		} else if (key == Input.KEY_UP) {
-			if (--current < 0) {
-				current = listLevels.size() - 1;
-			}
-		} else if (key == Input.KEY_ENTER) {
-			loadLevel  = true;
-			
-		}
-	}
-
-	@Override
-	public void enter(GameContainer container, StateBasedGame game)
-			throws SlickException {
-		loadLevel = false;
-		super.enter(container, game);
-
 		int difficulty = 0;
 
 		File folder = new File("res/levels");
 		File[] listOfFiles = folder.listFiles();
 
 		BufferedReader reader = null;
-		
 
 		for (int i = 0; i < listOfFiles.length; i++) {
 			if (listOfFiles[i].isFile()) {
@@ -90,9 +69,10 @@ public class LevelSelectionState extends BasicGameState {
 					}
 					try {
 						difficulty = Integer.parseInt(array[1]);
-						Level tmpLevel = new Level(listOfFiles[i].getName(),difficulty);
+						Level tmpLevel = new Level(listOfFiles[i].getName(),
+								difficulty);
 						listLevels.add(tmpLevel);
-						
+
 					} catch (NumberFormatException e) {
 						throw new IOException(e);
 					}
@@ -118,6 +98,59 @@ public class LevelSelectionState extends BasicGameState {
 	}
 
 	@Override
+	public void keyPressed(int key, char c) {
+		if (key == Input.KEY_DOWN) {
+			setCurrent(false);
+
+		} else if (key == Input.KEY_UP) {
+			setCurrent(true);
+
+		} else if (key == Input.KEY_ENTER) {
+			loadLevel = true;
+
+		} else if (key == Input.KEY_Q || key == Input.KEY_ESCAPE) {
+			returnToMenu = true;
+
+		}
+	}
+
+	@Override
+	public void mouseWheelMoved(int newValue) {
+		super.mouseWheelMoved(newValue);
+		if (newValue > 0) {
+			setCurrent(true, false);
+		} else {
+			setCurrent(false, false);
+
+		}
+
+	}
+
+	private void setCurrent(boolean up) {
+		setCurrent(up, true);
+	}
+	private void setCurrent(boolean up, boolean loop) {
+		if (up && (loop || current > 0)) {
+			if (--current < 0) {
+				current = listLevels.size() - 1;
+			}
+		} else if (!up && (loop || current < listLevels.size()-1)){
+			if (++current >= listLevels.size()) {
+				current = 0;
+			}
+		}
+	}
+
+	@Override
+	public void enter(GameContainer container, StateBasedGame game)
+			throws SlickException {
+		loadLevel = false;
+		returnToMenu = false;
+		super.enter(container, game);
+
+	}
+
+	@Override
 	public void render(GameContainer container, StateBasedGame game, Graphics g)
 			throws SlickException {
 
@@ -132,20 +165,41 @@ public class LevelSelectionState extends BasicGameState {
 			String clef = entry.name;
 			Integer valeur = entry.difficulty;
 
-			g.drawRect(PADDING, i * (HEIGHT + MARGIN) + MARGIN, container.getWidth()-PADDING*2, HEIGHT);
-			g.drawString(valeur.toString(), PADDING, i * (HEIGHT + MARGIN) + HEIGHT/2);
-			g.drawString(clef, PADDING*2, i * (HEIGHT + MARGIN) + HEIGHT/2);
+			g.drawRect(PADDING, i * (HEIGHT + MARGIN) + PADDING + scrolling,
+					container.getWidth() - PADDING * 2, HEIGHT);
+			g.drawString(valeur.toString(), PADDING, i * (HEIGHT + MARGIN)
+					+ HEIGHT / 2 + scrolling + PADDING - 10);
+			g.drawString(clef, PADDING * 2, i * (HEIGHT + MARGIN) + HEIGHT / 2
+					+ scrolling + PADDING - 10);
 
 			i++;
 		}
+		g.setColor(Color.black);
+		g.setLineWidth(60);
+		g.drawRect(0, 0, container.getWidth(), container.getHeight());
+		g.setColor(Color.white);
+		g.setLineWidth(1);
+		g.drawString("Q : return to menu", PADDING, container.getHeight()
+				- PADDING);
 
 	}
 
 	@Override
 	public void update(GameContainer container, StateBasedGame game, int delta)
 			throws SlickException {
-		if(loadLevel){
-			((GameManager)game).launchLevel(PATH + listLevels.get(current).name);
+		containerHeight = container.getHeight();
+		
+		if (loadLevel) {
+			((GameManager) game).launchLevel(PATH
+					+ listLevels.get(current).name);
+		} else if (returnToMenu) {
+			game.enterState(MenuGameState.ID);
+		}
+		
+		if (current * (HEIGHT + MARGIN) + PADDING + scrolling <= 60 / 2) {
+			scrolling += 10;
+		} else if (current * (HEIGHT + MARGIN) + PADDING + scrolling + HEIGHT >= containerHeight - 60 / 2) {
+			scrolling -= 10;
 		}
 
 	}

@@ -9,12 +9,11 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Stack;
 
-import org.lwjgl.input.Mouse;
 import org.newdawn.slick.Color;
+import org.newdawn.slick.Font;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
-import org.newdawn.slick.MouseListener;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.state.BasicGameState;
@@ -27,6 +26,7 @@ import tropicalescape.enemies.Island;
 import tropicalescape.enemies.Kraken;
 import tropicalescape.enemies.OneHitMonster;
 import tropicalescape.enemies.SleepingIsland;
+import tropicalescape.enemies.Wave;
 
 public class PlayState extends BasicGameState {
 
@@ -34,36 +34,8 @@ public class PlayState extends BasicGameState {
 
 	private static final Color BG_COLOR = new Color(45, 85, 117);
 	public static final int ID = 2;
-	private StartFlag startFlag;
-	private FinishFlag finishFlag;
-	private List<Flag> userFlags = new ArrayList<Flag>();
 
-	private List<Enemy> enemies = new ArrayList<Enemy>();
-	private List<Ship> ships = new ArrayList<Ship>();
-	private Stack<Ship> shipStack = new Stack<Ship>();
-	private int shipPopDelay = 1000;
-	private int shipPopTimer = 0;
-	private Vector2f shipPopPosition = new Vector2f();
-
-	private List<GameObject> gameObjects = new ArrayList<GameObject>();
-	private int minToWin;
-	private int nArrivedShips;
-
-	private boolean won;
-	private boolean lost;
-
-	static int nextFlagNum = 1;
-
-	public int width;
-	public int height;
-
-	private int placeFlagsDelay = 5000;
-	private String lvlName;
-
-	private PlayState(int width, int height) {
-		this.width = width;
-		this.height = height;
-	}
+	private static final int MAX_PLACE_DELAY = 5000;
 
 	public static PlayState getInstance(int width, int height) {
 		if (instance == null) {
@@ -72,23 +44,71 @@ public class PlayState extends BasicGameState {
 		return instance;
 	}
 
-	@Override
-	public void enter(GameContainer container, StateBasedGame game)
-			throws SlickException {
-		super.enter(container, game);
+	private StartFlag startFlag;
+	private FinishFlag finishFlag;
 
-		placeFlagsDelay = 5000; // FIXME
+	private List<Flag> userFlags = new ArrayList<Flag>();
+	private List<Enemy> enemies = new ArrayList<Enemy>();
+	private List<Ship> ships = new ArrayList<Ship>();
+	private Stack<Ship> shipStack = new Stack<Ship>();
+	private int shipPopDelay = 1000;
+	private int shipPopTimer = 0;
 
-		won = false;
-		lost = false;
+	private Vector2f shipPopPosition = new Vector2f();
+	private List<GameObject> gameObjects = new ArrayList<GameObject>();
+	private int minToWin;
 
-		nArrivedShips = 0;
-		emptyEntities();
-		try {
-			loadLevel(lvlName);
-		} catch (IOException e) {
-			new SlickException("Problème au chargement du niveau " + lvlName
-					+ " : " + e.getMessage());
+	private int nArrivedShips;
+	private boolean won;
+
+	private boolean lost;
+
+	static int nextFlagNum = 1;
+	public int width;
+
+	public int height;
+	private int placeFlagsDelay;
+
+	private String lvlName;
+
+	private GameObject draggingObject = null;
+	private boolean godModeActivated;
+
+	private boolean niceModeActivated;
+
+	private static final int MAX_DELAY_INDICATOR_DIAMETER = 80;
+
+	private static final int MIN_DELAY_INDICATOR_R = 20;
+
+	private PlayState(int width, int height) {
+		this.width = width;
+		this.height = height;
+	}
+
+	public void addEnemy(Enemy enemy) {
+		gameObjects.add(enemy);
+		enemies.add(enemy);
+	}
+
+	private void addShip(Ship ship) {
+		ship.getPosition().x = shipPopPosition.x;
+		ship.getPosition().y = shipPopPosition.y;
+		ship.setNextFlag(startFlag);
+		ships.add(ship);
+		gameObjects.add(ship);
+		shipPopTimer = shipPopDelay;
+	}
+
+	private void checkForLose() {
+		if (!won && nArrivedShips +  ships.size() + shipStack.size() < minToWin) {
+			lost = true;
+			System.out.println("C'est perdu !");
+		}
+	}
+
+	private void checkForWin() {
+		if (nArrivedShips >= minToWin) {
+			this.won = true;
 		}
 	}
 
@@ -101,7 +121,66 @@ public class PlayState extends BasicGameState {
 		this.gameObjects = new ArrayList<GameObject>();
 	}
 
+	@Override
+	public void enter(GameContainer container, StateBasedGame game)
+			throws SlickException {
+		super.enter(container, game);
+
+		placeFlagsDelay = MAX_PLACE_DELAY;
+
+		// Win-lose
+		won = false;
+		lost = false;
+
+		// Modes
+		godModeActivated = false;
+		niceModeActivated = false;
+		
+		nArrivedShips = 0;
+		emptyEntities();
+		try {
+			loadLevel(lvlName);
+		} catch (IOException e) {
+			new SlickException("Problème au chargement du niveau " + lvlName
+					+ " : " + e.getMessage());
+		}
+	}
+
+	@Override
+	public int getID() {
+		return ID;
+	}
+
+	public List<Ship> getShips() {
+		return ships;
+	}
+
+	private void handleContinuousInput(Input input) {
+	}
+
+	private void handleWinLose(StateBasedGame game) {
+		if (won) {
+			game.enterState(WinState.ID);
+		}
+		if (lost) {
+			game.enterState(LoosedState.ID);
+		}
+	}
+
 	public void init(GameContainer container) throws SlickException {
+	}
+
+	@Override
+	public void init(GameContainer container, StateBasedGame game)
+			throws SlickException {
+		String lvlName = "res/levels/test.lvl";
+		try {
+			loadLevel(lvlName);
+		} catch (IOException e) {
+			new SlickException("Problème au chargement du niveau " + lvlName
+					+ " : " + e.getMessage());
+		}
+
 	}
 
 	public void loadLevel(String path) throws IOException {
@@ -118,7 +197,16 @@ public class PlayState extends BasicGameState {
 				}
 
 				GameObject obj = null;
-				if (tokens[0].equals("MIN-WIN")) {
+				if (tokens[0].equals("PLACE-DELAY")) {
+					placeFlagsDelay = MAX_PLACE_DELAY;
+					if (tokens.length > 1) {
+						placeFlagsDelay = Integer.parseInt(tokens[1]);
+					}
+				} else if (tokens[0].equals("GODE-MODE")) {
+					godModeActivated = true;
+				} else if (tokens[0].equals("NICE-MODE")) {
+					niceModeActivated = true;
+				} else if (tokens[0].equals("MIN-WIN")) {
 					minToWin = Integer.parseInt(tokens[1]);
 				} else if (tokens[0].equals("SHIPS")) {
 					shipPopPosition.x = Integer.parseInt(tokens[1]);
@@ -160,6 +248,10 @@ public class PlayState extends BasicGameState {
 					OneHitMonster ohm = new GiantLobster();
 					enemies.add(ohm);
 					obj = ohm;
+				}else if (tokens[0].equals("WAVE")) {
+					Wave w = new Wave();
+					enemies.add(w);
+					obj = w;
 				}
 				if (obj != null) {
 					obj.setPosition(new Vector2f(Float
@@ -183,91 +275,10 @@ public class PlayState extends BasicGameState {
 		}
 	}
 
-	public void addEnemy(Enemy enemy) {
-		gameObjects.add(enemy);
-		enemies.add(enemy);
-	}
-
-	private void addShip(Ship ship) {
-		ship.getPosition().x = shipPopPosition.x;
-		ship.getPosition().y = shipPopPosition.y;
-		ship.setNextFlag(startFlag);
-		ships.add(ship);
-		gameObjects.add(ship);
-		shipPopTimer = shipPopDelay;
-	}
-
-	@Override
-	public void init(GameContainer container, StateBasedGame game)
-			throws SlickException {
-		String lvlName = "res/levels/test.lvl";
-		try {
-			loadLevel(lvlName);
-		} catch (IOException e) {
-			new SlickException("Problème au chargement du niveau " + lvlName
-					+ " : " + e.getMessage());
-		}
-
-	}
-
-	@Override
-	public void render(GameContainer container, StateBasedGame game, Graphics g)
-			throws SlickException {
-		// background color
-		g.setColor(BG_COLOR);
-		g.fillRect(0, 0, container.getWidth(), container.getHeight());
-
-		// Draw all game objects
-		Iterator<GameObject> it = gameObjects.iterator();
-		while (it.hasNext()) {
-			GameObject obj = it.next();
-			obj.baseRender(g);
-		}
-	}
-	
-	private void handleWinLose(StateBasedGame game) {
-		if (won) {
-			game.enterState(WinState.ID);
-		}
-		if (lost) {
-			game.enterState(LoosedState.ID);
-		}
-	}
-
-	private GameObject draggingObject = null;
-	
-	@Override
-	public void mousePressed(int button, int x, int y) {
-		super.mousePressed(button, x, y);
-		if (button == Input.MOUSE_LEFT_BUTTON) {
-			for (GameObject obj : gameObjects) {
-				if (obj.getTranslatedHitbox().contains(x, y)) {
-					draggingObject = obj;
-				}
-			}
-		}
-	}
-
-	@Override
-	public void mouseReleased(int button, int x, int y) {
-		super.mouseReleased(button, x, y);
-		if (button == Input.MOUSE_LEFT_BUTTON) {
-			draggingObject = null;
-		}
-	}
-
-	@Override
-	public void mouseDragged(int oldx, int oldy, int newx, int newy) {
-		super.mouseDragged(oldx, oldy, newx, newy);
-		if (draggingObject != null) {
-			draggingObject.setPosition(new Vector2f(newx, newy));
-		}
-	}
-
 	@Override
 	public void mouseClicked(int button, int x, int y, int clickCount) {
 		super.mouseClicked(button, x, y, clickCount);
-		
+
 		// On récupère l'objet cliqué
 		GameObject clickedObject = null;
 		for (GameObject obj : gameObjects) {
@@ -275,9 +286,10 @@ public class PlayState extends BasicGameState {
 				clickedObject = obj;
 			}
 		}
-		
+
 		if (button == Input.MOUSE_LEFT_BUTTON) {
-			if (clickedObject == null) { // création d'un drapeau
+			if (clickedObject == null && userCanEdit()) { // création d'un
+															// drapeau
 				Flag flag = new Flag("" + (userFlags.size() + 1));
 				flag.setPosition(new Vector2f(x, y));
 				userFlags.add(flag);
@@ -293,7 +305,8 @@ public class PlayState extends BasicGameState {
 			if (clickedObject == null) {
 				// TODO
 			} else if (clickedObject instanceof Flag // Suppression d'un drapeau
-					&& !(clickedObject instanceof StartFlag || clickedObject instanceof FinishFlag)) {
+					&& !(clickedObject instanceof StartFlag || clickedObject instanceof FinishFlag)
+					&& userCanEdit()) {
 				// Rediriger les ships vers leur prochaine destination
 				for (Ship ship : ships) {
 					Flag shipNextFlag = ship.getNextFlag();
@@ -312,21 +325,105 @@ public class PlayState extends BasicGameState {
 		}
 	}
 
-	private void handleContinuousInput(Input input) {
+	@Override
+	public void mouseDragged(int oldx, int oldy, int newx, int newy) {
+		super.mouseDragged(oldx, oldy, newx, newy);
+		if (draggingObject != null && userCanEdit()) {
+			draggingObject.setPosition(new Vector2f(newx, newy));
+		}
+	}
+
+	@Override
+	public void mousePressed(int button, int x, int y) {
+		super.mousePressed(button, x, y);
+		if (button == Input.MOUSE_LEFT_BUTTON) {
+			for (GameObject obj : gameObjects) {
+				if (obj instanceof Flag || godModeActivated) {
+					if (obj.getTranslatedHitbox().contains(x, y)) {
+						draggingObject = obj;
+					}
+				}
+			}
+		}
+	}
+
+	@Override
+	public void mouseReleased(int button, int x, int y) {
+		super.mouseReleased(button, x, y);
+		if (button == Input.MOUSE_LEFT_BUTTON) {
+			draggingObject = null;
+		}
+	}
+	private void recomputeShipPath(Ship ship, Flag previousFlag) {
+		int i = userFlags.indexOf(previousFlag);
+
+		// Dernier user flag atteint
+		if (i == userFlags.size() - 1) {
+			ship.setNextFlag(finishFlag);
+		} else {
+			ship.setNextFlag(userFlags.get(i + 1));
+		}
 	}
 	
+	@Override
+	public void render(GameContainer container, StateBasedGame game, Graphics g)
+			throws SlickException {
+		// background color
+		g.setColor(BG_COLOR);
+		g.fillRect(0, 0, container.getWidth(), container.getHeight());
+
+		// Draw all game objects
+		Iterator<GameObject> it = gameObjects.iterator();
+		while (it.hasNext()) {
+			GameObject obj = it.next();
+			obj.baseRender(g);
+		}
+
+		// Draw time delay if delay still active
+		if (placeFlagsDelay > 0) {
+			String secondsStr = "" + (1 + placeFlagsDelay / 1000);
+			g.setColor(new Color(0.2f, 0.2f, 0.2f));
+			float diameter = MIN_DELAY_INDICATOR_R + MAX_DELAY_INDICATOR_DIAMETER * placeFlagsDelay / MAX_PLACE_DELAY;
+			float x = container.getWidth() - (MAX_DELAY_INDICATOR_DIAMETER + diameter / 2);
+			float y = container.getHeight() - (MAX_DELAY_INDICATOR_DIAMETER + diameter / 2);
+			g.fillOval(x, y, diameter, diameter);
+			g.setColor(Color.white);
+			Font font = g.getFont();
+			g.drawString(secondsStr, x + (diameter - font.getWidth(secondsStr)) / 2, y
+					+ (diameter - font.getHeight(secondsStr)) / 2);
+		}
+	}
+
+	private void resolveShipCollision(Ship ship) {
+		for (Enemy enemy : enemies) {
+			if (enemy.intersects(ship)) {
+				enemy.onHitShip(ship);
+				if (!ship.isAlive()) {
+					break;
+				}
+			}
+		}
+	}
+
+	public void setLvlName(String lvlName) {
+		this.lvlName = lvlName;
+	}
+
 	@Override
 	public void update(GameContainer container, StateBasedGame game, int delta)
 			throws SlickException {
 		// Continuous
 		handleContinuousInput(container.getInput());
-		
+
 		// Wait for the user to place his flags
 		if (placeFlagsDelay > 0) {
 			placeFlagsDelay -= delta;
+			System.out.println("il reste " + placeFlagsDelay / 1000
+					+ " secondes");
+			return;
 		}
-		//System.out.println(placeFlagsDelay);
-		
+		// System.out.println(placeFlagsDelay);
+
 		// Win or lost ?
 		handleWinLose(game);
 
@@ -381,52 +478,7 @@ public class PlayState extends BasicGameState {
 		gameObjects.removeAll(enemiesToRemove);
 	}
 
-	private void recomputeShipPath(Ship ship, Flag previousFlag) {
-		int i = userFlags.indexOf(previousFlag);
-
-		// Dernier user flag atteint
-		if (i == userFlags.size() - 1) {
-			ship.setNextFlag(finishFlag);
-		} else {
-			ship.setNextFlag(userFlags.get(i + 1));
-		}
-	}
-
-	private void checkForWin() {
-		if (nArrivedShips >= minToWin) {
-			this.won = true;
-		}
-	}
-
-	private void checkForLose() {
-		if (!won && ships.size() + shipStack.size() < minToWin) {
-			lost = true;
-			System.out.println("C'est perdu !");
-		}
-	}
-
-	private void resolveShipCollision(Ship ship) {
-		for (Enemy enemy : enemies) {
-			if (enemy.intersects(ship)) {
-				enemy.onHitShip(ship);
-				if (!ship.isAlive()) {
-					break;
-				}
-			}
-		}
-	}
-
-	@Override
-	public int getID() {
-		return ID;
-	}
-	
-
-	public void setLvlName(String lvlName) {
-		this.lvlName = lvlName;
-	}
-
-	public List<Ship> getShips() {
-		return ships;
+	private boolean userCanEdit() {
+		return placeFlagsDelay > 0 || niceModeActivated;
 	}
 }

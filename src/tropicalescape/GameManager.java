@@ -10,8 +10,8 @@ import org.newdawn.slick.state.StateBasedGame;
 
 public class GameManager extends StateBasedGame{
 	
-	private static final int WIDTH = 640;
-	private static final int HEIGHT = 480;
+	private static final int WIDTH = 800;
+	private static final int HEIGHT = 600;
     
 	public static void main(String[] args) {
 		try {
@@ -19,7 +19,7 @@ public class GameManager extends StateBasedGame{
 			GameManager game = new GameManager("Tropical Escape !");
 			appgc = new AppGameContainer(game);
 			appgc.setDisplayMode(WIDTH, HEIGHT, false);
-			// appgc.setFullscreen(true);
+//			 appgc.setFullscreen(true);
 			appgc.setShowFPS(false);
 			appgc.start();
 		} catch (SlickException ex) {

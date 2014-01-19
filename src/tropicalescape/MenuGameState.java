@@ -10,7 +10,7 @@ import org.newdawn.slick.state.StateBasedGame;
 
 public class MenuGameState extends BasicGameState {
 	
-	private static final int ID = 1;
+	static final int ID = 1;
 	private boolean launchGame = false;
 	private boolean quitGame = false;
 	private boolean levelSelect = false;
