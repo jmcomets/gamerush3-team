@@ -34,9 +34,11 @@ public class MenuState extends BasicGameState {
 
 	@Override
 	public void keyPressed(int key, char c) {
-		if (key == Input.KEY_1) {
+		if (key == Input.KEY_1 || key == Input.KEY_NUMPAD0
+			|| key == Input.KEY_ENTER || key == Input.KEY_NUMPADENTER
+			||key == Input.KEY_SPACE) {
 			levelSelect = true;
-		} else if (key == Input.KEY_2) {
+		} else if (key == Input.KEY_2 || key == Input.KEY_ESCAPE) {
 			quitGame = true;
 		}
 	}

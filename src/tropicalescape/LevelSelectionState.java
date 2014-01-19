@@ -99,16 +99,12 @@ public class LevelSelectionState extends BasicGameState {
 	public void keyPressed(int key, char c) {
 		if (key == Input.KEY_DOWN) {
 			setCurrent(false);
-
 		} else if (key == Input.KEY_UP) {
 			setCurrent(true);
-
-		} else if (key == Input.KEY_ENTER) {
+		} else if (key == Input.KEY_ENTER || key == Input.KEY_SPACE) {
 			loadLevel = true;
-
 		} else if (key == Input.KEY_Q || key == Input.KEY_ESCAPE) {
 			returnToMenu = true;
-
 		}
 	}
 
