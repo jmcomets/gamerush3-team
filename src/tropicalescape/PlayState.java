@@ -45,6 +45,8 @@ public class PlayState extends BasicGameState {
 	private StartFlag startFlag;
 	private FinishFlag finishFlag;
 
+	private HeadUpDisplay hud;
+
 	private List<Flag> userFlags = new ArrayList<Flag>();
 	private List<Enemy> enemies = new ArrayList<Enemy>();
 	private List<Ship> ships = new ArrayList<Ship>();
@@ -94,6 +96,7 @@ public class PlayState extends BasicGameState {
 	}
 
 	private PlayState() {
+		hud = new HeadUpDisplay(this);
 		// Charger les upgrades une seule fois !
 		loadUpgrades();
 	}
@@ -280,22 +283,33 @@ public class PlayState extends BasicGameState {
 					obj = ohm;
 				} else if (tokens[0].equals("SLEEPING-ISLAND")) {
 					SleepingIsland sleepingIsland = new SleepingIsland();
+					if (tokens.length > 4) {
+						sleepingIsland
+								.setState((Integer.parseInt(tokens[3]) != 0) ? SleepingIsland.AWAKE
+										: SleepingIsland.SLEEPING);
+						if (tokens.length > 5) {
+							sleepingIsland.setMaxTimer(Integer
+									.parseInt(tokens[4]));
+						}
+					}
 					enemies.add(sleepingIsland);
 					obj = sleepingIsland;
 				} else if (tokens[0].equals("FLAG")) {
-					Flag flag = new Flag(tokens[1]);
+					Flag flag = new Flag((tokens.length < 4) ? "" : tokens[3]);
 					userFlags.add(flag);
 					obj = flag;
 				} else if (tokens[0].equals("START")) {
 					gameObjects.remove(startFlag);
-					startFlag = new StartFlag(tokens[1]);
+					startFlag = new StartFlag((tokens.length < 4) ? "Start"
+							: tokens[3]);
 					obj = startFlag;
 				} else if (tokens[0].equals("FINISH")) {
 					gameObjects.remove(finishFlag);
-					finishFlag = new FinishFlag(tokens[1]);
+					finishFlag = new FinishFlag((tokens.length < 4) ? "End"
+							: tokens[3]);
 					obj = finishFlag;
 				} else if (tokens[0].equals("KRAKEN")) {
-					OneHitMonster ohm = new Kraken();
+					Kraken ohm = new Kraken();
 					enemies.add(ohm);
 					obj = ohm;
 				} else if (tokens[0].equals("GIANT_LOBSTER")) {
@@ -328,7 +342,6 @@ public class PlayState extends BasicGameState {
 		if (Input.KEY_ESCAPE == key) {
 			exit = true;
 		}
-
 		super.keyReleased(key, c);
 	}
 
@@ -411,6 +424,7 @@ public class PlayState extends BasicGameState {
 				}
 			}
 		}
+
 	}
 
 	@Override
@@ -463,6 +477,9 @@ public class PlayState extends BasicGameState {
 			g.drawString(secondsStr, x + (diameter - font.getWidth(secondsStr))
 					/ 2, y + (diameter - font.getHeight(secondsStr)) / 2);
 		}
+		// Draw HUD
+
+		hud.draw(g, container.getWidth() - hud.getWidth(), 0);
 	}
 
 	private void resolveShipCollision(Ship ship, int delta) {
@@ -533,6 +550,7 @@ public class PlayState extends BasicGameState {
 					}
 				}
 			}
+
 		}
 
 		// Handle ships to remove
@@ -570,4 +588,29 @@ public class PlayState extends BasicGameState {
 	public int getGolds() {
 		return golds;
 	}
+	
+	public String getLvlName() {
+		return lvlName;
+	}
+
+	public int getNbrShips() {
+		return userFlags.size();
+	}
+
+	public int getNbrEnemies() {
+		return enemies.size();
+	}
+
+	public int getnArrivedShips() {
+		return nArrivedShips;
+	}
+
+	public int getMinToWin() {
+		return minToWin;
+	}
+
+	public boolean isNiceModeActivated() {
+		return niceModeActivated;
+	}
+
 }
