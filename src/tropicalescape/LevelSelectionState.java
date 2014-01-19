@@ -11,6 +11,7 @@ import java.util.List;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
+import org.newdawn.slick.Image;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.BasicGameState;
@@ -39,6 +40,7 @@ public class LevelSelectionState extends BasicGameState {
 	private boolean returnToMenu = false;
 	private int scrolling = 0;
 	private int containerHeight;
+	private Image img;
 
 	LevelSelectionState() {
 		listLevels = new ArrayList<Level>();
@@ -47,6 +49,13 @@ public class LevelSelectionState extends BasicGameState {
 	@Override
 	public void init(GameContainer container, StateBasedGame game)
 			throws SlickException {
+		try {
+			img = new Image("res/animations/background/water.jpg");
+		} catch (SlickException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		int difficulty = 0;
 
 		File folder = new File("res/levels");
@@ -148,34 +157,31 @@ public class LevelSelectionState extends BasicGameState {
 	@Override
 	public void render(GameContainer container, StateBasedGame game, Graphics g)
 			throws SlickException {
+		img.draw(0,0);
 
 		int i = 0;
+		
+		g.drawString("Select your level : ", PADDING , container.getHeight()/2);
 
 		for (Level entry : listLevels) {
 			if (i == current) {
-				g.setColor(Color.yellow);
+				g.setColor(Color.red);
 			} else {
-				g.setColor(Color.white);
+				g.setColor(Color.black);
 			}
 			String clef = entry.name;
 			Integer valeur = entry.difficulty;
 
-			g.drawRect(PADDING, i * (HEIGHT + MARGIN) + PADDING + scrolling,
-					container.getWidth() - PADDING * 2, HEIGHT);
-			g.drawString(valeur.toString(), PADDING, i * (HEIGHT + MARGIN)
+			//g.drawRect(PADDING, i * (HEIGHT + MARGIN) + PADDING + scrolling,
+			//		container.getWidth() - PADDING * 2, HEIGHT);
+			g.drawString(valeur.toString(), PADDING*10, i * (HEIGHT + MARGIN)
 					+ HEIGHT / 2 + scrolling + PADDING - 10);
-			g.drawString(clef, PADDING * 2, i * (HEIGHT + MARGIN) + HEIGHT / 2
+			g.drawString(clef, PADDING * 12, i * (HEIGHT + MARGIN) + HEIGHT / 2
 					+ scrolling + PADDING - 10);
 
 			i++;
 		}
 		g.setColor(Color.black);
-		g.setLineWidth(60);
-		g.drawRect(0, 0, container.getWidth(), container.getHeight());
-		g.setColor(Color.white);
-		g.setLineWidth(1);
-		g.drawString("Q : return to menu", PADDING, container.getHeight()
-				- PADDING);
 	}
 
 	@Override
