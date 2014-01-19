@@ -1,11 +1,8 @@
 package tropicalescape;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.lwjgl.Sys;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
+
 import org.newdawn.slick.Image;
 import org.newdawn.slick.Renderable;
 import org.newdawn.slick.SlickException;
