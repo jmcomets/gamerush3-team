@@ -201,7 +201,7 @@ public class PlayState extends BasicGameState {
 			float goldRate = (ships.size() + shipStack.size() + nArrivedShips)
 					/ nTotalShips;
 			Player.getInstance().increaseGolds(
-					(int) (levelReward / 2 * (1 + goldRate)));
+					(int) ((float)levelReward / 2f * (1f + goldRate)));
 			game.enterState(WinState.ID);
 		}
 		if (lost) {
