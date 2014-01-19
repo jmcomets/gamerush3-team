@@ -91,7 +91,6 @@ public class Kraken extends Enemy {
 			renderTentacle = false;  
 		}
 		Iterator<Integer> it = coolDowns.iterator();
-		System.out.println(delta);
 		while (it.hasNext()) {
 			Integer iObj = it.next();
 			iObj -= delta;
