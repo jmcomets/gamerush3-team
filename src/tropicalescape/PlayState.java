@@ -76,6 +76,8 @@ public class PlayState extends BasicGameState {
 
 	private boolean niceModeActivated;
 
+	private boolean exit = false;
+
 	private static final int MAX_DELAY_INDICATOR_DIAMETER = 80;
 
 	private static final int MIN_DELAY_INDICATOR_R = 20;
@@ -100,7 +102,7 @@ public class PlayState extends BasicGameState {
 	}
 
 	private void checkForLose() {
-		if (!won && nArrivedShips +  ships.size() + shipStack.size() < minToWin) {
+		if (!won && nArrivedShips + ships.size() + shipStack.size() < minToWin) {
 			lost = true;
 			System.out.println("C'est perdu !");
 		}
@@ -127,6 +129,9 @@ public class PlayState extends BasicGameState {
 		super.enter(container, game);
 
 		placeFlagsDelay = MAX_PLACE_DELAY;
+		
+		// Exit ?
+		exit = false;
 
 		// Win-lose
 		won = false;
@@ -135,10 +140,10 @@ public class PlayState extends BasicGameState {
 		// Modes
 		godModeActivated = false;
 		niceModeActivated = false;
-		
+
 		nArrivedShips = 0;
 		emptyEntities();
-		
+
 		placeDefaultFlags(container.getWidth(), container.getHeight());
 		try {
 			loadLevel(lvlName);
@@ -147,8 +152,8 @@ public class PlayState extends BasicGameState {
 					+ " : " + e.getMessage());
 		}
 	}
-	
-	public void placeDefaultFlags(int width, int height){
+
+	public void placeDefaultFlags(int width, int height) {
 		if (startFlag == null) {
 			startFlag = new StartFlag("Start");
 			startFlag.setPosition(new Vector2f(-40, -40));
@@ -265,7 +270,7 @@ public class PlayState extends BasicGameState {
 					OneHitMonster ohm = new GiantLobster();
 					enemies.add(ohm);
 					obj = ohm;
-				}else if (tokens[0].equals("WAVE")) {
+				} else if (tokens[0].equals("WAVE")) {
 					Wave w = new Wave();
 					enemies.add(w);
 					obj = w;
@@ -283,6 +288,16 @@ public class PlayState extends BasicGameState {
 				reader.close();
 			}
 		}
+	}
+
+	@Override
+	public void keyReleased(int key, char c) {
+		
+		if (Input.KEY_ESCAPE == key) {
+			exit = true;
+		}
+
+		super.keyReleased(key, c);
 	}
 
 	@Override
@@ -364,6 +379,7 @@ public class PlayState extends BasicGameState {
 			draggingObject = null;
 		}
 	}
+
 	private void recomputeShipPath(Ship ship, Flag previousFlag) {
 		int i = userFlags.indexOf(previousFlag);
 
@@ -374,7 +390,7 @@ public class PlayState extends BasicGameState {
 			ship.setNextFlag(userFlags.get(i + 1));
 		}
 	}
-	
+
 	@Override
 	public void render(GameContainer container, StateBasedGame game, Graphics g)
 			throws SlickException {
@@ -393,14 +409,18 @@ public class PlayState extends BasicGameState {
 		if (placeFlagsDelay > 0) {
 			String secondsStr = "" + (1 + placeFlagsDelay / 1000);
 			g.setColor(new Color(0.2f, 0.2f, 0.2f));
-			float diameter = MIN_DELAY_INDICATOR_R + MAX_DELAY_INDICATOR_DIAMETER * placeFlagsDelay / MAX_PLACE_DELAY;
-			float x = container.getWidth() - (MAX_DELAY_INDICATOR_DIAMETER + diameter / 2);
-			float y = container.getHeight() - (MAX_DELAY_INDICATOR_DIAMETER + diameter / 2);
+			float diameter = MIN_DELAY_INDICATOR_R
+					+ MAX_DELAY_INDICATOR_DIAMETER * placeFlagsDelay
+					/ MAX_PLACE_DELAY;
+			float x = container.getWidth()
+					- (MAX_DELAY_INDICATOR_DIAMETER + diameter / 2);
+			float y = container.getHeight()
+					- (MAX_DELAY_INDICATOR_DIAMETER + diameter / 2);
 			g.fillOval(x, y, diameter, diameter);
 			g.setColor(Color.white);
 			Font font = g.getFont();
-			g.drawString(secondsStr, x + (diameter - font.getWidth(secondsStr)) / 2, y
-					+ (diameter - font.getHeight(secondsStr)) / 2);
+			g.drawString(secondsStr, x + (diameter - font.getWidth(secondsStr))
+					/ 2, y + (diameter - font.getHeight(secondsStr)) / 2);
 		}
 	}
 
@@ -422,6 +442,11 @@ public class PlayState extends BasicGameState {
 	@Override
 	public void update(GameContainer container, StateBasedGame game, int delta)
 			throws SlickException {
+		
+		if(exit) {
+			game.enterState(MenuGameState.ID);
+		}
+		
 		// Continuous
 		handleContinuousInput(container.getInput());
 
