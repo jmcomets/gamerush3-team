@@ -11,14 +11,15 @@ import tropicalescape.HitboxAnimationFactory;
 import tropicalescape.PlayState;
 import tropicalescape.Ship;
 
-public class CoconutThrower extends OneHitMonster {
+public class CoconutThrower extends Island {
 
-	private static final int COCONUT_THROWER_DAMAGE = 50;
-	private static final String[] COCONUT_THROWER_IMAGE_FILES = { "res/animations/coconut-thrower/dummy.png" };
-	private static final String[] COCONUT_THROWER_HITBOX_FILES = { "res/hitboxes/coconut-thrower/dummy.txt" };
-	private static final String[] END_COCONUT_THROWER_IMAGE_FILES = { "res/animations/coconut-thrower/dummy.png" };
+	private static final String[] COCONUT_THROWER_IMAGE_FILES = {
+		"res/animations/coconut-thrower/Ile-noixcoco1.png",
+		"res/animations/coconut-thrower/Ile-noixcoco2.png",
+		"res/animations/coconut-thrower/Ile-noixcoco3.png"
+		};
+	private static final String[] COCONUT_THROWER_HITBOX_FILES = { "res/hitboxes/coconut-thrower/base.txt" };
 	private static int COCONUT_THROWER_DURATION = 300;
-	private static int END_COCONUT_THROWER_DURATION = 300;
 
 	private static int SLOW_FACTOR = 14;
 
@@ -27,11 +28,8 @@ public class CoconutThrower extends OneHitMonster {
 	private static final int COCONUT_THROWER_ATTACK_RADIUS = 300;
 
 	public CoconutThrower() {
-		super(makeHitboxAnimation());
-		endAnimation = HitboxAnimationFactory.create(
-				END_COCONUT_THROWER_IMAGE_FILES, emptyArray,
-				END_COCONUT_THROWER_DURATION);
-		damageOnHit = COCONUT_THROWER_DAMAGE;
+		super();
+		setHitboxAnimation(makeHitboxAnimation());
 	}
 
 	private static HitboxAnimation makeHitboxAnimation() {
