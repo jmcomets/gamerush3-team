@@ -612,9 +612,9 @@ public class PlayState extends BasicGameState {
 	public String getLvlName() {
 		return lvlName;
 	}
-
-	public int getNbrShips() {
-		return userFlags.size();
+	
+	public int getNbrRemainingFlags() {
+		return remainingFlags;
 	}
 
 	public int getNbrEnemies() {
@@ -631,6 +631,9 @@ public class PlayState extends BasicGameState {
 
 	public boolean isNiceModeActivated() {
 		return niceModeActivated;
+	}
+	public boolean isGodModeActivated() {
+		return godModeActivated;
 	}
 
 	public static void setNextLevel(boolean nextLevel) {
