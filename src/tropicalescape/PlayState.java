@@ -256,7 +256,7 @@ public class PlayState extends BasicGameState {
 					finishFlag = new FinishFlag(tokens[1]);
 					obj = finishFlag;
 				} else if (tokens[0].equals("KRAKEN")) {
-					OneHitMonster ohm = new Kraken();
+					Kraken ohm = new Kraken();
 					enemies.add(ohm);
 					obj = ohm;
 				} else if (tokens[0].equals("GIANT_LOBSTER")) {
