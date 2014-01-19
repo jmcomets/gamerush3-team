@@ -13,5 +13,7 @@
 			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="TropicalEscape/lib/lwjgl/native/linux"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="lib" path="lib/slick/lib/jorbis-0.0.15.jar"/>
+	<classpathentry kind="lib" path="lib/slick/lib/jogg-0.0.7.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
