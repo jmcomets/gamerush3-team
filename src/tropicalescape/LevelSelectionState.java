@@ -60,6 +60,7 @@ public class LevelSelectionState extends BasicGameState {
 			throws SlickException {
 		try {
 			img = new Image("res/animations/background/water.jpg");
+			
 		} catch (SlickException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

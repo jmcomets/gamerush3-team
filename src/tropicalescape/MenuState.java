@@ -65,7 +65,7 @@ public class MenuState extends BasicGameState {
 	@Override
 	public void render(GameContainer container, StateBasedGame game, Graphics g)
 			throws SlickException {
-		img.draw(0,0);
+		img.draw(0,0,0.7f);
 		g.setColor(Color.white);
 		font2.drawString(10, 50, "Tropical Escape");
 		font.drawString(10, 150, "1 Level Selection");
