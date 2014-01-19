@@ -4,7 +4,6 @@ import org.newdawn.slick.GameContainer;
 
 import tropicalescape.HitboxAnimation;
 import tropicalescape.HitboxAnimationFactory;
-import tropicalescape.PlayState;
 
 public class Coconut extends OneHitMonster {
 
@@ -31,10 +30,8 @@ public class Coconut extends OneHitMonster {
 	@Override
 	public void update(GameContainer gc, int delta) {
 
-		PlayState gameInstance = PlayState.getInstance(0, 0);
-
-		if (getPosition().x < 0 || getPosition().x > gameInstance.height
-				|| getPosition().y < 0 || getPosition().y > gameInstance.width) {
+		if (getPosition().x < 0 || getPosition().x > gc.getHeight()
+				|| getPosition().y < 0 || getPosition().y > gc.getWidth()) {
 			setAlive(false);
 		}
 

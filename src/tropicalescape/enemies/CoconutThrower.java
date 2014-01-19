@@ -41,7 +41,7 @@ public class CoconutThrower extends OneHitMonster {
 
 	@Override
 	public void update(GameContainer gc, int delta) {
-		PlayState gameInstance = PlayState.getInstance(0, 0);
+		PlayState gameInstance = PlayState.getInstance();
 		// Un ship a proximité ? On envoie des noix de coco !
 		if (nextAttack <= 0) {
 			Circle circle = new Circle(getPosition().x, getPosition().y,

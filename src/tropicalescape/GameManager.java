@@ -33,14 +33,14 @@ public class GameManager extends StateBasedGame{
     }
     
     public void launchLevel(String level){
-    	PlayState.getInstance(WIDTH, HEIGHT).setLvlName(level);
+    	PlayState.getInstance().setLvlName(level);
     	enterState(PlayState.ID);
     }
     
 	@Override
 	public void initStatesList(GameContainer container) throws SlickException {
 		addState(new MenuState());
-		addState(PlayState.getInstance(WIDTH, HEIGHT));
+		addState(PlayState.getInstance());
 		addState(new WinState());
 		addState(new LevelSelectionState());
 		addState(new LoosedState());
