@@ -26,6 +26,7 @@ import tropicalescape.enemies.Island;
 import tropicalescape.enemies.Kraken;
 import tropicalescape.enemies.OneHitMonster;
 import tropicalescape.enemies.SleepingIsland;
+import tropicalescape.enemies.Wave;
 
 public class PlayState extends BasicGameState {
 
@@ -247,6 +248,10 @@ public class PlayState extends BasicGameState {
 					OneHitMonster ohm = new GiantLobster();
 					enemies.add(ohm);
 					obj = ohm;
+				}else if (tokens[0].equals("WAVE")) {
+					Wave w = new Wave();
+					enemies.add(w);
+					obj = w;
 				}
 				if (obj != null) {
 					obj.setPosition(new Vector2f(Float

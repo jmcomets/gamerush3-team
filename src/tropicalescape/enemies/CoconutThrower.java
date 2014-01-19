@@ -20,10 +20,10 @@ public class CoconutThrower extends OneHitMonster {
 	private static int COCONUT_THROWER_DURATION = 300;
 	private static int END_COCONUT_THROWER_DURATION = 300;
 
-	private static int SLOW_FACTOR = 10;
+	private static int SLOW_FACTOR = 14;
 
 	private int nextAttack;
-	private static final int COCONUT_THROWER_ATTACK_COOLDOWN = 1000;
+	private static final int COCONUT_THROWER_ATTACK_COOLDOWN = 2000;
 	private static final int COCONUT_THROWER_ATTACK_RADIUS = 300;
 
 	public CoconutThrower() {
