@@ -16,6 +16,7 @@ public class LoosedState extends BasicGameState {
 	private Image img;
 	private float theta = 0;
 	private float delta = 10;
+	private boolean goToNextScreen = false;
 	
 	LoosedState() {
 		
@@ -43,16 +44,23 @@ public class LoosedState extends BasicGameState {
 		g.rotate(container.getWidth()/2, container.getHeight()/2, theta);
 		img.draw((float)(container.getWidth()/2-(img.getWidth()*1.2)/2), (float)(container.getHeight()/2-(img.getHeight()*1.2)/2),1.2f);
 		g.setColor(Color.red);
-	    g.drawString("YOU'RE NOT BETTER THAN UNICORNS§§", container.getWidth()/2, container.getHeight()/2);
-
-	    g.drawString("Press Enter to replay", container.getWidth()/2, container.getHeight()/2 + 100);
+	    
+		String message = "YOU'RE WORSE THAN A GAY NARWAL";
+		int x = (container.getWidth() - g.getFont().getWidth(message)) / 2;
+		int y = (container.getHeight() - g.getFont().getHeight(message)) / 2;
+		g.drawString(message, x, y);
+		
+		message = "Press Enter to continue";
+		x = (container.getWidth() - g.getFont().getWidth(message)) / 2;
+		y += g.getFont().getHeight(message) + 10;
+		g.drawString(message, x, y);
 	    
 	}
 	
 	@Override
 	public void keyPressed(int key, char c) {
 		if(key == Input.KEY_ENTER){
-			replay = true;    
+			goToNextScreen = true;    
 		}
 		
 	}
@@ -61,17 +69,16 @@ public class LoosedState extends BasicGameState {
 	public void enter(GameContainer container, StateBasedGame game)
 			throws SlickException {
 		super.enter(container, game);
-		replay  = false;
+		goToNextScreen  = false;
 		
 	}
 	
 	@Override
 	public void update(GameContainer container, StateBasedGame game, int delta)
 			throws SlickException {
-		if(replay) {
-	    	game.enterState(PlayState.ID);	    	
+		if(goToNextScreen) {
+	    	game.enterState(UpgradeState.ID);	    	
 	    }
-	    
 	}
 
 	@Override
