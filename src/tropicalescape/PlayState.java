@@ -306,11 +306,11 @@ public class PlayState extends BasicGameState {
 					obj = e;
 				} else if (tokens[0].equals("SLEEPING-ISLAND")) {
 					SleepingIsland sleepingIsland = new SleepingIsland();
-					if (tokens.length > 4) {
+					if (tokens.length >3) {
 						sleepingIsland
 								.setState((Integer.parseInt(tokens[3]) != 0) ? SleepingIsland.AWAKE
 										: SleepingIsland.SLEEPING);
-						if (tokens.length > 5) {
+						if (tokens.length > 4) {
 							sleepingIsland.setMaxTimer(Integer
 									.parseInt(tokens[4]));
 						}
