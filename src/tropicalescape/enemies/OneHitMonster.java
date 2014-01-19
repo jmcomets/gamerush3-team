@@ -20,7 +20,7 @@ public abstract class OneHitMonster extends Enemy {
 
 	@Override
 	public void onHitShip(Ship ship, int delta) {
-		ship.loseHealth(damageOnHit);
+		ship.loseHealth(getLevel() * damageOnHit);
 		hitDone = true;
 
 		// Start end animation

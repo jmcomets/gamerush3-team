@@ -224,7 +224,7 @@ public class PlayState extends BasicGameState {
 					if (tokens.length > 1) {
 						placeFlagsDelay = Integer.parseInt(tokens[1]);
 					}
-				} else if (tokens[0].equals("GODE-MODE")) {
+				} else if (tokens[0].equals("GOD-MODE")) {
 					godModeActivated = true;
 				} else if (tokens[0].equals("NICE-MODE")) {
 					niceModeActivated = true;
@@ -279,7 +279,7 @@ public class PlayState extends BasicGameState {
 					Kraken ohm = new Kraken();
 					enemies.add(ohm);
 					obj = ohm;
-				} else if (tokens[0].equals("GIANT_LOBSTER")) {
+				} else if (tokens[0].equals("GIANT-LOBSTER")) {
 					OneHitMonster ohm = new GiantLobster();
 					enemies.add(ohm);
 					obj = ohm;
@@ -290,8 +290,8 @@ public class PlayState extends BasicGameState {
 				}
 				if (obj != null) {
 					obj.setPosition(new Vector2f(Float
-							.parseFloat(tokens[tokens.length - 2]), Float
-							.parseFloat(tokens[tokens.length - 1])));
+							.parseFloat(tokens[1]), Float
+							.parseFloat(tokens[2])));
 					gameObjects.add(obj);
 				}
 			}
@@ -498,6 +498,10 @@ public class PlayState extends BasicGameState {
 
 		List<Ship> shipsToRemove = new ArrayList<Ship>();
 		for (Ship ship : ships) {
+			if (ship.isDying()) {
+				continue;
+			}
+			
 			resolveShipCollision(ship, delta);
 			if (!ship.isAlive()) {
 				shipsToRemove.add(ship);
@@ -537,7 +541,7 @@ public class PlayState extends BasicGameState {
 	}
 
 	private boolean userCanEdit() {
-		return placeFlagsDelay > 0 || niceModeActivated;
+		return placeFlagsDelay > 0 || niceModeActivated || godModeActivated;
 	}
 
 	public String getLvlName() {

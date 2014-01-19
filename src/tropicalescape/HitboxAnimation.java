@@ -29,6 +29,6 @@ public class HitboxAnimation extends Animation {
 
 	public void render(Graphics g) {
 		draw();
-		//getHitbox().render(g);
+		getHitbox().render(g);
 	}
 }
