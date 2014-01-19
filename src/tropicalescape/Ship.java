@@ -9,15 +9,21 @@ import org.newdawn.slick.geom.Vector2f;
 
 public class Ship extends GameObject {
 
+	private static final int HPBAR_POSX = 50;
+	private static final int HPBAR_POSY = 10;
+	static final int HPBAR_HEIGHT = 10;
+	static final int HPBAR_WIDHT = 60;
 	static final int MAX_HP = 50;
 	static final int EPSILON = 5;
 	static final int SLOW_FACTOR = 10;
 	static final int FRAME_DURATION = 125;
 
+	private int invincibilyPeriod = 0;
 	private int hp;
 	private Flag nextFlag;
 	private Direction dir;
 	private boolean arrived = false;
+	private HealthBar healthBar = new HealthBar(HPBAR_HEIGHT, HPBAR_WIDHT, MAX_HP, MAX_HP);
 
 	static String[] N_IMG_FILES = { "res/ship/resized/Boat1-up.png",
 			"res/ship/resized/Boat2-up.png", "res/ship/resized/Boat3-up.png" };
@@ -97,6 +103,7 @@ public class Ship extends GameObject {
 				W_IMG_FILES, W_HB_FILES, FRAME_DURATION));
 
 		setHitboxAnimation(animationMap.get(this.dir));
+		healthBar.setPosition(new Vector2f(HPBAR_POSX, HPBAR_POSY));
 	}
 
 	private void computePath() {
@@ -162,14 +169,26 @@ public class Ship extends GameObject {
 		arrived = false;
 	}
 
+	public int getInvincibilyPeriod() {
+		return invincibilyPeriod;
+	}
+
+	public void setInvincibilyPeriod(int invincibilyPeriod) {
+		this.invincibilyPeriod = invincibilyPeriod;
+	}
+
 	@Override
 	public void render(Graphics g) {
+		healthBar.baseRender(g);
+		
 		super.render(g);
 	}
 
 	@Override
 	public void update(GameContainer gc, int delta) {
 		computePath();
+		healthBar.setHp(hp);
+		healthBar.baseUpdate(gc, delta);
 
 		double angle = getSpeed().getTheta();
 		if (getSpeed().x == 0 && getSpeed().y == 0) {
