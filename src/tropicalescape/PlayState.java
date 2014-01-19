@@ -413,12 +413,9 @@ public class PlayState extends BasicGameState {
 		// Wait for the user to place his flags
 		if (placeFlagsDelay > 0) {
 			placeFlagsDelay -= delta;
-			System.out.println("il reste " + placeFlagsDelay / 1000
-					+ " secondes");
 			return;
 		}
-		// System.out.println(placeFlagsDelay);
-
+		
 		// Win or lost ?
 		handleWinLose(game);
 
