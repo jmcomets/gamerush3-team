@@ -37,9 +37,13 @@ public class LoosedState extends BasicGameState {
 	public void render(GameContainer container, StateBasedGame game, Graphics g)
 	        throws SlickException {
 		theta +=delta ;
-		if(theta>360*5||theta<0)
+		if(theta>360*5)
 		{
 			delta = -delta;
+		}
+		if(theta<0)
+		{
+			delta =0;
 		}
 		g.rotate(container.getWidth()/2, container.getHeight()/2, theta);
 		img.draw((float)(container.getWidth()/2-(img.getWidth()*1.2)/2), (float)(container.getHeight()/2-(img.getHeight()*1.2)/2),1.2f);
