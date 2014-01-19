@@ -1,0 +1,17 @@
+ARMORUP 0 Default 0
+ARMORUP 2000 Coque_renforcée 12.5
+ARMORUP 5000 Bois_de_tazmanie 25
+ARMORUP 11000 Voile_en_carton 37.5
+ARMORUP 25000 Full_Titane 50
+
+HPUP 0 Default 0
+HPUP 2000 Gueux 25
+HPUP 5000 Villageois 50
+HPUP 11000 Explorateurs 75
+HPUP 25000 Militaires 100
+
+SPEEDUP 0 Default 0
+SPEEDUP 2000 Double_Voile 25
+SPEEDUP 5000 Moteur 50
+SPEEDUP 11000 Moteur_Fusee 75
+SPEEDUP 25000 Statoreacteur 100

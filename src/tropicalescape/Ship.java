@@ -7,6 +7,11 @@ import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.geom.Vector2f;
 
+import tropicalescape.ship.upgrades.ArmorUpgrade;
+import tropicalescape.ship.upgrades.HealthUpgrade;
+import tropicalescape.ship.upgrades.SpeedUpgrade;
+import tropicalescape.ship.upgrades.UpgradeManager;
+
 public class Ship extends GameObject {
 
 	private static final int HPBAR_POSX = 50;
@@ -20,13 +25,17 @@ public class Ship extends GameObject {
 
 	private int invincibilyPeriod = 0;
 	private int hp;
+	private float armor;
+	private float speedBonus;
 	private Flag nextFlag;
 	private Direction dir;
 	private boolean arrived = false;
-	private HealthBar healthBar = new HealthBar(HPBAR_HEIGHT, HPBAR_WIDHT, MAX_HP, MAX_HP);
+	private HealthBar healthBar = new HealthBar(HPBAR_HEIGHT, HPBAR_WIDHT,
+			MAX_HP, MAX_HP);
 
 	static String[] N_IMG_FILES = { "res/animations/ship/Boat1-up.png",
-			"res/animations/ship/Boat2-up.png", "res/animations/ship/Boat3-up.png" };
+			"res/animations/ship/Boat2-up.png",
+			"res/animations/ship/Boat3-up.png" };
 	static String[] NE_IMG_FILES = { "res/animations/ship/Boat1-rightup.png",
 			"res/animations/ship/Boat2-rightup.png",
 			"res/animations/ship/Boat3-rightup.png" };
@@ -80,8 +89,24 @@ public class Ship extends GameObject {
 
 	Ship() {
 		super(new HitboxAnimation());
-		
+
 		hp = MAX_HP;
+		UpgradeManager<HealthUpgrade> healthUpgradesManager = PlayState
+				.getInstance().getHealthUpgradesManager();
+		HealthUpgrade currentUpgrade = healthUpgradesManager
+				.getCurrentUpgrade();
+		hp += currentUpgrade.getBonusHp();
+
+		UpgradeManager<ArmorUpgrade> armorUpgradesManager = PlayState
+				.getInstance().getArmorUpgradesManager();
+		ArmorUpgrade armorUpgrade = armorUpgradesManager.getCurrentUpgrade();
+		armor = armorUpgrade.getArmorPercent();
+
+		UpgradeManager<SpeedUpgrade> speedUpgradesManager = PlayState
+				.getInstance().getSpeedUpgradesManager();
+		SpeedUpgrade speedUpgrade = speedUpgradesManager.getCurrentUpgrade();
+		speedBonus = speedUpgrade.getSpeedBonusPercent();
+
 		dir = Direction.E;
 
 		animationMap = new HashMap<Direction, HitboxAnimation>();
@@ -124,8 +149,8 @@ public class Ship extends GameObject {
 				vectorX = vectorX / (norme * SLOW_FACTOR);
 				vectorY = vectorY / (norme * SLOW_FACTOR);
 
-				speed.x = vectorX;
-				speed.y = vectorY;
+				speed.x = vectorX * (1f + speedBonus / 100f);
+				speed.y = vectorY * (1f + speedBonus / 100f);
 			} else {
 				speed.x = 0;
 				speed.y = 0;
@@ -162,7 +187,7 @@ public class Ship extends GameObject {
 	}
 
 	public void loseHealth(int dmgValue) {
-		setHp(hp - dmgValue);
+		setHp(hp - (float) dmgValue * (1f - armor / 100f));
 	}
 
 	@Override
