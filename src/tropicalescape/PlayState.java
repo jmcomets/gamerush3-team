@@ -281,9 +281,9 @@ public class PlayState extends BasicGameState {
 					enemies.add(island);
 					obj = island;
 				} else if (tokens[0].equals("COCONUT-THROWER")) {
-					OneHitMonster ohm = new CoconutThrower();
-					enemies.add(ohm);
-					obj = ohm;
+					Enemy e = new CoconutThrower();
+					enemies.add(e);
+					obj = e;
 				} else if (tokens[0].equals("SLEEPING-ISLAND")) {
 					SleepingIsland sleepingIsland = new SleepingIsland();
 					if (tokens.length > 4) {
@@ -351,6 +351,7 @@ public class PlayState extends BasicGameState {
 	@Override
 	public void mouseClicked(int button, int x, int y, int clickCount) {
 		super.mouseClicked(button, x, y, clickCount);
+		System.out.println(x + " " + y);
 
 		// On récupère l'objet cliqué
 		GameObject clickedObject = null;
@@ -534,6 +535,12 @@ public class PlayState extends BasicGameState {
 
 		List<Ship> shipsToRemove = new ArrayList<Ship>();
 		for (Ship ship : ships) {
+			if (!ship.isAlive()) {
+				shipsToRemove.add(ship);
+				// ship died
+				continue;
+			}
+			
 			if (ship.isDying()) {
 				continue;
 			}

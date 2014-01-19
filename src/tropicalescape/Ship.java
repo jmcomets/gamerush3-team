@@ -181,13 +181,14 @@ public class Ship extends GameObject {
 
 	public void startDying() {
 		this.dying = true;
-		getSpeed().x = getSpeed().y = 0;
 		dyingAnimation.setLooping(false);
+		dyingAnimation.setAngle((float) getSpeed().getTheta());
+		getSpeed().x = getSpeed().y = 0;
 		setHitboxAnimation(dyingAnimation);
 	}
 
 	public void loseHealth(int dmgValue) {
-		setHp(hp - (float) dmgValue * (1f - armor / 100f));
+		setHp((int) (hp - dmgValue * (1f - armor / 100f)));
 	}
 
 	@Override

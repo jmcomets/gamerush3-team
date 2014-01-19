@@ -121,7 +121,7 @@ public abstract class GameObject implements Collidable {
 	
 	/**
 	 * 
-	 * @return if the GameObject shouldn't be updated/rendered
+	 * @return if the GameObject should be updated/rendered
 	 */
 	public abstract boolean isAlive();
 

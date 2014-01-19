@@ -24,8 +24,12 @@ public abstract class OneHitMonster extends Enemy {
 		hitDone = true;
 
 		// Start end animation
-		setHitboxAnimation(endAnimation);
-		getHitboxAnimation().setLooping(false);
+		if (endAnimation.getFrameCount() > 0) {
+			setHitboxAnimation(endAnimation);
+			getHitboxAnimation().setLooping(false);
+		} else {
+			setAlive(false);
+		}
 	}
 
 	@Override

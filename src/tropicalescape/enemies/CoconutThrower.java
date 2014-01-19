@@ -14,10 +14,9 @@ import tropicalescape.Ship;
 public class CoconutThrower extends Island {
 
 	private static final String[] COCONUT_THROWER_IMAGE_FILES = {
-		"res/animations/coconut-thrower/Ile-noixcoco1.png",
-		"res/animations/coconut-thrower/Ile-noixcoco2.png",
-		"res/animations/coconut-thrower/Ile-noixcoco3.png"
-		};
+			"res/animations/coconut-thrower/Ile-noixcoco1.png",
+			"res/animations/coconut-thrower/Ile-noixcoco2.png",
+			"res/animations/coconut-thrower/Ile-noixcoco3.png" };
 	private static final String[] COCONUT_THROWER_HITBOX_FILES = { "res/hitboxes/coconut-thrower/base.txt" };
 	private static int COCONUT_THROWER_DURATION = 300;
 
@@ -25,7 +24,7 @@ public class CoconutThrower extends Island {
 
 	private int nextAttack;
 	private static final int COCONUT_THROWER_ATTACK_COOLDOWN = 2000;
-	private static final int COCONUT_THROWER_ATTACK_RADIUS = 300;
+	private static final int COCONUT_THROWER_ATTACK_RADIUS = 200;
 
 	public CoconutThrower() {
 		super();
@@ -42,7 +41,9 @@ public class CoconutThrower extends Island {
 		PlayState gameInstance = PlayState.getInstance();
 		// Un ship a proximité ? On envoie des noix de coco !
 		if (nextAttack <= 0) {
-			Circle circle = new Circle(getPosition().x, getPosition().y,
+			Circle circle = new Circle(getPosition().x
+					+ getHitboxAnimation().getWidth() / 2, getPosition().y
+					+ getHitboxAnimation().getHeight() / 2,
 					COCONUT_THROWER_ATTACK_RADIUS);
 			List<Ship> ships = gameInstance.getShips();
 			for (Ship s : ships) {
@@ -50,6 +51,8 @@ public class CoconutThrower extends Island {
 					// Attack
 					OneHitMonster coconut = new Coconut();
 					coconut.setPosition(getPosition().copy());
+					coconut.getPosition().x +=getHitboxAnimation().getWidth() / 2;
+					coconut.getPosition().y +=getHitboxAnimation().getHeight() / 2;
 
 					float vectorX = (s.getPosition().x + s.getHitboxAnimation()
 							.getWidth() / 2) - coconut.getPosition().x;
