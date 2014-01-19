@@ -298,7 +298,6 @@ public class PlayState extends BasicGameState {
 		if (Input.KEY_ESCAPE == key) {
 			exit = true;
 		}
-
 		super.keyReleased(key, c);
 	}
 
