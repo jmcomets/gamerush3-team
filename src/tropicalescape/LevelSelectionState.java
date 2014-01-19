@@ -118,20 +118,23 @@ public class LevelSelectionState extends BasicGameState {
 	public void mouseWheelMoved(int newValue) {
 		super.mouseWheelMoved(newValue);
 		if (newValue > 0) {
-			setCurrent(true);
+			setCurrent(true, false);
 		} else {
-			setCurrent(false);
+			setCurrent(false, false);
 
 		}
 
 	}
 
 	private void setCurrent(boolean up) {
-		if (up) {
+		setCurrent(up, true);
+	}
+	private void setCurrent(boolean up, boolean loop) {
+		if (up && (loop || current > 0)) {
 			if (--current < 0) {
 				current = listLevels.size() - 1;
 			}
-		} else {
+		} else if (!up && (loop || current < listLevels.size()-1)){
 			if (++current >= listLevels.size()) {
 				current = 0;
 			}

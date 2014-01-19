@@ -67,7 +67,7 @@ public class PlayState extends BasicGameState {
 	public int width;
 
 	public int height;
-	private int placeFlagsDelay = 5000;
+	private int placeFlagsDelay;
 
 	private String lvlName;
 
@@ -100,7 +100,7 @@ public class PlayState extends BasicGameState {
 	}
 
 	private void checkForLose() {
-		if (!won && ships.size() + shipStack.size() < minToWin) {
+		if (!won && nArrivedShips +  ships.size() + shipStack.size() < minToWin) {
 			lost = true;
 			System.out.println("C'est perdu !");
 		}
@@ -197,7 +197,12 @@ public class PlayState extends BasicGameState {
 				}
 
 				GameObject obj = null;
-				if (tokens[0].equals("GODE-MODE")) {
+				if (tokens[0].equals("PLACE-DELAY")) {
+					placeFlagsDelay = MAX_PLACE_DELAY;
+					if (tokens.length > 1) {
+						placeFlagsDelay = Integer.parseInt(tokens[1]);
+					}
+				} else if (tokens[0].equals("GODE-MODE")) {
 					godModeActivated = true;
 				} else if (tokens[0].equals("NICE-MODE")) {
 					niceModeActivated = true;
