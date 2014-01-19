@@ -466,7 +466,6 @@ public class PlayState extends BasicGameState {
 		// Continuous
 		handleContinuousInput(container.getInput());
 
-		hud.update();
 		// Wait for the user to place his flags
 		if (placeFlagsDelay > 0) {
 			placeFlagsDelay -= delta;
@@ -539,5 +538,23 @@ public class PlayState extends BasicGameState {
 	public int getNbrShips() {
 		return userFlags.size();
 	}
+
+	public int getNbrEnemies() {
+		return enemies.size();
+	}
+
+	public int getnArrivedShips() {
+		return nArrivedShips;
+	}
+
+	public int getMinToWin() {
+		return minToWin;
+	}
+
+	public boolean isNiceModeActivated() {
+		return niceModeActivated;
+	}
+	
+	
 
 }
